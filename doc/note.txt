@@ -1,0 +1,56 @@
+
+Idea fare un progetto IoT utilizzando piattaforma Raspberry e Dispositivo Mobile (Android e/o Windows Mobile)
+e software realizzato con F# ML coda:
+Pensavo ad un piccolo rover dotato di ruote, videocamera + alcuni sensori, contrallabile via rete wifi e/o bluetooth attraverso un interfaccia su tablet. 
+
+prima attività
+
+ricompilato https://github.com/vslab/YieldProlog
+
+creato 2 solution partendo da https://github.com/vslab/fscoda
+in modo da compilare con xbuild/msbuild
+e utilizzando nuget 
+
+per fare questo ho utilizzato  https://www.nuget.org/packages/Unquote/
+
+ed aggiunto dei pacchetti nuget https://www.nuget.org/packages?q=coda
+ 
+
+fatto alcune modifiche a ypc
+non utilizzo più script per creare intestazione cs generati ma li inserisce direttamente il compilatore.
+la versione modificata prende questi parametri
+Usage: ypc [namespace] [.P file] [.cs file]
+
+
+
+Raspberry possibile installare:
+-Windows 10 Core IoT
+-Rasbian + Mono
+
+
+ho scartato l'utilizzo d Windows 10 Universal (utilizzato da Windows 10 Core Iot e Window 10 Mobile)
+https://github.com/Microsoft/visualfsharp/issues/1096
+l'utilizzo aot f# non è ancora possibile su visual studio e in ambiente windows (anche con mono c'è questo limite su piattaforma windows) 
+
+
+
+fatto dei test su Raspberry Raspian + Mono: OK
+quindi potrei utilizzare per il rover questa piattaforma: Raspberry + Rasbian +  mono con F# ML coda
+(possibili alcuni limiti API Mono nell'utilizzo bluetooth, potrei affiancare magari alcuni script bash o python per controllare l'interfaccia bluetooth ed il controllo della configurazione wifi)
+
+
+F# su Android con Xamarin:
+-realizzazione applicazione F#: OK
+-test con F# ml coda: problemi di compilazione YieldProlog su Xamarin Mono Android
+ System.dll per Mono Android non ha diverse classi Es. CompilerParameters CompilerResults
+??? https://developer.xamarin.com/guides/android/advanced_topics/limitations/
+
+
+
+in conclusione:
+
+
+per l'interfaccia di controllo tablet x86 utilizzando windows 10 x86 con f# per applicazioni desktop
+
+da verificare la possibità di interfacciare il device IoT sul cloud (Azure e/o Amazon AWS)
+

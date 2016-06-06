@@ -1,0 +1,5 @@
+D:\workspace\sandbox\rpi-iot\camera-test\bin\Release\camera-test.exe
+D:\workspace\sandbox\rpi-iot\camera-test\bin\Release\camera-test.pdb
+D:\workspace\sandbox\rpi-iot\camera-test\bin\Release\RaspberryCam.dll
+D:\workspace\sandbox\rpi-iot\camera-test\obj\x86\Release\camera-test.exe
+D:\workspace\sandbox\rpi-iot\camera-test\obj\x86\Release\camera-test.pdb

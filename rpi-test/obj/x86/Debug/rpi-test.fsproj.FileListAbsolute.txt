@@ -1,0 +1,6 @@
+D:\workspace\sandbox\rpi-iot\rpi-test\bin\Debug\rpi-test.exe
+D:\workspace\sandbox\rpi-iot\rpi-test\bin\Debug\rpi-test.pdb
+D:\workspace\sandbox\rpi-iot\rpi-test\bin\Debug\FSharp.Core.dll
+D:\workspace\sandbox\rpi-iot\rpi-test\bin\Debug\FSharp.Core.xml
+D:\workspace\sandbox\rpi-iot\rpi-test\obj\x86\Debug\rpi-test.exe
+D:\workspace\sandbox\rpi-iot\rpi-test\obj\x86\Debug\rpi-test.pdb

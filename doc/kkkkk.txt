@@ -1,0 +1,962 @@
+ 
+ 
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
+echo "deb http://download.mono-project.com/repo/debian wheezy-apache24-compat main" | sudo tee -a /etc/apt/sources.list.d/mono-xamarin.list
+sudo apt-get remove fsharp mono-complete
+sudo apt-get purge fsharp
+sudo apt-get autoremove
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install mono-complete
+mono --version
+Mono JIT compiler version 4.2.3 (Stable 4.2.3.4/832de4b Wed Mar 16 13:34:50 UTC 2016)
+Copyright (C) 2002-2014 Novell, Inc, Xamarin Inc and Contributors. www.mono-project.com
+        TLS:           __thread
+        SIGSEGV:       normal
+        Notifications: epoll
+        Architecture:  armel,vfp+hard
+        Disabled:      none
+        Misc:          softdebug
+        LLVM:          supported, not enabled.
+        GC:            sgen
+
+sudo apt-get install fsharp
+fsharpc
+F# Compiler for F# 4.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
+   35  mono medici.exe
+   36  example
+   37  mono ---help
+   38  mono --help
+   39  mono --aot medici.exe
+   40  mono  medici.exe
+   41  mono example.exe
+   42  sudo apt-get install subversion
+   43  sudo apt-get install bluetooth
+   44  sudo apt-get install bluez
+   45  sudo apt-get install bluez-tools
+   46  sudo apt-get install blueman
+   47  sudo apt-get upgrade
+   48  ls
+   49  cd share/
+   50  ls
+   51  cd Debug/
+   52  ls
+   53  sudo mono roverfs.exe
+   54  sudo mono -aet roverfs.exe
+   55  mono --help
+   56  sudo mono --aot  roverfs.exe
+   57  sudo mono roverfs.exe
+   58  sudo mono --aot  roverfs.exe
+   59  sudo mono roverfs.exe
+   60  sudo mono --aot  roverfs.exe
+   61  sudo mono roverfs.exe
+   62  sudo bash
+   63  exit
+   64  cd shres
+   65  cd shares
+   66  cd share/
+   67  ls
+   68  cd bin
+   69  ls
+   70  ls -l
+   71  mono --aot roverfs.exe
+   72  ./sudo roverfs.exe
+   73  sudo roverfs.exe
+   74  ls
+   75  sudo ./roverfs.exe
+   76  sudo bash
+   77  cd share/
+   78  cd Debug/
+   79  ls
+   80  mono ./rpi-iot.exe
+   81  mono --aot ./rpi-iot.exe
+   82  mono ./rpi-iot.exe
+   83  mono --aot ./*.dll
+   84  mono ./rpi-iot.exe
+   85  rm FSharp.Core.*
+   86  mono ./rpi-iot.exe
+   87  ls
+   88  sudo mono ./rpi-iot.exe
+   89  sudo mono --aot ./*.dll
+   90  sudo mono --aot ./*.exe
+   91  sudo mono ./rpi-iot.exe
+   92  sudo mono --aot ./*.exe
+   93  sudo mono ./rpi-iot.exe
+   94  sudo mono --aot ./*.exe
+   95  sudo mono ./rpi-iot.exe
+   96  sudo mono --aot ./*.exe
+   97  sudo mono --aot ./*.exe
+   98  sudo mono ./rpi-iot.exe
+   99  sudo mono --aot ./*.exe
+  100  sudo mono ./rpi-iot.exe
+  101  sudo mono --aot ./*.exe
+  102  sudo mono ./rpi-iot.exe
+  103  sudo mono --aot ./*.exe
+  104  sudo mono ./rpi-iot.exe
+  105  sudo halt
+  106  ls
+  107  cd share/
+  108  ls
+  109  cd Debug/
+  110  ls
+  111  sudo mono --aot ./*.exe
+  112  sudo mono ./rpi-iot.exe
+  113  ps -A
+  114  ls /home/pi/*
+  115  cd share/
+  116  cd Debug/
+  117  ls
+  118  mono -aot rpi-iot.exe
+  119  mono --aot rpi-iot.exe
+  120  sudo ./rpi-iot.exe
+  121  mono --aot rpi-iot.exe
+  122  sudo ./rpi-iot.exe
+  123  mono --aot rpi-iot.exe
+  124  sudo ./rpi-iot.exe
+  125  mono --aot rpi-iot.exe
+  126  sudo ./rpi-iot.exe
+  127  mono --aot rpi-iot.exe
+  128  sudo ./rpi-iot.exe
+  129  mono --aot rpi-iot.exe
+  130  sudo ./rpi-iot.exe
+  131  mono --aot rpi-iot.exe
+  132  sudo ./rpi-iot.exe
+  133  mono --aot rpi-iot.exe
+  134  sudo ./rpi-iot.exe
+  135  rm *.exe*
+  136  mono --aot rpi-iot.exe
+  137  sudo ./rpi-iot.exe
+  138  mono --aot rpi-iot.exe
+  139  sudo ./rpi-iot.exe
+  140  mono --aot rpi-iot.exe
+  141  sudo ./rpi-iot.exe
+  142  mono --aot rpi-iot.exe
+  143  sudo ./rpi-iot.exe
+  144  mono --aot rpi-iot.exe
+  145  sudo ./rpi-iot.exe
+  146  mono --aot rpi-iot.exe
+  147  sudo ./rpi-iot.exe
+  148  mono --aot rpi-iot.exe
+  149  sudo ./rpi-iot.exe
+  150  mono --aot rpi-iot.exe
+  151  sudo ./rpi-iot.exe
+  152  mono --aot rpi-iot.exe
+  153  sudo ./rpi-iot.exe
+  154  mono --aot rpi-iot.exe
+  155  sudo ./rpi-iot.exe
+  156  mono --aot rpi-iot.exe
+  157  sudo ./rpi-iot.exe
+  158  cd ..
+  159  ls
+  160  cd /home/
+  161  dir
+  162  cd pi/
+  163  ls
+  164  sudo ./BtnAndLed
+  165  cd share/
+  166  cd Debug/
+  167  sudo rpi-update
+  168  sudo rpi-iot
+  169  sudo rpi-iot.exe
+  170  sudo ./rpi-iot.exe
+  171  rm *.exe
+  172  sudo mono --aot ./rpi-iot.exe
+  173  sudo rpi-iot.exe
+  174  sudo ./rpi-iot.exe
+  175  sudo mono --aot ./rpi-iot.exe
+  176  sudo ./rpi-iot.exe
+  177  sudo mono --aot ./rpi-iot.exe
+  178  sudo ./rpi-iot.exe
+  179  sudo mono --aot ./rpi-iot.exe
+  180  sudo ./rpi-iot.exe
+  181  sudo mono --aot ./rpi-iot.exe
+  182  sudo ./rpi-iot.exe
+  183  sudo mono --aot ./*.dll
+  184  sudo ./rpi-iot.exe
+  185  sudo halt
+  186  sudo killall ssh
+  187  sudo killall BtnAndLed
+  188  cd share/
+  189  ls
+  190  cd Debug/
+  191  ls
+  192  ./rpi-iot.exe
+  193  sudo ./rpi-iot.exe
+  194  sudo mono --aot ./*.exe
+  195  sudo ./rpi-iot.exe
+  196  sudo mono --aot ./*.exe
+  197  sudo ./rpi-iot.exe
+  198  sudo mono --aot ./*.exe
+  199  sudo ./rpi-iot.exe
+  200  sudo mono --aot ./*.exe
+  201  sudo ./rpi-iot.exe
+  202  sudo mono --aot ./*.exe
+  203  sudo ./rpi-iot.exe
+  204  sudo halt
+  205  sudo service  motion
+  206  sudo service  motion start
+  207  sudo apt-get install libjpeg62
+  208  sudo apt-get autoremove
+  209  sudo apt-get install rpi-update
+  210  sudo rpi-update
+  211  reboot
+  212  sudo reboot
+  213  cd /home/riccardo/
+  214  cd share/
+  215  raspivid --help
+  216  raspivid
+  217  raspivid  -h
+  218  raspvid -o video
+  219  raspivid -o video
+  220  sudo raspivid -o video
+  221  cd share/
+  222  cd camera/
+  223  ls
+  224  sudo ./camera-test.exe
+  225  wget https://bitbucket.org/rflechner/raspberrycam/get/2fa7c69d10aa.zip
+  226  ls
+  227  unzip 2fa7c69d10aa.zip
+  228  ls
+  229  cd rflechner-raspberrycam-2fa7c69d10aa/
+  230  ls
+  231  make
+  232  sudo make
+  233  sudo apt-get install libgd2-noxpm-dev
+  234  make
+  235  ls
+  236  mv RaspberryCam.so  ..
+  237  ls
+  238  cd ..
+  239  ls
+  240  sudo ./camera-test.exe
+  241  LD_LIBRARY_PAT=.:$LD_LIBRARY_PATH ./camera-test.exe
+  242  ls
+  243  cd rflechner-raspberrycam-2fa7c69d10aa/
+  244  ls
+  245  sudo make install
+  246  make
+  247  ls
+  248  ls -l
+  249  sudo make clean
+  250  sudo make install
+  251  cd
+  252  ls
+  253  sudo bash
+  254  exit
+  255  cd bin
+  256  ls
+  257  cd share/
+  258  cd bin
+  259  ls
+  260  sudo ./rpi-iot.exe
+  261  ls
+  262  mon-o -aet rpi-iot.exe
+  263  mono --aet rpi-iot.exe
+  264  mono -aet rpi-iot.exe
+  265  mono -aot rpi-iot.exe
+  266  mono --aot rpi-iot.exe
+  267  sudo ./rpi-iot.exe
+  268  mono --aot *.dll
+  269  sudo ./rpi-iot.exe
+  270  sudo halt
+  271  sudo raspistill
+  272  sudo raspistill -o share/test.jpg
+  273  dmensg
+  274  dmesg
+  275  dmesg | grep error
+  276  dmesg | grep bcmp
+  277  dmesg | grep bc
+  278  dmesg | grep radio
+  279  dmesg | grep blu
+  280  dmesg | grep 8
+  281  dmesg | grep missing
+  282  dmesg | grep -2
+  283  sudo halt
+  284  cd share/
+  285  ls
+  286  cd Release/
+  287  ls
+  288  ./rpi-rover.exe
+  289  sudo ./rpi-rover.exe
+  290  ls
+  291  cd cd ..
+  292  cd ..
+  293  ls
+  294  cd Release/
+  295  ls
+  296  sudo ./rpi-rover.exe
+  297  halt
+  298  sudo halt
+  299  cd share/
+  300  dir
+  301  cd Release/
+  302  sudo ./rpi-rover.exe
+  303  sudo halt
+  304  sudo ./rpi-rover.exe
+  305  sudo halt
+  306  cd Release/
+  307  sudo ./rpi-rover.exe
+  308  sudo halt
+  309  cd share
+  310  cd Release/
+  311  sudo ./rpi-rover.exe
+  312  sudo halt
+  313  cd share/
+  314  cd Release/
+  315  sudo ./rpi-rover.
+  316  sudo ./rpi-rover.exe
+  317  cd Release
+  318  cd share/
+  319  cd Release
+  320  sudo ./rpi-rover.exe
+  321  sudo reboot
+  322  cd share
+  323  cd share/Release/
+  324  sudo ./rpi-rover.exe
+  325  cd share
+  326  cd  Release/
+  327  sudo ./rpi-rover
+  328  sudo ./rpi-rover.exe
+  329  sudo ./rpi-rover2.exe
+  330  sudo ./rpi-rover.exe
+  331  sudo halt
+  332  ls
+  333  exit
+  334  cd share
+  335  cd ..
+  336  ls
+  337  cd rpi-iot/
+  338  ls
+  339  cd ..
+  340  cd Downloads/
+  341  ls
+  342  c d..
+  343  nano /etc/samba/smb.conf
+  344  sudo nano /etc/samba/smb.conf
+  345  sudo /etc/init.d/samba restart
+  346  halt
+  347  sudo halt
+  348  cd rpi-iot/
+  349  dir
+  350  cd bin
+  351  cd ..
+  352  cd rpi-rover/
+  353  dir
+  354  cd bin/
+  355  cd Release/
+  356  ls
+  357  sudo ./rpi-rover.exe
+  358  sudo halt
+  359  iw
+  360  iw list
+  361  cd share/
+  362  ls
+  363  cd Release/
+  364  ls
+  365  sudo ./rpi-rover.exe
+  366  cd ..
+  367  cd rpi-iot/
+  368  cd rpi-rover/
+  369  dir
+  370  cd bin
+  371  cd Release/
+  372  sudo ./rpi-rover.exe
+  373  cd rpi-iot/
+  374  sudo raspistill  -o test.jpg
+  375  history
+riccardo@raspberrypi:~ $
+-bash: 202: command not found
+pi@raspberrypi:~ $   203  sudo ./rpi-iot.exe
+-bash: 203: command not found
+pi@raspberrypi:~ $   204  sudo halt
+-bash: 204: command not found
+pi@raspberrypi:~ $   205  sudo service  motion
+-bash: 205: command not found
+pi@raspberrypi:~ $   206  sudo service  motion start
+-bash: 206: command not found
+pi@raspberrypi:~ $   207  sudo apt-get install libjpeg62
+-bash: 207: command not found
+pi@raspberrypi:~ $   208  sudo apt-get autoremove
+-bash: 208: command not found
+pi@raspberrypi:~ $   209  sudo apt-get install rpi-update
+-bash: 209: command not found
+pi@raspberrypi:~ $   210  sudo rpi-update
+-bash: 210: command not found
+pi@raspberrypi:~ $   211  reboot
+-bash: 211: command not found
+pi@raspberrypi:~ $   212  sudo reboot
+-bash: 212: command not found
+pi@raspberrypi:~ $   213 ^C^C
+pi@raspberrypi:~ $ clear
+pi@raspberrypi:~ $ history
+    1  cd fscoda/
+    2  xbuild
+    3  msbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+    4  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+    5  less
+    6  nano fscoda.sln
+    7  cd medici-context/
+    8  ls
+    9  nano medici-context.csproj
+   10  less
+   11  ls -l
+   12  p
+   13  ls
+   14  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   15  echo namespace
+   16  nano medici-context.csproj
+   17  ls
+   18  nano medici-context.csproj
+   19  cd ..
+   20  ls
+   21  nano medici-context\medici-context.csproj
+   22  cd medici-context/
+   23  nano medici-context.csproj
+   24  cd ..
+   25  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   26  cd medici-ctx/
+   27  ls
+   28  cd ..
+   29  ls
+   30  cd medici-context/
+   31  ls
+   32  less medici-context.cs
+   33  nano medici-context.csproj
+   34  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   35  nano medici-context.csproj
+   36  ls
+   37  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   38  cd ../bin
+   39  ls
+   40  ypc.exe
+   41  .\ypc.exe
+   42  ls
+   43  ./ypc.exe
+   44  mono ./ypc.exe
+   45  cd ..
+   46  ls
+   47  nano medici-context.cs
+   48  nano medici-context.csproj
+   49  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   50  nano medici-context.csproj
+   51  nano medici-context.cs
+   52  nano medici-context.csproj
+   53  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   54  nano medici-context.csproj
+   55  nano medici-context.cs
+   56  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   57  nano medici-context.csproj
+   58  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   59  nano medici-context.csproj
+   60  cd ..
+   61  svn update
+   62  cd ypc
+   63  xbuild
+   64  mono ../bin/ypc
+   65  mono ../bin/ypc.exe
+   66  ls
+   67  xbuild /p:VisualStudioVersion=14.0 /p:Configuration=Release
+   68  mono ../bin/ypc.exe
+   69  mono ../bin/ypc.exe
+   70  nuget
+   71  sudo apt-get install nuget
+   72  nuget
+   73  nuget update
+   74  cd ..
+   75  cd bin
+   76  mono medici.exe
+   77  cd ..
+   78  ls
+   79  cd medici
+   80  ls
+   81  cd ..
+   82  cd medici-context/
+   83  ls
+   84  less medici-context.cs
+   85  svn revert
+   86  c d..
+   87  svn revert
+   88  cd ..
+   89  svn revert
+   90  cd ..
+   91  quit
+   92  exit
+   93  ls
+   94  sudo apt-get install samba
+   95  sudo apt-get update
+   96  sudo apt-get install samba
+   97  sudo adduser riccardo
+   98  sudo adduser riccardo sudo
+   99  cd /etc/samba
+  100  sudo nano easysamba.sh
+  101  sudo chmod u+rwx easysamba.sh
+  102  ls
+  103  ./easysamba.sh riccardo
+  104  sudo ./easysamba.sh riccardo
+  105  sudo apt-get install mono-complete fsharp
+  106  cd
+  107  cd shared
+  108  cd share
+  109  dir
+  110  git clone https://github.com/SwensenSoftware/unquote unquote
+  111  cd unquote/
+  112  dir
+  113  ./build-deb.sh
+  114  apt-get remove mono-complete fsharp
+  115  sudo apt-get remove mono-complete fsharp
+  116  sudo apt-get remove mono-complete fsharpls
+  117  ls
+  118  ps -a
+  119  ps -A
+  120  mem
+  121  memstat
+  122  df
+  123  cd ..
+  124  svn co --username riccardo.rolla@gmail.com http://svn.radcrawler.it/svn/sandbox/fscoda-old fscoda
+  125  cd fscoda/
+  126  xbuild
+  127  cd bin
+  128  dir
+  129  cd Debug/
+  130  ls
+  131  cd ..
+  132  ls
+  133  cd ..
+  134  ls
+  135  less compileandtest.bat
+  136  cd medici
+  137  ls
+  138  cd bin
+  139  ls
+  140  cd Debug/
+  141  ls
+  142  cd ..
+  143  ls
+  144  cd ..
+  145  ls
+  146  cd ..
+  147  ls
+  148  xbuild
+  149  sudo apt-get install monodevelop
+  150  sudo apt-get update
+  151  sudo rpi-update
+  152  sudo reboot
+  153  git clone git://git.drogon/wiringPI
+  154  git clone git://git.drogon.net/wiringPI
+  155  sudo ./led
+  156  ls
+  157  sudo ./led
+  158  sudo reboot
+  159  gpio readall
+  160  sudo ./led
+  161  gpio readall
+  162  gpio
+  163  gpio -h
+  164  gpio -v
+  165  sudo ./led
+  166  nano BtnAndLed.c
+  167  gcc BtnAndLed.c -o BtnAndLed -lwiringPi
+  168  sudo ./BtnAndLed
+  169  nano PwmLed.c
+  170  gcc PwmLed.c -o PwmLed -lwiringPi
+  171  sudo ./PwmLed
+  172  sudo halt
+  173  sudo ./led
+  174  sudo ./BtnAndLed
+  175  sudo ./PwmLed
+  176  sudo ./led
+  177  sudo ./PwmLed
+  178  sudo ./led
+  179  sudo ./BtnAndLed
+  180  nano led.c
+  181  gcc led.c -o led2 -lwiringPi
+  182  sudo ./led2
+  183  less ./BtnAndLed
+  184  less ./BtnAndLed.c
+  185  sudo ./led
+  186  ls
+  187  exit
+  188  sudo ./led
+  189  sudo ./BtnAndLed
+  190  sudo ./led
+  191  sudo ./BtnAndLed
+  192  sudo halt
+  193  sudo ./led
+  194  ls
+  195  sudo ./BtnAndLed
+  196  cd /home/riccardo/
+  197  ls
+  198  cd share/
+  199  ls
+  200  cd share/rare
+  201  exit
+  202  cd /home/riccardo/share/
+  203  halt
+  204  sudo halt
+  205  cd ~
+  206  mono --debug --debugger-agent=transport=dt_socket,address=localhost:12345,server=y,suspend=y rpi-iot.exe
+  207  cd ~
+  208  mono --aot --debug --debugger-agent=transport=dt_socket,address=localhost:12345,server=y,suspend=y rpi-iot.exe
+  209  mono -?
+  210  mono --help
+  211  ls
+  212  mono --aot rpi-iot.exe
+  213  sudo mono rpi-iot.exe
+  214  mono --aot *.dll
+  215  sudo mono rpi-iot.exe
+  216  ls
+  217  rm *.dll
+  218  ls
+  219  rm *.dll.*
+  220  ls
+  221  rm *.xml
+  222  ls
+  223  rm *.exe*
+  224  ls
+  225  rm rpi-*
+  226  ls
+  227  rm rpi_ctx.XML
+  228  ls
+  229  exit
+  230  mono --debug --aot=soft-debug --debugger-agent=transport=dt_socket,address=localhost:12345,server=y,s
+  231  mono --debug --aot=soft-debug --debugger-agent=transport=dt_socket,address=localhost:12345,server=y,s rp   ricc
+  232  exit
+  233  sudo halt
+  234  mono --debug --aot=soft-debug --debugger-agent=transport=dt_socket,address=localhost:12345,server=y,s ./rpi-iot.exe
+  235  mono --debug  --debugger-agent=transport=dt_socket,address=localhost:12345,server=y,s ./rpi-iot.exe
+  236  mono --debug --aot=soft-debug --debugger-agent=transport=dt_socket,address=localhost:12345,server=y  ./rpi-iot.exe
+  237  sudo apt-get install motion
+  238  sudo raspi-config
+  239  sudo apt-get update
+  240  .0000000000000000000000000000
+  241  sudo apt-get upgrade
+  242  cd /home/riccardo/
+  243  ls
+  244  cd share/
+  245  sudo bash
+  246  sudo raspi-config
+  247  LD_LIBRARY_PATH=./ ./mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w ./www"
+  248  sudo apt-get install libjpeg8-dev
+  249  wget http://downloads.sourceforge.net/project/mjpg-streamer/mjpg-streamer/Sourcecode/mjpg-streamer-r63.tar.gz?r=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fstream-video-from-the-raspberry-pi-camera-to-web-browsers-even-on-ios-and-android&ts=1463772904&use_mirror=netassist
+  250  ls
+  251  ls *.gz
+  252  wget http://downloads.sourceforge.net/project/mjpg-streamer/mjpg-streamer/Sourcecode/mjpg-streamer-r63.tar.gz?r=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fstream-video-from-the-raspberry-pi-camera-to-web-browsers-even-on-ios-and-android&ts=1463772904&use_mirror=netassist
+  253  ls *.t
+  254  ls -l
+  255  rm mjpg-streamer-r63.tar.gz\?r\=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fstream-video-from-the-raspberry-pi-camera-to-web-browsers-even-on-ios-and-android mjpg-streamer-r63.tar.gz
+  256  move mjpg-streamer-r63.tar.gz\?r\=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fstream-video-from-the-raspberry-pi-camera-to-web-browsers-even-on-ios-and-android mjpg-streamer-r63.tar.gz
+  257  wget http://downloads.sourceforge.net/project/mjpg-streamer/mjpg-streamer/Sourcecode/mjpg-streamer-r63.tar.gz?r=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fstream-video-from-the-raspberry-pi-camera-to-web-browsers-even-on-ios-and-android&ts=1463772904&use_mirror=netassist
+  258  mv mjpg-streamer-r63.tar.gz\?r\=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fstream-video-from-the-raspberry-pi-camera-to-web-browsers-even-on-ios-and-android mjpg-streamer-r63.tar.gz
+  259  ls
+  260  tar -zxvf mjpg-streamer-r63.tar.gz
+  261  cd mjpg-streamer-r63/
+  262  ls
+  263  sudo apt-get install libjpeg8-dev
+  264  sudo apt-get install imagemagick
+  265  make
+  266  sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h
+  267  make
+  268  cd ..
+  269  wget http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip
+  270  wget https://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip
+  271  unzip mjpg-streamer-code-182.zip
+  272  cd mjpg-streamer-code-182/
+  273  cd mjpg-streamer
+  274  make mjpg_streamer input_file.so output_http.so
+  275  sudo cp mjpg_streamer /usr/local/bin
+  276  sudo cp output_http.so input_file.so /usr/local/lib/
+  277  sudo cp -R www /usr/local/www
+  278  LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /usr/local/www"
+  279  bg
+  280  ls
+  281  sudo bash
+  282  sudo service motion start
+  283  sudo raspi-gpio
+  284  sudo raspi-gpio  help
+  285  sudo raspi-gpio get
+  286  sudo raspistill
+  287  raspivid -t 0 -h 720 -w 1080 -fps 25 -hf -b 2000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse !  rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=192.168.0.143 port=5000
+  288  sudo raspivid -t 0 -h 720 -w 1080 -fps 25 -hf -b 2000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse !  rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=192.168.0.143 port=5000
+  289  cvlc v4l2:///dev/video0 --v4l2-chroma h264 --sout '#rtp{sdp=rtsp://:8554/}
+  290  cvlc v4l2:///dev/video0 --v4l2-chroma h264 --sout '#rtp{sdp=rtsp://:8554/}'
+  291  picam --alsadev hw:1,0
+  292  uv4l --driver raspicam
+  293  apt-get install picam
+  294  sudo apt-get install picam
+  295  sudo apt-get install uv4l
+  296  gst-launch-1.0 -e v4l2src do-timestamp=true ! video/x-h264,width=640,height=480,framerate=30/1 ! h264parse ! rtph264pay config-interval=1 ! gdppay ! udpsink host=192.168.0.143  port=1234
+  297  v4l2-ctl -v
+  298  v4l2-ctl --all
+  299  v4l2-ctl --list-devices
+  300  sudo modprobe bcm2835-v4l2
+  301  v4l2-ctl --list-devices
+  302  gst-launch-1.0 -e v4l2src do-timestamp=true ! video/x-h264,width=640,height=480,framerate=30/1 ! h264parse ! rtph264pay config-interval=1 ! gdppay ! udpsink host=192.168.0.143  port=1234
+  303  uv4l --driver raspicam --auto-video_nr --framerate 10
+  304  sudo apt-get update
+  305  sudo apt-get install v4l-utils
+  306  sudo apt-get install uv4l-raspicam-extras
+  307  uv4l --driver raspicam --auto-video_nr --encoding h264 --width 1920 --height 1080
+  308  curl http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add
+  309  deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main
+  310  sudo nano /etc/apt/sources.list
+  311  sudo apt-get update
+  312  sudo apt-get install uv4l-raspicam-extras
+  313  sudo service uv4l_raspicam restart
+  314  uv4l --driver raspicam --auto-video_nr --width 640 --height 480 --encoding jpeg
+  315  ls
+  316  uv4l --driver raspicam --auto-video_nr --encoding h264 --width 1920 --height 1080
+  317  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.con
+  318  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  319  uv4l --driver raspicam
+  320  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  321  ls
+  322  ls -l
+  323  sudo bash
+  324  ls
+  325  cd mjpg-streamer-code-182/
+  326  ls
+  327  cd mjpg-streamer
+  328  wget http://linux-projects.org/downloads/examples/motion.conf
+  329  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  330  uv4l --driver raspicam --auto-video_nr
+  331  v4l2-ctl --list-devices
+  332  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  333  sudo reboot
+  334  uv4l --driver raspicam --auto-video_nr
+  335  cd mjpg-streamer-code-182/
+  336  ls
+  337  cd ..
+  338  wget http://linux-projects.org/downloads/examples/motion.conf
+  339  nano  motion.conf
+  340  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  341  nano  motion.conf
+  342  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  343  sudo uv4l --sched-rr --driver raspicam --auto-video_nr --encoding h264 --width 1920 --height 1080
+  344  nano  motion.conf
+  345  sudo v4l2-ctl
+  346  sudo v4l2-ctl  --all
+  347  sudo v4l2-ctl
+  348  sudo v4l2-ctl --all
+  349  uv4l --help
+  350  sudo halt
+  351  uv4l --driver raspicam --auto-video_nr
+  352  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  353  ls
+  354  nano motion.conf
+  355  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  356  uv4l --help --driver raspicam --driver-help
+  357  dd if=/dev/video0 of=snapshot.jpeg bs=11M count=1
+  358  ls
+  359  sudo cp snapshot.jpeg ../riccardo/share/
+  360  uv4l --driver raspicam  --width 640 --height 480 --encoding jpeg
+  361  uv4l --driver raspicam  --encoding jpeg
+  362  rm /dev/video0
+  363  sudo rm /dev/video0
+  364  uv4l --driver raspicam --auto-video_nr
+  365  pkill uv4l
+  366  sudo pkill uv4l
+  367  uv4l --driver raspicam --auto-video_nr
+  368  sudo pkill uv4l
+  369  sudo apt-get install uv4l-server
+  370  sudo apt-get install uv4l-uvc
+  371  sudo apt-get install uv4l-mjpegstream
+  372  sudo apt-get install uv4l-dummy
+  373  sudo apt-get install uv4l-webrtc
+  374  uv4l --auto-video_nr --driver raspicam --encoding mjpeg --server-option '--port=9000' --server-option '--admin-password=myp4ssw0rd'
+  375  pkill u4vl
+  376  uv4l --auto-video_nr --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  377  pkill u4vl
+  378  sudo rm /dev/video0
+  379  sudo rm /dev/video1
+  380  uv4l --auto-video_nr --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  381  sudo pkill uv4l
+  382  sudo uv4l --sched-rr --driver raspicam --auto-video_nr
+  383  v4l2-ctl --set-fmt-video=width=1280,height=720,pixelformat=H264 -d /dev/video0
+  384  sudo pkill uv4l
+  385  cvlc v4l2:///dev/video0 --v4l2-chroma h264 --sout '#rtp{sdp=rtsp://:8554/}'
+  386  uv4l --driver raspicam --auto-video_nr
+  387  cvlc v4l2:///dev/video0 --v4l2-chroma h264 --sout '#rtp{sdp=rtsp://:8554/}'
+  388  v4l2-ctl --set-fmt-video=width=1280,height=720,pixelformat=H264 -d /dev/video0
+  389  uv4l --driver raspicam --auto-video_nr
+  390  sudo pkill uv4l
+  391  rm /dev/video0
+  392  uv4l --driver raspicam --auto-video_nr
+  393  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  394  nano motion.conf
+  395  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  396  nano motion.conf
+  397  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  398  sudo LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  399  pkill u4vl
+  400  uv4l --auto-video_nr --driver raspicam --encoding h264
+  401  pkill u4vl
+  402  sudo pkill u4vl
+  403  sudo uv4l --auto-video_nr --driver raspicam --encoding h264
+  404  sudo pkill u4vl
+  405  killall u4vl
+  406  sudo killall u4vl
+  407  sudo rm /dev/video0
+  408  sudo rm /dev/video1
+  409  uv4l --driver raspicam --auto-video_nr
+  410  LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  411  sudo LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so motion -c ./motion.conf
+  412  sudo pkill u4vl
+  413  sudo service uv4l_raspicam restart
+  414  sudo pkill u4vl
+  415  uv4l --auto-video_nr --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  416  uv4l --auto-video_nr -with 640 -height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  417  uv4l --auto-video_nr --encoding h264 --width 640 --height 480  --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  418  uv4l --auto-video_nr --encoding h264 --width 640 --height 480
+  419  uv4l --auto-video_nr  --width 640 --height 480  --driver raspicam --encoding h264
+  420  v4l2-ctl --set-fmt-video=width=1920,height=1080,pixelformat="H264" -d /dev/video0
+  421  uv4l --auto-video_nr  --width 640 --height 480  --driver raspicam --encoding h264
+  422  suv4l --auto-video_nr  --width 640 --height 480  --driver raspicam --encoding h264
+  423  sudo service uv4l_raspicam restart
+  424  uv4l --auto-video_nr -with 640 -height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  425  uv4l --auto-video_nr --with 640 --height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  426  uv4l --auto-video_nr -width 640 -height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  427  uv4l --auto-video_nr --width 640 --height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  428  sudo service uv4l_raspicam restart
+  429  uv4l --auto-video_nr --width 640 --height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  430  sudo service uv4l_raspicam restart
+  431  uv4l --auto-video_nr -width 640 -height 480 --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  432  uv4l --auto-video_--driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  433  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=myp4ssw0rd'
+  434  sudo reboot
+  435  uv4l --driver raspicam --auto-video_nr
+  436  pkill u4vl
+  437  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  438  pkill u4vl
+  439  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  440  pkill u4vl
+  441  sudo pkill u4vl
+  442  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  443  sudo pkill u4vl
+  444  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  445  sudo pkill u4vl
+  446  sudo service uv4l_raspicam stop
+  447  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  448  sudo service uv4l_raspicam stop
+  449  sudo pkill u4vl
+  450  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  451  sudo service uv4l_raspicam stop
+  452  ps -A
+  453  sudo kiall uv4l
+  454  sudo killall uv4l
+  455  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password  --config-password=password'
+  456  sudo killall uv4l
+  457  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--user-password=password'
+  458  sudo killall uv4l
+  459  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password'
+  460  sudo killall uv4l
+  461  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password' --server-option '--editable-config-file u4vl.conf'
+  462  sudo killall uv4l
+  463  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password --editable-config-file u4vl.conf'
+  464  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password' --server-option '--editable-config-file=u4vl.conf'
+  465  sudo killall uv4l
+  466  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password' --server-option '--editable-config-file=u4vl.conf'
+  467  sudo killall uv4l
+  468  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password' --server-option '--editable-config-file=u4vl.conf'
+  469  sudo killall uv4l
+  470  uv4l --auto-video --driver raspicam --encoding h264 --server-option '--config-password=password' --server-option '--editable-config-file=u4vl.conf'
+  471  nc
+  472  sudo killall uv4l
+  473  raspiraspivid -hf -w 1280 -h 1024 -t 999999999 -fps 20 -b 5000000 -o - | nc -l  -p 5001
+  474  raspivid -hf -w 1280 -h 1024 -t 999999999 -fps 20 -b 5000000 -o - | nc -l  -p 5001
+  475  raspivid -hf -w 1280 -h 1024 -t 999999999 -fps 20 -b 5000000 -o - | vlc -vvv zzx.rmvb --sout '#std{access=mmsh,mux=asfh,dst=:8080
+  476  raspivid -hf -w 1280 -h 1024 -t 999999999 -fps 20 -b 5000000 -o - | vlc -vvv zzx.rmvb --sout '#std{access=mmsh,mux=asfh,dst=:8080}'
+  477  raspivid -hf -w 1280 -h 1024 -t 999999999 -fps 20 -b 5000000 -o - | cvlc -vvv zzx.rmvb --sout '#std{access=mmsh,mux=asfh,dst=:8080}'
+  478  raspivid -hf -w 1280 -h 1024 -t 999999999 -fps 20 -b 5000000 -o - | nc -l  -p 5001
+  479  u4vl
+  480  uv4l
+  481  uv4l --help
+  482  wifi
+  483  ifconifg
+  484  ifconfig
+  485  sudo rpi-update
+  486  sudo reboot
+  487  dmesg
+  488  sudo apt-get update
+  489  sudo apt-get upgrade
+  490  sudo reboot
+  491  ls
+  492  wi
+  493  i
+  494  iw
+  495  iw list
+  496  ls
+  497  wi list
+  498  iw list
+  499  usblist
+  500  lsusb
+  501  sudo raspi-config
+  502  modprobrobe -l
+  503  roble
+  504  modprobe -l | less
+  505  modprobe -list | less
+  506  modprobe -list
+  507  modprobe --help
+  508  lsmod
+  509  sudo nano /etc/modprobe.d/8192cu.conf
+  510  smesg
+  511  dmesg
+  512  dmesg | grep
+  513  dmesg | grep error
+  514  usb 1-1.5: Direct firmware load for ath9k_htc/htc_
+  515  dmesg | grep wifi
+  516  dmesg | grep wireless
+  517  dmesg | grep net
+  518  cd /lib/firmware
+  519  cd brcm/
+  520  ls
+  521  less brcmfmac43430-sdio.txt
+  522  iw power
+  523  dmesg | grep brcm
+  524  uname -a
+  525  dmesg | grep brcm
+  526  hciconfig -a
+  527  systemctl status bluetooth
+  528  lsmod
+  529  sudo modprobe -r brcmfmac
+  530  sudo modprobe brcmfmac
+  531  lsmod
+  532  iw
+  533  iw list
+  534  less /etc/modprobe.d/raspi-blacklist.conf
+  535  lshw
+  536  sudo apt-get install lshw
+  537  top
+  538  cat /sys/module/8192cu/parameters/rtw_power_mgnt
+  539  halt
+  540  sudo halt
+  541  top
+  542  lscpu
+  543  cpu
+  544  sudo raspi-config
+  545  sudo apt-get update
+  546  lscpu
+  547  sudo apt-get upgrade
+  548  sudo rpi-update
+  549  lsusb
+  550  poweroff
+  551  cd share
+  552  exit
+  553  sudo halt
+  554  sudo ./led
+  555  history
+  556  login as: riccardo
+  557  riccardo@192.168.0.143's password:
+Access denied
+riccardo@192.168.0.143's password:
+  558  The programs included with the Debian GNU/Linux system are free software;
+  559  the exact distribution terms for each program are described in the
+  560  individual files in /usr/share/doc/*/copyright.
+  561  Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+  562  permitted by applicable law.
+  563  Last login: Mon Jun  6 10:26:15 2016 from rollahome
+  564  riccardo@raspberrypi:~ $ history
+  565  clear
+  566  history
+pi@raspberrypi:~ $

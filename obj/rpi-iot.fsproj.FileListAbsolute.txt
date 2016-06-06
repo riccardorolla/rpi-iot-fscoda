@@ -1,0 +1,6 @@
+D:\workspace\sandbox\rpi-iot\bin\rpi-iot.XML
+D:\workspace\sandbox\rpi-iot\bin\rpi-iot.exe
+D:\workspace\sandbox\rpi-iot\bin\rpi-iot.pdb
+D:\workspace\sandbox\rpi-iot\obj\rpi-iot.fsprojResolveAssemblyReference.cache
+D:\workspace\sandbox\rpi-iot\obj\rpi-iot.exe
+D:\workspace\sandbox\rpi-iot\obj\rpi-iot.pdb

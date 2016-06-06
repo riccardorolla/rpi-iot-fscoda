@@ -1,0 +1,4 @@
+D:\workspace\sandbox\rpi-iot\bin\rpi-context.dll
+D:\workspace\sandbox\rpi-iot\bin\rpi-context.pdb
+D:\workspace\sandbox\rpi-iot\obj\rpi-context.dll
+D:\workspace\sandbox\rpi-iot\obj\rpi-context.pdb
