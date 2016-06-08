@@ -1,0 +1,11 @@
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\rpi-rover.exe
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\rpi-rover.pdb
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.IO.dll
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.IO.GeneralPurpose.dll
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.IO.Interop.dll
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.System.dll
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.IO.xml
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.IO.GeneralPurpose.xml
+C:\workspace\rpi-iot\rpi-rover\bin\Debug\Raspberry.System.xml
+C:\workspace\rpi-iot\rpi-rover\obj\x86\Debug\rpi-rover.exe
+C:\workspace\rpi-iot\rpi-rover\obj\x86\Debug\rpi-rover.pdb

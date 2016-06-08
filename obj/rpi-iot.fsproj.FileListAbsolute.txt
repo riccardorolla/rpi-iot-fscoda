@@ -4,3 +4,9 @@ D:\workspace\sandbox\rpi-iot\bin\rpi-iot.pdb
 D:\workspace\sandbox\rpi-iot\obj\rpi-iot.fsprojResolveAssemblyReference.cache
 D:\workspace\sandbox\rpi-iot\obj\rpi-iot.exe
 D:\workspace\sandbox\rpi-iot\obj\rpi-iot.pdb
+C:\workspace\rpi-iot\bin\Debug\rpi-iot.XML
+C:\workspace\rpi-iot\bin\Debug\rpi-iot.exe
+C:\workspace\rpi-iot\bin\Debug\rpi-iot.pdb
+C:\workspace\rpi-iot\obj\rpi-iot.fsprojResolveAssemblyReference.cache
+C:\workspace\rpi-iot\obj\rpi-iot.exe
+C:\workspace\rpi-iot\obj\rpi-iot.pdb
