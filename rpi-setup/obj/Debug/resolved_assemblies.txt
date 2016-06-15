@@ -1,8 +1,0 @@
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\RoverSetup.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\Mono.Android.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\mscorlib.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\System.Core.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\System.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\System.Xml.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\System.Runtime.Serialization.dll
-C:\workspace\rpi-iot\rpi-setup\obj\Debug\assemblies\System.ServiceModel.Internals.dll
