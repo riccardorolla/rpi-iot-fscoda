@@ -7,11 +7,11 @@
     <ProjectGuid>{2275ABE4-578B-4012-9815-F1828FBFECCB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>rpiiot</RootNamespace>
-    <AssemblyName>iot-fscoda</AssemblyName>
+    <AssemblyName>iot-nofscoda</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
-    <Name>iot-fscoda</Name>
+    <Name>iot-nofscoda</Name>
     <TargetFrameworkProfile />
     <IntermediateOutputPath>..\obj\</IntermediateOutputPath>
   </PropertyGroup>
@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>..\bin\Debug\iot-fscoda.XML</DocumentationFile>
+    <DocumentationFile>..\bin\Debug\iot-nofscoda.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -34,7 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>..\bin\iot-fscoda.XML</DocumentationFile>
+    <DocumentationFile>..\bin\iot-nofscoda.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
