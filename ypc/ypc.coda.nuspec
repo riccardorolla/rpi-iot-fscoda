@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>ypc.coda</id>
+        <version>1.0.3.0</version>
+        <title>Yieldprolog Compiler For Coda</title>
+        <authors>Riccardo Rolla</authors>
+        <owners>riccardo rolla</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Description</description>
+        <copyright>Copyright ©  2016</copyright>
+    </metadata>
+    <files>
+        <file src="bin\YieldProlog.dll" target="bin\YieldProlog.dll" />
+        <file src="bin\ypc.exe" target="bin\ypc.exe" />
+        <file src="lib\_._" target="lib\_._" />
+    </files>
+</package>
