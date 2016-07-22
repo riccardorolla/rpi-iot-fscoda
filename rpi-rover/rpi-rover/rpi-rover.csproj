@@ -43,7 +43,9 @@
     <Reference Include="Raspberry.IO.Interop">
       <HintPath>..\packages\Raspberry.IO.GeneralPurpose.2.4\lib\net40\Raspberry.IO.Interop.dll</HintPath>
     </Reference>
- 
+    <Reference Include="Raspberry.System">
+      <HintPath>..\packages\Raspberry.System.2.1\lib\net40\Raspberry.System.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -51,8 +53,8 @@
     <Compile Include="TwoMotorsDriver.cs" />
     <Compile Include="UltrasonicDistanceSensor.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
