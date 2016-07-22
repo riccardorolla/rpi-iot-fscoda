@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>yieldprolog.coda</id>
+        <version>1.0.1.0</version>
+        <title>YieldProlog For Coda</title>
+        <authors>riccardo rolla</authors>
+        <owners>riccardo rolla</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Description</description>
+        <copyright>Copyright ©  2016</copyright>
+    </metadata>
+    <files>
+        <file src="bin\YieldProlog.dll" target="lib\" />
+    </files>
+</package>
