@@ -1,0 +1,51 @@
+% facts
+physician_location(Physician, Location) :- physician_location_(Physician, Location).
+physician_exam(Physician, Exam) :- physician_exam_(Physician, Exam).
+physician_has_hw(Physician, Hardware) :- physician_has_hw_(Physician, Hardware).
+
+patient_location(Patient, Location) :- patient_location_(Patient, Location).
+patient_has_done(Patient, Exam) :- patient_has_done_(Patient, Exam).
+patient_has_been_prescribed(Patient, Exam) :- patient_has_been_prescribed_(Patient, Exam).
+
+exam_requirement(Exam, Requirement) :- exam_requirement_(Exam, Requirement).
+
+exam_view_hw(Exam, Hardware) :- exam_view_hw_(Exam, Hardware).
+
+% rules
+physician_can_view_patient(Physician, Patient) :-
+  physician_location(Physician, Location),
+  patient_location(Patient, Location).
+
+patient_needs_done(Patient, Exam) :-
+  patient_has_been_prescribed(Patient, Exam).
+patient_needs_done(Patient, Exam) :-
+  exam_requirement(TargetExam, Exam),
+  patient_needs_done(Patient, TargetExam).
+
+patient_should_do(Patient, Exam) :-
+  patient_needs_done(Patient, Exam),
+  \+ patient_has_done(Patient, Exam).
+
+patient_cannot_do(Patient, Exam) :-
+  exam_requirement(Exam, Requirement),
+  \+ patient_has_done(Patient, Requirement).
+
+patient_active_exam(Patient, Exam) :-
+  patient_should_do(Patient, Exam),
+  \+ patient_cannot_do(Patient, Exam).
+
+physician_can_view_exam(Physician, Exam) :-
+  \+ exam_view_hw(Exam, Hardware).
+physician_can_view_exam(Physician, Exam) :-
+  physician_has_hw(Physician, Hardware),
+  exam_view_hw(Exam, Hardware).
+
+device_can_display_exam(Device, Exam) :-
+  device_has_caps(Device, Capability),
+  exam_view_caps(Exam, Capability).
+
+
+device_has_caps('iPhone 5', '3D acceleration').
+device_has_caps('iPhone 5', 'Video codec').
+device_has_caps('iPhone 5', 'Text display').
+device_has_caps('Apple Watch', 'Text display').
