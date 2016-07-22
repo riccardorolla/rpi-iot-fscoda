@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2275ABE4-578B-4012-9815-F1828FBFECCB}</ProjectGuid>
+    <ProjectGuid>{2275ABE4-578B-4012-9899-F1828FBFECCB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>rpiiot</RootNamespace>
     <AssemblyName>iot-fscoda</AssemblyName>

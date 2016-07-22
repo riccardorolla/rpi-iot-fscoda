@@ -9,6 +9,8 @@ Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "rpi-ctx", "rpi-ctx\rpi-ctx.
 EndProject
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "iot-nofscoda", "iot-nofscoda\iot-nofscoda.fsproj", "{2275ABE4-578B-4012-9815-F1828FBFECCB}"
 EndProject
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "iot-fscoda", "iot-fscoda\iot-fscoda.fsproj", "{2275ABE4-578B-4012-9899-F1828FBFECCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -27,6 +29,10 @@ Global
 		{2275ABE4-578B-4012-9815-F1828FBFECCB}.Debug|x86.Build.0 = Debug|Any CPU
 		{2275ABE4-578B-4012-9815-F1828FBFECCB}.Release|x86.ActiveCfg = Release|Any CPU
 		{2275ABE4-578B-4012-9815-F1828FBFECCB}.Release|x86.Build.0 = Release|Any CPU
+		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Debug|x86.Build.0 = Debug|Any CPU
+		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Release|x86.ActiveCfg = Release|Any CPU
+		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
