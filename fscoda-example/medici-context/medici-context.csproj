@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="medici-context.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+   
   </ItemGroup>
   <ItemGroup>
     <None Include="medici-context.P" />
