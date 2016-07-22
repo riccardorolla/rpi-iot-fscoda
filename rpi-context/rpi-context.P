@@ -1,9 +1,0 @@
-% facts
-gpio_direction(Pin,Direction) :- gpio_direction_(Pin,Direction).
-gpio_resistor(Pin,Resistor) :- gpio_resistor_(Pin,Resistor).
-gpio_digital(Pin,Status) :- gpio_digital_(Pin,Status).
-gpio_device(Name,Pin) :- gpio_device_(Name,Pin).
-
-button(Status) :- gpio_device('button',Pin),gpio_digital(Pin,Status).
-led(Status) :- gpio_device('led',Pin),gpio_digital(Pin,Status).
- 
