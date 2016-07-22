@@ -1,3 +1,3 @@
 #!/bin/sh
 nuget restore
-msbuild /p:Configuration=Release
+xbuild /p:Configuration=Release
