@@ -4,15 +4,39 @@ var express = require('express');
 var request = require('then-request');
 var fs = require('fs');
 var path = require('path');
- 
-const execSync = require('child_process').execSync;
-const execAsync = require('child_process').exec;
+var qs = require('qs');
+var childprocess=require('child_process');
+const execSync = childprocess.execSync;
+const execAsync = childprocess.exec;
 var app = express();
 var token = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
 // Setup polling way
 var bot = new TelegramBot(token, {polling: true});
 
 var lastmsg=[];
+
+
+function translate(sourceText,sourceLang,targetLang,callback){
+var qst = qs.stringify({
+    client : 'gtx',
+    sl : sourceLang,
+    tl : targetLang,
+    dt : 't',
+    q : sourceText
+});
+var options = {
+    uri: 'http://translate.googleapis.com/translate_a/single?'+qst,
+    headers : { 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
+    }
+};
+request.get(options).on('response',function(response){
+    response.on('data',function(data){
+        result=JSON.parse(JSON.stringify(data.toString().trim()));
+		callback(result.split('"')[1])
+		 
+    });
+});}
 
 // Matches /echo [whatever]
 /*bot.onText(/\/echo (.+)/, function (msg, match) {
@@ -108,9 +132,12 @@ app.get('/photo/:idchat',function(req,res) {
 
 						}).done(function(response) {
 								console.log(response.getBody().toString('utf-8')); 
-								bot.sendPhoto(idchat, filename, {caption: JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text});
-								res.send('send photo');
+								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,en,it,function(strout) {
+								
+								bot.sendPhoto(idchat, filename, {caption:strout});
+								res.send('send photo:'+strout);
 								res.end();
+								}
 							}); 
 							  
     });
