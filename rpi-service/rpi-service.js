@@ -1,7 +1,7 @@
 var TelegramBot = require('node-telegram-bot-api');
 var uuid = require('node-uuid');
 var express = require('express');
-var request = require('request');
+var request = require('then-request');
 var fs = require('fs');
 var path = require('path');
  
@@ -114,6 +114,7 @@ app.get('/photo/:idchat',function(req,res) {
 									res.send('send photo');
 									res.end();
 							});
+							  
 							});
 							}
 							
