@@ -17,26 +17,26 @@ var lastmsg=[];
 
 
 function translate(sourceText,sourceLang,targetLang,callback){
-var qst = qs.stringify({
-    client : 'gtx',
-    sl : sourceLang,
-    tl : targetLang,
-    dt : 't',
-    q : sourceText
-});
-var options = {
-    uri: 'http://translate.googleapis.com/translate_a/single?'+qst,
-    headers : { 
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
-    }
-};
-request.get(options).on('response',function(response){
-    response.on('data',function(data){
-        result=JSON.parse(JSON.stringify(data.toString().trim()));
-		callback(result.split('"')[1])
+	var qst = qs.stringify({
+		client : 'gtx',
+		sl : sourceLang,
+		tl : targetLang,
+		dt : 't',
+		q : sourceText
+	});
+	
+	request('GET','http://translate.googleapis.com/translate_a/single?'+qst,
+		{ 
+			headers : { 
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
+			}		
+
+		}).done(function(data){				 
+							result=JSON.parse(JSON.stringify(data.toString().trim()));
+						    callback(result.split('"')[1])
 		 
-    });
-});}
+				});
+});
 
 // Matches /echo [whatever]
 /*bot.onText(/\/echo (.+)/, function (msg, match) {
