@@ -107,7 +107,7 @@ app.get('/photo/:idchat',function(req,res) {
 							body:img
 
 						}).done(function(response) {
-								console.log(response.getBody().toString('utf-8'); 
+								console.log(response.getBody().toString('utf-8')); 
 								bot.sendPhoto(idchat, filename, {caption: JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text});
 								res.send('send photo');
 								res.end();

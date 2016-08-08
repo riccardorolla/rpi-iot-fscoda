@@ -1,8 +1,8 @@
 {
-  "name": "rpi-telegram",
+  "name": "rpi-service",
   "version": "1.0.0",
   "description": "",
-  "main": "telegram.js",
+  "main": "rpi-service.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
