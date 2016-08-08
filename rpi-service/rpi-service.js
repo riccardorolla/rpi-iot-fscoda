@@ -137,7 +137,7 @@ app.get('/photo/:idchat',function(req,res) {
 								bot.sendPhoto(idchat, filename, {caption:strout});
 								res.send('send photo:'+strout);
 								res.end();
-								}
+								});
 							}); 
 							  
     });
