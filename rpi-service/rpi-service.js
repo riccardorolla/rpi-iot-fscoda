@@ -36,7 +36,7 @@ function translate(sourceText,sourceLang,targetLang,callback){
 						    callback(result.split('"')[1])
 		 
 				});
-});
+};
 
 // Matches /echo [whatever]
 /*bot.onText(/\/echo (.+)/, function (msg, match) {
