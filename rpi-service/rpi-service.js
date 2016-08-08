@@ -132,7 +132,7 @@ app.get('/photo/:idchat',function(req,res) {
 
 						}).done(function(response) {
 								console.log(response.getBody().toString('utf-8')); 
-								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,en,it,function(strout) {
+								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en','it',function(strout) {
 								
 								bot.sendPhoto(idchat, filename, {caption:strout});
 								res.send('send photo:'+strout);
