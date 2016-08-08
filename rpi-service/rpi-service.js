@@ -1,9 +1,12 @@
 var TelegramBot = require('node-telegram-bot-api');
 var uuid = require('node-uuid');
 var express = require('express');
+var request = require('request');
+var fs = require('fs');
+var path = require('path');
  
 const execSync = require('child_process').execSync;
- 
+const execAsync = require('child_process').exec;
 var app = express();
 var token = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
 // Setup polling way
@@ -92,13 +95,28 @@ app.get('/photo/:idchat',function(req,res) {
 	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
 	 //if (undefined != time) cmd = cmd + ' -t ' + time; 
 	 console.log(cmd);
-	 code = execSync(cmd);
-	 if (undefined != msg) 
-		bot.sendPhoto(idchat, filename, {caption: msg});
-	 else 
-		 bot.sendPhoto(idchat, filename);
-	 res.send('send photo');
-});
+	 
+	 code = execAsync(cmd,function(error,stdout,stderr) {
+						var img = fs.readFileSync(filename);
+ 
+						var resvision = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
+						{ 
+							headers:{
+								'Ocp-Apim-Subscription-Key': '255ec2de41124b42a6ae6428f7f03b84',
+								'Content-type': ' application/octet-stream'
+								},
+						body: img
+
+						}).done(function (res) {
+								console.log(res.getBody()); 
+								 
+									bot.sendPhoto(idchat, filename, {caption: JSON.parse(res.getBody().toString('utf-8')).description.captions[0].text});
+									res.send('send photo');
+									res.end();
+							});
+							});
+							}
+							
 
 app.get('/text/:idchat',function(req,res) {
  var idchat = req.params['idchat'];
