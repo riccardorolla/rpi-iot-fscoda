@@ -31,11 +31,11 @@ function translate(sourceText,sourceLang,targetLang,callback){
 				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
 			}		
 
-		}).done(function(response){
-							 response.on('data',function(data){
-										result=JSON.parse(JSON.stringify(data.toString().trim()));
-										callback(result.split('"')[1])
-									});
+		}).done(function(data){
+							  
+						 result=JSON.parse(JSON.stringify(data.getBody().toString().trim()));
+						 callback(result.split('"')[1])
+								 
 						 
 		 
 				});
