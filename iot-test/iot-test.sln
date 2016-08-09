@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio 2012
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rpi-context", "rpi-context\rpi-context.csproj", "{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}"
@@ -11,16 +11,18 @@ Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "iot-nofscoda", "iot-nofscod
 EndProject
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "iot-fscoda", "iot-fscoda\iot-fscoda.fsproj", "{2275ABE4-578B-4012-9899-F1828FBFECCB}"
 EndProject
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fsharp-wget", "fsharp-wget\fsharp-wget.fsproj", "{0C2CD64F-CA7D-4E81-8AE6-0495F331FB1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Debug|x86.Build.0 = Debug|Any CPU
-		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Release|x86.ActiveCfg = Release|Any CPU
-		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Release|x86.Build.0 = Release|Any CPU
+		{0C2CD64F-CA7D-4E81-8AE6-0495F331FB1E}.Debug|x86.ActiveCfg = Debug|x86
+		{0C2CD64F-CA7D-4E81-8AE6-0495F331FB1E}.Debug|x86.Build.0 = Debug|x86
+		{0C2CD64F-CA7D-4E81-8AE6-0495F331FB1E}.Release|x86.ActiveCfg = Release|x86
+		{0C2CD64F-CA7D-4E81-8AE6-0495F331FB1E}.Release|x86.Build.0 = Release|x86
 		{1A9E00B1-3FE5-4B7F-9944-8FE5BCEA812C}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{1A9E00B1-3FE5-4B7F-9944-8FE5BCEA812C}.Debug|x86.Build.0 = Debug|Any CPU
 		{1A9E00B1-3FE5-4B7F-9944-8FE5BCEA812C}.Release|x86.ActiveCfg = Release|Any CPU
@@ -33,6 +35,10 @@ Global
 		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Debug|x86.Build.0 = Debug|Any CPU
 		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Release|x86.ActiveCfg = Release|Any CPU
 		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Release|x86.Build.0 = Release|Any CPU
+		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Debug|x86.Build.0 = Debug|Any CPU
+		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Release|x86.ActiveCfg = Release|Any CPU
+		{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

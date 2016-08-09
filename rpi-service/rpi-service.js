@@ -150,7 +150,7 @@ app.get('/photo/:idchat',function(req,res) {
 app.get('/text/:idchat',function(req,res) {
  var idchat = req.params['idchat'];
  var txt = req.query.text ;
- bot.sendMessage(idchat,text);
+ bot.sendMessage(idchat,txt);
  res.send('send msg');
 });
 
