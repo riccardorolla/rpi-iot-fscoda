@@ -53,6 +53,7 @@
     <Compile Include="Motor.cs" />
     <Compile Include="TwoMotorsDriver.cs" />
     <Compile Include="UltrasonicDistanceSensor.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

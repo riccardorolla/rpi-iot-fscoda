@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Xml.Serialization;
 namespace Rover
 {
     public class TwoMotorsDriver
     {
-        private readonly Motor _leftMotor;
-        private readonly Motor _rightMotor;
+		[XmlElement(DataType = "Motor")]
+        public readonly Motor _leftMotor;
+		[XmlElement(DataType = "Motor")]
+        public readonly Motor _rightMotor;
 
         public TwoMotorsDriver(Motor leftMotor, Motor rightMotor)
         {

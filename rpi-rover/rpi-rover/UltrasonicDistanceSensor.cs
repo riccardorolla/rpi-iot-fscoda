@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Raspberry.IO.GeneralPurpose;
 using Raspberry.IO.GeneralPurpose.Behaviors;
+using System.Xml.Serialization;
 namespace Rover
 {
 	public class UltrasonicDistanceSensor {
@@ -13,13 +14,22 @@ namespace Rover
 		ProcessorPin _gpioPinEcho;
 		IGpioConnectionDriver gpio = GpioConnectionSettings.DefaultDriver;
         private readonly Stopwatch _stopwatch;
-		 
-		public UltrasonicDistanceSensor(ProcessorPin trigGpioPin, ProcessorPin echoGpioPin)
+		[XmlElement(DataType = "string")]
+		public string pintrig;
+		[XmlElement(DataType = "string")]
+		public string pinecho;
+		public UltrasonicDistanceSensor()
+		{
+
+		}
+		public UltrasonicDistanceSensor(string trigGpioPin, string echoGpioPin)
         {
+			pintrig = trigGpioPin;
+			pinecho = echoGpioPin;
             _stopwatch  = new Stopwatch();
 	
-			_gpioPinTrig = trigGpioPin;
-			_gpioPinEcho = echoGpioPin;
+			_gpioPinTrig = Utilities.getPin(trigGpioPin);
+			_gpioPinEcho = Utilities.getPin(echoGpioPin);
 			gpio.Allocate (_gpioPinTrig, PinDirection.Output);
 			gpio.Allocate (_gpioPinEcho, PinDirection.Input);
 			gpio.Write (_gpioPinTrig, false);
