@@ -9,6 +9,7 @@
     <AssemblyName>rpi-rover</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	 <IntermediateOutputPath>..\obj\</IntermediateOutputPath>
+	 <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +51,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="UnitsNet">
+      <HintPath>..\packages\UnitsNet.3.40.0\lib\net35\UnitsNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -58,6 +62,7 @@
     <Compile Include="UltrasonicDistanceSensor.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="HcSr04Connection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
