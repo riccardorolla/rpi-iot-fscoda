@@ -5,10 +5,6 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rpi-rover", "rpi-rover\rpi-rover.csproj", "{765981BF-78A9-454C-BD34-420204CDB978}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "console", "console\console.csproj", "{6C7C7487-CFC8-4646-B07C-8C199C404004}"
-EndProject
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fsharpconsole", "fsharpconsole\fsharpconsole.fsproj", "{764957A5-E936-4DE7-942B-2AFD17D4C0BA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,14 +15,6 @@ Global
 		{765981BF-78A9-454C-BD34-420204CDB978}.Debug|x86.Build.0 = Debug|x86
 		{765981BF-78A9-454C-BD34-420204CDB978}.Release|x86.ActiveCfg = Release|x86
 		{765981BF-78A9-454C-BD34-420204CDB978}.Release|x86.Build.0 = Release|x86
-		{6C7C7487-CFC8-4646-B07C-8C199C404004}.Debug|x86.ActiveCfg = Debug|x86
-		{6C7C7487-CFC8-4646-B07C-8C199C404004}.Debug|x86.Build.0 = Debug|x86
-		{6C7C7487-CFC8-4646-B07C-8C199C404004}.Release|x86.ActiveCfg = Release|x86
-		{6C7C7487-CFC8-4646-B07C-8C199C404004}.Release|x86.Build.0 = Release|x86
-		{764957A5-E936-4DE7-942B-2AFD17D4C0BA}.Debug|x86.ActiveCfg = Debug|x86
-		{764957A5-E936-4DE7-942B-2AFD17D4C0BA}.Debug|x86.Build.0 = Debug|x86
-		{764957A5-E936-4DE7-942B-2AFD17D4C0BA}.Release|x86.ActiveCfg = Release|x86
-		{764957A5-E936-4DE7-942B-2AFD17D4C0BA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
