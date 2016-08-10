@@ -9,10 +9,12 @@ namespace Rover
     public class TwoMotorsDriver
     {
  
-        public readonly Motor _leftMotor;
+        private readonly Motor _leftMotor;
 	 
-        public readonly Motor _rightMotor;
-		public TwoMotorsDriver (){
+        private readonly Motor _rightMotor;
+		public TwoMotorsDriver (int[] pin){
+			_leftMotor = new Motor(pin[0], pin[1]);
+			_rightMotor = new Motor(pin[2], pin[3]);
 			  }
         public TwoMotorsDriver(Motor leftMotor, Motor rightMotor)
         {
@@ -37,7 +39,17 @@ namespace Rover
             _leftMotor.MoveBackward();
             _rightMotor.MoveBackward();
         }
+		public void TurnRight()
+		{
+			_leftMotor.MoveForward();
+			_rightMotor.MoveBackward();
 
+			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
+
+
+			_leftMotor.Stop();
+			_rightMotor.Stop();
+		}
         public async Task TurnRightAsync()
         {
             _leftMotor.MoveForward();

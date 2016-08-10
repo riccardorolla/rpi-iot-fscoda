@@ -1,6 +1,6 @@
 ﻿using Raspberry.IO.GeneralPurpose;
 using Raspberry.IO.GeneralPurpose.Behaviors;
-using System.Xml.Serialization;
+ 
 namespace Rover
 {
     public class Motor
@@ -8,19 +8,15 @@ namespace Rover
 		ProcessorPin _motorGpioPinA  ;
 		ProcessorPin _motorGpioPinB  ;
 		IGpioConnectionDriver gpio = GpioConnectionSettings.DefaultDriver;
-		[XmlElement(DataType = "string")]
-		public string pinA;
-		[XmlElement(DataType = "string")]
-		public string pinB;
-
+	 
+ 
 		public Motor()
 		{
 		
 		}
-		public Motor(string pin1, string pin2)
+		public Motor(int pin1, int pin2)
         {
-			pinA = pin1;
-			pinB = pin2;
+	 
 			_motorGpioPinA = Utilities.getPin(pin1);
 			_motorGpioPinB = Utilities.getPin(pin2);	
 			gpio.Allocate (_motorGpioPinA, PinDirection.Output);
