@@ -9,9 +9,9 @@ namespace Rover
     public class TwoMotorsDriver
     {
 		[XmlElement(DataType = "Motor")]
-        public readonly Motor _leftMotor;
+        public   Motor _leftMotor;
 		[XmlElement(DataType = "Motor")]
-        public readonly Motor _rightMotor;
+        public   Motor _rightMotor;
 		public TwoMotorsDriver (){
 			  }
         public TwoMotorsDriver(Motor leftMotor, Motor rightMotor)
