@@ -15,12 +15,12 @@ namespace Rover
 
 
 			System.Xml.Serialization.XmlSerializer writer =
-				new System.Xml.Serialization.XmlSerializer(typeof(TwoMotorsDriver));
+				new System.Xml.Serialization.XmlSerializer(typeof(Motor));
 
-			var path =   Environment.CurrentDirectory + "//Motors.xml";
+			var path =   Environment.CurrentDirectory + "//MotorA.xml";
 			System.IO.FileStream file = System.IO.File.Create(path);
 
-			writer.Serialize(file, motors);
+			writer.Serialize(file, new Motor("13", "15"));
 			file.Close();
 			System.Xml.Serialization.XmlSerializer writer2 =
 			new System.Xml.Serialization.XmlSerializer(typeof(UltrasonicDistanceSensor));
