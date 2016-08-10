@@ -12,7 +12,8 @@ namespace Rover
         public readonly Motor _leftMotor;
 		[XmlElement(DataType = "Motor")]
         public readonly Motor _rightMotor;
-
+		public TwoMotorsDriver (){
+			  }
         public TwoMotorsDriver(Motor leftMotor, Motor rightMotor)
         {
             _leftMotor = leftMotor;
