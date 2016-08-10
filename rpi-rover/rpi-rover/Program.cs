@@ -37,6 +37,9 @@ namespace Rover
 								case "backward":
 									motors.MoveBackward();
 									break;
+								case "stop":
+									motors.Stop();
+									break;
 								default:
 									{ }
 									break;
