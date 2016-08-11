@@ -155,7 +155,10 @@ app.get('/whatdoyousee',function(req,res) {
 								res.send(strout.toString());
 								res.end();
 								});
-							}); 
+							}).catch(function (err) {
+								res.send(err);
+								res.end();
+								});
 							  
     });
 app.get('/photo/:idchat',function(req,res) {
