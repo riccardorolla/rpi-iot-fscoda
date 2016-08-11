@@ -17,13 +17,13 @@ namespace Rover
 
 		public void on(){
 			gpio.Write(ledGpioPin, false);
-			gpio.Release(ledGpioPin);
+			 
 			Console.Write("led " + name + " is on");
 		}
 		public void off()
 		{
 			gpio.Write(ledGpioPin, true);
-			gpio.Release(ledGpioPin);
+		 
 			Console.Write("led " + name + " is off");
 		 
 		}
