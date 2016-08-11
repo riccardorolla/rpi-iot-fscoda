@@ -180,10 +180,10 @@ app.get('/rpi/photo',function(req,res) {
 	 console.log(cmd);
 	 
 	 code = execSync(cmd);
-	 
-	 
-	 res.sendFile(filename);
-	 res.end();
+	 var img = fs.readFileSync(filename);
+     res.writeHead(200, {'Content-Type': 'image/jpeg' });
+     res.end(img, 'binary');
+  
 							  
     });
 
