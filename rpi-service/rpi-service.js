@@ -172,7 +172,7 @@ app.get('/rpi/photo',function(req,res) {
 	 var msg = req.query.msg;
 	 var filename = '/tmp/'+idphoto+'.jpg'
 	 var cmd = 'raspistill -o ' + filename;
-     bot.sendMessage(idchat,"sending photo...");
+ 
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
 	 if (undefined != height) cmd = cmd + ' -h ' + height 
 	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
