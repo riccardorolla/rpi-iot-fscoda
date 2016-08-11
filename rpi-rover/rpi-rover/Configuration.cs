@@ -34,7 +34,7 @@ namespace Rover
 			}
 			catch (FileNotFoundException)
 			{
-				json = "{\"motor\":[13,15,29,31],\"leds\":[3],\"uds\":[16,18]}";
+				json = "{\"motor\":[13,15,29,31],\"led\":[13],\"uds\":[16,18]}";
 				Configuration.Write(json);
 			}
 
