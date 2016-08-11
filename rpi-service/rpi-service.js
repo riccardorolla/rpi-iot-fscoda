@@ -9,12 +9,20 @@ var childprocess=require('child_process');
 const execSync = childprocess.execSync;
 const execAsync = childprocess.exec;
 var app = express();
-var token = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
-// Setup polling way
-var bot = new TelegramBot(token, {polling: true});
-
+var telegram_key = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
 var lastmsg=[];
-var visionkey='255ec2de41124b42a6ae6428f7f03b84'
+var vision_key='255ec2de41124b42a6ae6428f7f03b84'
+// Setup polling way
+var bot = new TelegramBot(telegram_key, {polling: true});
+bot.on('message', function (msg) {
+  var chatId = msg.chat.id;
+  var idmsg=uuid.v4();
+  var textmsg=msg.text;
+  lastmsg.push({idmsg,chatId,textmsg});
+
+   console.log("chatId:"+chatId);
+});
+
 function whatdoyousee(img,callback,fcallback){
      var response = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
 						{ 
@@ -55,44 +63,22 @@ function translate(sourceText,sourceLang,targetLang,callback){
 					});
 };
 
-// Matches /echo [whatever]
-/*bot.onText(/\/echo (.+)/, function (msg, match) {
-   chatId = msg.from.id;
-  lastmsg.push(match[1]);
- // bot.sendMessage(chatId, resp);
-  console.log("chatId"+chatId);
-});
-*/
-// Any kind of message
-bot.on('message', function (msg) {
-  var chatId = msg.chat.id;
-  var idmsg=uuid.v4();
-  var textmsg=msg.text;
-  lastmsg.push({idmsg,chatId,textmsg});
-  //bot.sendMessage(chatId,"ti sto per mandare i gattini:");
-  // photo can be: a file path, a stream or a Telegram file_id
-  //var photo = 'cats.png';
-  //bot.sendPhoto(chatId, photo, {caption: 'Lovely kittens'});
-  //console.log("send photo");
-  //console.log("msg"+msg);
-   console.log("chatId"+chatId);
-});
 
 
 
-app.get('/receive', function (req, res) {
+app.get('/telegram/receive', function (req, res) {
    res.send(lastmsg);
  //  lastmsg='';
 })
 
-app.get('/pop',function(req,res) {
+app.get('/telegram/pop',function(req,res) {
 	res.send(lastmsg.pop());
 })
 
-app.get('/shift',function(req,res) {
+app.get('/telegram/shift',function(req,res) {
 	res.send(lastmsg.shift());
 })
-app.get('/video/:idchat',function(req,res) {
+app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
 	var idvideo=uuid.v4();
 	bot.sendMessage(idchat,"sending video...");
@@ -119,54 +105,7 @@ app.get('/video/:idchat',function(req,res) {
 })
 
 
-app.get('/motor/:command',function(req,res) {
-	code = execSync("../rpi-rover/bin/rpi-rover.exe motor "+ req.params.command);
-	res.send(code.toString());
-	res.end();
-});
-app.get('/led/:numled/:command',function(req,res) {
-	code = execSync("../rpi-rover/bin/rpi-rover.exe led  " +req.params.numled + " " + req.params.command);
-	res.send(code.toString());
-	res.end();
-	});
-app.get('/distance/',function(req,res) {
-		code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
-	res.send(code.toString());
-	res.end();
-});
-app.get('/whatdoyousee',function(req,res) {
- 
-	 var idphoto=uuid.v4();
-	 var width = 640;
-	 var height = 480;
-	 var quality = 95;
- 
-	 var lang = req.query.lang;
-	 var filename = '/tmp/'+idphoto+'.jpg'
-	 var cmd = 'raspistill -o ' + filename;
- 
-	 if (undefined != width)  cmd = cmd + ' -w ' + width 
-	 if (undefined != height) cmd = cmd + ' -h ' + height 
-	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
-	 
-	 console.log(cmd);
-	 
-	 code = execSync(cmd)
-	 var img = fs.readFileSync(filename);
-     var resvision = whatdoyousee(img,function(response) {
-										console.log(response.getBody().toString('utf-8')); 
-										translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
-											function(strout) {
-												res.send(strout.toString());
-												res.end();
-											})},
-								function (err) {
-									res.send(err);
-									res.end();
-								});
-							  
-    });
-app.get('/photo/:idchat',function(req,res) {
+app.get('/telegram/:idchat/photo',function(req,res) {
 	var idchat=req.params.idchat
 	 var idphoto=uuid.v4();
 	 var width = req.query.width;
@@ -202,12 +141,101 @@ app.get('/photo/:idchat',function(req,res) {
  
 							
 
-app.get('/text/:idchat',function(req,res) {
+app.get('/telegram/:idchat/text',function(req,res) {
  var idchat = req.params['idchat'];
  var txt = req.query.text ;
  bot.sendMessage(idchat,txt);
  res.send('send msg');
 });
+
+app.get('/rpi/motor/:command',function(req,res) {
+	code = execSync("../rpi-rover/bin/rpi-rover.exe motor "+ req.params.command);
+	res.send(code.toString());
+	res.end();
+});
+app.get('/rpi/led/:numled/:command',function(req,res) {
+	code = execSync("../rpi-rover/bin/rpi-rover.exe led  " +req.params.numled + " " + req.params.command);
+	res.send(code.toString());
+	res.end();
+	});
+app.get('/rpi/distance/',function(req,res) {
+		code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
+	res.send(code.toString());
+	res.end();
+});
+app.get('/rpi/photo',function(req,res) {
+	var idchat=req.params.idchat
+	 var idphoto=uuid.v4();
+	 var width = req.query.width;
+	 var height = req.query.height;
+	 var quality = req.query.quality;
+	 var msg = req.query.msg;
+	 var filename = '/tmp/'+idphoto+'.jpg'
+	 var cmd = 'raspistill -o ' + filename;
+     bot.sendMessage(idchat,"sending photo...");
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
+	 //if (undefined != time) cmd = cmd + ' -t ' + time; 
+	 console.log(cmd);
+	 
+	 code = execSync(cmd);
+	 
+	 
+	 res.sendFile(filename);
+	 res.end();
+							  
+    });
+
+
+app.get('/translate',function(req,res) {
+ 
+	 
+ 
+	 var langsrc = req.query.src;
+	 var langdst = req.query.dst;
+	 var text = req.query.text;
+	 
+ 
+	  translate(text,langsrc,langdst,function(strout) {
+												res.send(strout.toString());
+												res.end();
+											}) 
+							  
+    });
+app.get('/whatdoyousee',function(req,res) {
+ 
+	 var idphoto=uuid.v4();
+	 var width = 640;
+	 var height = 480;
+	 var quality = 95;
+ 
+	 var lang = req.query.lang;
+	 var filename = '/tmp/'+idphoto+'.jpg'
+	 var cmd = 'raspistill -o ' + filename;
+ 
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
+	 
+	 console.log(cmd);
+	 
+	 code = execSync(cmd)
+	 var img = fs.readFileSync(filename);
+     var resvision = whatdoyousee(img,function(response) {
+										console.log(response.getBody().toString('utf-8')); 
+										translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
+											function(strout) {
+												res.send(strout.toString());
+												res.end();
+											})},
+								function (err) {
+									res.send(err);
+									res.end();
+								});
+							  
+    });
+
 
 
 var server = app.listen(8081, function () {
