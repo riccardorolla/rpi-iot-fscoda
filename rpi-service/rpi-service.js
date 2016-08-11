@@ -110,7 +110,7 @@ app.get('/motor/:command',function(req,res) {
 	res.send(code);
 	res.end();
 });
-app.get('/led/:numled/:command',ffunction(req,res) {
+app.get('/led/:numled/:command',function(req,res) {
 	code = execSync("../rpi-rover/bin/rpi-rover.exe led  " +req.params.numled + " " + req.params.command);
 	res.send(code);
 	res.end();
