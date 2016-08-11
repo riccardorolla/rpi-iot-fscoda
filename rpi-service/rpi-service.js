@@ -120,7 +120,44 @@ app.get('/distance/',function(req,res) {
 	res.send(code.toString());
 	res.end();
 });
+app.get('/whatdoyousee',function(req,res) {
+ 
+	 var idphoto=uuid.v4();
+	 var width = 800;
+	 var height = 600;
+	 var quality = 95;
+ 
+	 var lang = req.query.lang;
+	 var filename = '/tmp/'+idphoto+'.jpg'
+	 var cmd = 'raspistill -o ' + filename;
+ 
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
+	 
+	 console.log(cmd);
+	 
+	 code = execSync(cmd)
+	 var img = fs.readFileSync(filename);
+     var resvision = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
+						{ 
+							headers:{
+								'Ocp-Apim-Subscription-Key': '255ec2de41124b42a6ae6428f7f03b84',
+								'Content-type': ' application/octet-stream'
+								},
+							body:img
 
+						}).done(function(response) {
+								console.log(response.getBody().toString('utf-8')); 
+								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,function(strout) {
+								
+						 
+								res.send(strout.toString());
+								res.end();
+								});
+							}); 
+							  
+    });
 app.get('/photo/:idchat',function(req,res) {
 	var idchat=req.params.idchat
 	 var idphoto=uuid.v4();
