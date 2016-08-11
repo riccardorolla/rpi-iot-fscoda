@@ -69,15 +69,17 @@ function photo(width,height,quality) {
 	 console.log('filename:'+filename + ',width:'+width+',height'+height+',quality:'+quality);
 	 var cmd = 'raspistill -o ' + filename;
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+		else cmd = cmd + ' -w 640'
 	 if (undefined != height) cmd = cmd + ' -h ' + height 
+		else cmd = cmd + ' -h 480'
 	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
-	
+		else cmd = cmd + ' -q 90'
 
 	 console.log(cmd);
 	 
 	 code = execSync(cmd);
-	 var img = fs.readFileSync(filename);
-	 return img;
+	
+	 return filename;
 }
 
 function video(width,height,time) {
@@ -89,14 +91,17 @@ function video(width,height,time) {
 	var filenameconv = '/tmp/'+idvideo+'.mp4'
 	console.log('filename:'+filenameconv + ',width:'+width+',height'+height+',time:'+time);
 	var cmd = 'raspivid -o ' + filename;
-	if (undefined != width)  cmd = cmd + ' -w ' + width;
-	if (undefined != height) cmd = cmd + ' -h ' + height; 
-	if (undefined != time) cmd = cmd + ' -t ' + time; 
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+		else cmd = cmd + ' -w 640'
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+		else cmd = cmd + ' -h 480'
+	 if (undefined != time) cmd = cmd + ' -t ' + time;
+		else cmd = cmd + ' -t 5000'
 	console.log(cmd);
 	code = execSync(cmd);
 	code2 = execSync('avconv -r 30 -i /tmp/'+idvideo+'.h264 -vcodec copy /tmp/'+idvideo+'.mp4');
-	var vid = fs.readFileSync(filenameconv);
-	return vid;
+ 
+	return filenameconv;
  
 	
 }
@@ -116,21 +121,7 @@ app.get('/telegram/shift',function(req,res) {
 })
 app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
-	var idvideo=uuid.v4();
-	bot.sendMessage(idchat,"sending video...");
-	var width = req.query.width;
-	var height = req.query.height;
-	var time = req.query.time;
-	var msg = req.query.msg;
-	
-	var filename = '/tmp/'+idvideo+'.h264'
-	var cmd = 'raspivid -o ' + filename;
-	if (undefined != width)  cmd = cmd + ' -w ' + width;
-	if (undefined != height) cmd = cmd + ' -h ' + height; 
-	if (undefined != time) cmd = cmd + ' -t ' + time; 
-	console.log(cmd);
-	code = execSync(cmd);
-	code2 = execSync('avconv -r 30 -i /tmp/'+idvideo+'.h264 -vcodec copy /tmp/'+idvideo+'.mp4');
+	var filename = video(req.query.width,req.query.height,req.query.quality);
 	if (undefined != msg) 
 		bot.sendVideo(idchat,'/tmp/'+idvideo+'.mp4', {caption: msg});
 	else 
@@ -143,8 +134,9 @@ app.get('/telegram/:idchat/video',function(req,res) {
 
 app.get('/telegram/:idchat/photo',function(req,res) {
 	var idchat=req.params.idchat
-	 var img = photo(req.query.width,req.query.height,req.query.quality);
-	 
+	
+	 var filename = photo(req.query.width,req.query.height,req.query.quality);
+	 var img = fs.readFileSync(filename);
 	 var msg = req.query.msg;
 	 
      bot.sendMessage(idchat,"sending photo...");
@@ -185,15 +177,13 @@ app.get('/rpi/led/:numled/:command',function(req,res) {
 	res.end();
 	});
 app.get('/rpi/distance/',function(req,res) {
-		code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
+	code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
 	res.send(code.toString());
 	res.end();
 });
 app.get('/rpi/photo',function(req,res) {
-	 var width = req.query.width;
-	 var height = req.query.height;
-	 var quality = req.query.quality;
-	 var img = photo(width,height,quality);
+	 var filename = photo(req.query.width,req.query.height,req.query.quality);
+	 var vid = fs.readFileSync(filename);
      res.writeHead(200, {'Content-Type': 'image/jpeg' });
      res.end(img, 'binary');
   
@@ -201,10 +191,8 @@ app.get('/rpi/photo',function(req,res) {
     });
 app.get('/rpi/video',function(req,res) {
  
-	 var width = req.query.width;
-	 var height = req.query.height;
-	 var time = req.query.time;
-	 var vid = video(width,height,time);
+	 var filename = video(req.query.width,req.query.height,req.query.time);
+	 var vid = fs.readFileSync(filename);
      res.writeHead(200, {'Content-Type': 'video/mp4' });
      res.end(vid, 'binary');
   
