@@ -65,6 +65,7 @@ function translate(sourceText,sourceLang,targetLang,callback){
 
 function photo(width,height,quality) {
 	 var idphoto=uuid.v4();
+	 console.log('width:'+width+',height'+height+',quality:'+quality);
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
 	 if (undefined != height) cmd = cmd + ' -h ' + height 
 	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
