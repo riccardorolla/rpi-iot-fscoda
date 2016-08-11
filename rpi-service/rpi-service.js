@@ -14,8 +14,19 @@ var token = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
 var bot = new TelegramBot(token, {polling: true});
 
 var lastmsg=[];
+var visionkey='255ec2de41124b42a6ae6428f7f03b84'
+function whatdoyousee(img,callback,fcallback){
+     var response = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
+						{ 
+							headers:{
+								'Ocp-Apim-Subscription-Key': visionkey,
+								'Content-type': ' application/octet-stream'
+								},
+							body:img
 
-
+						}).then(callback).catch(fcallback);
+	return response;
+}
 function translate(sourceText,sourceLang,targetLang,callback){
 	var qst = qs.stringify({
 		client : 'gtx',
@@ -31,14 +42,17 @@ function translate(sourceText,sourceLang,targetLang,callback){
 				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
 			}		
 
-		}).done(function(data){
+		}).then(function(data){
 							  
 						 result=JSON.parse(JSON.stringify(data.getBody().toString().trim()));
 						 callback(result.split('"')[1])
 								 
 						 
 		 
-				});
+				}).catch(
+					function(err){
+						callback (err);
+					});
 };
 
 // Matches /echo [whatever]
@@ -139,25 +153,16 @@ app.get('/whatdoyousee',function(req,res) {
 	 
 	 code = execSync(cmd)
 	 var img = fs.readFileSync(filename);
-     var resvision = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
-						{ 
-							headers:{
-								'Ocp-Apim-Subscription-Key': '255ec2de41124b42a6ae6428f7f03b84',
-								'Content-type': ' application/octet-stream'
-								},
-							body:img
-
-						}).then(function(response) {
-								console.log(response.getBody().toString('utf-8')); 
-								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,function(strout) {
-								
-						 
-								res.send(strout.toString());
-								res.end();
-								});
-							}).catch(function (err) {
-								res.send(err);
-								res.end();
+     var resvision = whatdoyousee(img,function(response) {
+										console.log(response.getBody().toString('utf-8')); 
+										translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
+											function(strout) {
+												res.send(strout.toString());
+												res.end();
+											})},
+								function (err) {
+									res.send(err);
+									res.end();
 								});
 							  
     });
@@ -179,23 +184,19 @@ app.get('/photo/:idchat',function(req,res) {
 	 
 	 code = execSync(cmd)
 	 var img = fs.readFileSync(filename);
-     var resvision = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
-						{ 
-							headers:{
-								'Ocp-Apim-Subscription-Key': '255ec2de41124b42a6ae6428f7f03b84',
-								'Content-type': ' application/octet-stream'
-								},
-							body:img
-
-						}).done(function(response) {
+     var resvision =  whatdoyousee(img,
+							function(response) {
 								console.log(response.getBody().toString('utf-8')); 
 								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en','it',function(strout) {
-								
-								bot.sendPhoto(idchat, filename, {caption:strout});
-								res.send('send photo:'+strout);
-								res.end();
+										bot.sendPhoto(idchat, filename, {caption:strout});
+										res.send('send photo:'+strout);
+										res.end();
 								});
-							}); 
+							},
+							function (err) {
+									res.send(err);
+									res.end();
+								});
 							  
     });
  
