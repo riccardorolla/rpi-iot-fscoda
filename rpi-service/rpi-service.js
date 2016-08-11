@@ -147,7 +147,7 @@ app.get('/whatdoyousee',function(req,res) {
 								},
 							body:img
 
-						}).done(function(response) {
+						}).then(function(response) {
 								console.log(response.getBody().toString('utf-8')); 
 								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,function(strout) {
 								
