@@ -107,17 +107,17 @@ app.get('/video/:idchat',function(req,res) {
 
 app.get('/motor/:command',function(req,res) {
 	code = execSync("../rpi-rover/bin/rpi-rover.exe motor "+ req.params.command);
-	res.send(code);
+	res.send(code.toString());
 	res.end();
 });
 app.get('/led/:numled/:command',function(req,res) {
 	code = execSync("../rpi-rover/bin/rpi-rover.exe led  " +req.params.numled + " " + req.params.command);
-	res.send(code);
+	res.send(code.toString());
 	res.end();
 	});
 app.get('/distance/',function(req,res) {
 		code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
-	res.send(code);
+	res.send(code.toString());
 	res.end();
 });
 
