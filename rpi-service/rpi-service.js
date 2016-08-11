@@ -12,7 +12,7 @@ var app = express();
 var telegram_key = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
 var lastmsg=[];
 var vision_key='255ec2de41124b42a6ae6428f7f03b84'
-// Setup polling way
+ 
 var bot = new TelegramBot(telegram_key, {polling: true});
 bot.on('message', function (msg) {
   var chatId = msg.chat.id;
@@ -63,7 +63,19 @@ function translate(sourceText,sourceLang,targetLang,callback){
 					});
 };
 
-
+function photo(width,height,quality) {
+	 var idphoto=uuid.v4();
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
+	 var filename = '/tmp/'+idphoto+'.jpg'
+	 var cmd = 'raspistill -o ' + filename;
+	 console.log(cmd);
+	 
+	 code = execSync(cmd);
+	 var img = fs.readFileSync(filename);
+	 return img;
+}
 
 
 app.get('/telegram/receive', function (req, res) {
@@ -107,22 +119,12 @@ app.get('/telegram/:idchat/video',function(req,res) {
 
 app.get('/telegram/:idchat/photo',function(req,res) {
 	var idchat=req.params.idchat
-	 var idphoto=uuid.v4();
-	 var width = req.query.width;
-	 var height = req.query.height;
-	 var quality = req.query.quality;
-	 var msg = req.query.msg;
-	 var filename = '/tmp/'+idphoto+'.jpg'
-	 var cmd = 'raspistill -o ' + filename;
-     bot.sendMessage(idchat,"sending photo...");
-	 if (undefined != width)  cmd = cmd + ' -w ' + width 
-	 if (undefined != height) cmd = cmd + ' -h ' + height 
-	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
-	 //if (undefined != time) cmd = cmd + ' -t ' + time; 
-	 console.log(cmd);
+	 var img = photo(req.query.width,req.query.height,req.query.quality);
 	 
-	 code = execSync(cmd)
-	 var img = fs.readFileSync(filename);
+	 var msg = req.query.msg;
+	 
+     bot.sendMessage(idchat,"sending photo...");
+	 
      var resvision =  whatdoyousee(img,
 							function(response) {
 								console.log(response.getBody().toString('utf-8')); 
@@ -164,6 +166,13 @@ app.get('/rpi/distance/',function(req,res) {
 	res.end();
 });
 app.get('/rpi/photo',function(req,res) {
+	 var img = photo(req.query.width,req.query.height,req.query.quality);
+     res.writeHead(200, {'Content-Type': 'image/jpeg' });
+     res.end(img, 'binary');
+  
+							  
+    });
+app.get('/rpi/video',function(req,res) {
 	var idchat=req.params.idchat
 	 var idphoto=uuid.v4();
 	 var width = req.query.width;
@@ -186,7 +195,6 @@ app.get('/rpi/photo',function(req,res) {
   
 							  
     });
-
 
 app.get('/translate',function(req,res) {
  
