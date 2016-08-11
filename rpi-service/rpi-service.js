@@ -166,7 +166,10 @@ app.get('/rpi/distance/',function(req,res) {
 	res.end();
 });
 app.get('/rpi/photo',function(req,res) {
-	 var img = photo(req.query.width,req.query.height,req.query.quality);
+	 var width = req.query.width;
+	 var height = req.query.height;
+	 var quality = req.query.quality;
+	 var img = photo(width,height,quality);
      res.writeHead(200, {'Content-Type': 'image/jpeg' });
      res.end(img, 'binary');
   
