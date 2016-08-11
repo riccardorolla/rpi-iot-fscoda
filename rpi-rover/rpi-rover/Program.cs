@@ -52,6 +52,21 @@ namespace Rover
 					UltrasonicDistanceSensor uds = new UltrasonicDistanceSensor(rover.uds);
 					Console.Write(uds.getCM());
 					break;
+				case "led":
+					if (args.Length > 2)
+					{
+						int numled = 999;
+						bool result = int.TryParse(args[1],out numled);
+						if (result) {
+							if (rover.led.Length > numled)
+							{
+								Led led = new Led(rover.led[numled]);
+								if ((args[2]) == "on") led.on();
+								else led.off();
+							}
+						}
+					}
+					break;
 			}
 
 		}
