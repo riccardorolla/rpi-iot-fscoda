@@ -60,7 +60,7 @@ namespace Rover
 						if (result) {
 							if (rover.led.Length > numled)
 							{
-								Led led = new Led(rover.led[numled]);
+								Led led = new Led(numled,rover.led[numled]);
 								if ((args[2]) == "on") led.on();
 								else led.off();
 							}
