@@ -37,25 +37,32 @@ namespace Rover
 
 		public double getCM() {
 			var driver = GpioConnectionSettings.DefaultDriver;
-			double dist = 0;
+			double dist = -1;
+			int i = 50;
 			using (var connection = new HcSr04Connection(
 			  driver.Out(_gpioPinTrig),
 			  driver.In(_gpioPinEcho)))
 
-				try
-				{
-					var distance = connection.GetDistance().Centimeters;
 
-					//		Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:0.0}cm", distance).PadRight(16));
-					//		Console.CursorTop--;
-					dist = distance;
-				}
-				catch (TimeoutException e)
+				while (dist < 0)
+				{
+
+					try
 					{
-				//		Console.WriteLine("(Timeout): " + e.Message);
+						var distance = connection.GetDistance().Centimeters;
+
+						//		Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:0.0}cm", distance).PadRight(16));
+						//		Console.CursorTop--;
+						dist = distance;
+					}
+					catch (TimeoutException )
+					{
+						i = i + 50;
+						connection.Timeout = TimeSpan.FromMilliseconds(i);
+						//		Console.WriteLine("(Timeout): " + e.Message);
 					}
 
-
+				}
 			return dist;
 			}
 
