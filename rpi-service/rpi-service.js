@@ -204,7 +204,7 @@ app.get('/rpi/video',function(req,res) {
 	 var width = req.query.width;
 	 var height = req.query.height;
 	 var time = req.query.time;
-	 var vid = photo(width,height,time);
+	 var vid = video(width,height,time);
      res.writeHead(200, {'Content-Type': 'video/mp4' });
      res.end(vid, 'binary');
   
