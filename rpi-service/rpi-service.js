@@ -103,17 +103,18 @@ app.get('/video/:idchat',function(req,res) {
  
 	
 })
-app.get('/cmd',function(req,res){
-	code = execSync('dir /w');
-	res.send(code);
-	res.end();
-});
+
 
 app.get('/motor/:command',function(req,res) {
 	code = execSync("../rpi-rover/bin/rpi-rover.exe motor "+ req.params.command);
 	res.send(code);
 	res.end();
 });
+app.get('/led/:numled/:command',ffunction(req,res) {
+	code = execSync("../rpi-rover/bin/rpi-rover.exe led  " +req.params.numled + " " + req.params.command);
+	res.send(code);
+	res.end();
+	});
 app.get('/distance/',function(req,res) {
 		code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
 	res.send(code);
