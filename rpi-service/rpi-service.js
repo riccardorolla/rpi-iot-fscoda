@@ -80,6 +80,27 @@ function photo(width,height,quality) {
 	 return img;
 }
 
+function video(width,height,time) {
+	
+	var idvideo=uuid.v4();
+
+	
+	var filename = '/tmp/'+idvideo+'.h264'
+	var filenameconv = '/tmp/'+idvideo+'.mp4'
+	console.log('filename:'+filenameconv + ',width:'+width+',height'+height+',time:'+time);
+	var cmd = 'raspivid -o ' + filename;
+	if (undefined != width)  cmd = cmd + ' -w ' + width;
+	if (undefined != height) cmd = cmd + ' -h ' + height; 
+	if (undefined != time) cmd = cmd + ' -t ' + time; 
+	console.log(cmd);
+	code = execSync(cmd);
+	code2 = execSync('avconv -r 30 -i /tmp/'+idvideo+'.h264 -vcodec copy /tmp/'+idvideo+'.mp4');
+	var vid = fs.readFileSync(filenameconv);
+	return vid;
+ 
+	
+}
+
 
 app.get('/telegram/receive', function (req, res) {
    res.send(lastmsg);
@@ -179,25 +200,13 @@ app.get('/rpi/photo',function(req,res) {
 							  
     });
 app.get('/rpi/video',function(req,res) {
-	var idchat=req.params.idchat
-	 var idphoto=uuid.v4();
+ 
 	 var width = req.query.width;
 	 var height = req.query.height;
-	 var quality = req.query.quality;
-	 var msg = req.query.msg;
-	 var filename = '/tmp/'+idphoto+'.jpg'
-	 var cmd = 'raspistill -o ' + filename;
- 
-	 if (undefined != width)  cmd = cmd + ' -w ' + width 
-	 if (undefined != height) cmd = cmd + ' -h ' + height 
-	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
-	 //if (undefined != time) cmd = cmd + ' -t ' + time; 
-	 console.log(cmd);
-	 
-	 code = execSync(cmd);
-	 var img = fs.readFileSync(filename);
-     res.writeHead(200, {'Content-Type': 'image/jpeg' });
-     res.end(img, 'binary');
+	 var time = req.query.time;
+	 var vid = photo(width,height,time);
+     res.writeHead(200, {'Content-Type': 'video/mp4' });
+     res.end(vid, 'binary');
   
 							  
     });
@@ -219,23 +228,7 @@ app.get('/translate',function(req,res) {
     });
 app.get('/whatdoyousee',function(req,res) {
  
-	 var idphoto=uuid.v4();
-	 var width = 640;
-	 var height = 480;
-	 var quality = 95;
- 
-	 var lang = req.query.lang;
-	 var filename = '/tmp/'+idphoto+'.jpg'
-	 var cmd = 'raspistill -o ' + filename;
- 
-	 if (undefined != width)  cmd = cmd + ' -w ' + width 
-	 if (undefined != height) cmd = cmd + ' -h ' + height 
-	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
-	 
-	 console.log(cmd);
-	 
-	 code = execSync(cmd)
-	 var img = fs.readFileSync(filename);
+	 var img = photo(640,480,90);
      var resvision = whatdoyousee(img,function(response) {
 										console.log(response.getBody().toString('utf-8')); 
 										translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
