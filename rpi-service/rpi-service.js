@@ -216,7 +216,8 @@ app.get('/translate',function(req,res) {
     });
 app.get('/whatdoyousee',function(req,res) {
  
-	 var img = photo(640,480,90);
+	 var filename = photo(req.query.width,req.query.height,req.query.quality);
+	 var img = fs.readFileSync(filename);
      var resvision = whatdoyousee(img,function(response) {
 										console.log(response.getBody().toString('utf-8')); 
 										translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
