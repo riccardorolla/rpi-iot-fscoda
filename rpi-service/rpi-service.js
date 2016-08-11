@@ -183,7 +183,7 @@ app.get('/rpi/distance/',function(req,res) {
 });
 app.get('/rpi/photo',function(req,res) {
 	 var filename = photo(req.query.width,req.query.height,req.query.quality);
-	 var vid = fs.readFileSync(filename);
+	 var img = fs.readFileSync(filename);
      res.writeHead(200, {'Content-Type': 'image/jpeg' });
      res.end(img, 'binary');
   
