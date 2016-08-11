@@ -66,11 +66,12 @@ function translate(sourceText,sourceLang,targetLang,callback){
 function photo(width,height,quality) {
 	 var idphoto=uuid.v4();
 	 console.log('width:'+width+',height'+height+',quality:'+quality);
+	 var cmd = 'raspistill -o ' + filename;
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
 	 if (undefined != height) cmd = cmd + ' -h ' + height 
 	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
 	 var filename = '/tmp/'+idphoto+'.jpg'
-	 var cmd = 'raspistill -o ' + filename;
+
 	 console.log(cmd);
 	 
 	 code = execSync(cmd);
