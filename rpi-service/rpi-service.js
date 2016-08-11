@@ -123,8 +123,8 @@ app.get('/distance/',function(req,res) {
 app.get('/whatdoyousee',function(req,res) {
  
 	 var idphoto=uuid.v4();
-	 var width = 800;
-	 var height = 600;
+	 var width = 640;
+	 var height = 480;
 	 var quality = 95;
  
 	 var lang = req.query.lang;
