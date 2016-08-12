@@ -1,2 +1,2 @@
 npm install
-node telegram.js
+node rpi-service.js
