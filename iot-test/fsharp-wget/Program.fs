@@ -7,13 +7,13 @@ type Json = JsonProvider<"pop.json">
 [<EntryPoint>]
 let main argv = 
     printfn "%A" argv
-    let response = Http.RequestString("http://localhost:8081/pop", silentHttpErrors = true)
+    let response = Http.RequestString("http://192.168.0.148:8081/pop", silentHttpErrors = true)
     if not (response.Length = 0) then
         let info = JsonValue.Parse(response)
 
         let chatid =  info?chatId.AsString()
-        
-        Http.RequestString(sprintf "http://localhost:8081/text/%s" chatid , query = ["text","prova"], silentHttpErrors = true) |> ignore
+        let txt = Http.RequestString("http://192.168.0.148:8081/whatdoyousee",query = ["lang","it"], silentHttpErrors = true)
+        Http.RequestString(sprintf "http://192.168.0.148:8081/text/%s" chatid , query = ["text",txt], silentHttpErrors = true) |> ignore
        
     0 // return an integer exit code
 

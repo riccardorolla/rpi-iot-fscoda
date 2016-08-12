@@ -86,7 +86,7 @@ let main () =
   
   //printfn "%s" (get_gpio "1")
 
-//  driver.Allocate(led, PinDirection.Output)
+// 
 //  driver.Allocate(button,PinDirection.Input)
 //  driver.SetPinResistor(button,PinResistor.PullUp)
 //  while true do

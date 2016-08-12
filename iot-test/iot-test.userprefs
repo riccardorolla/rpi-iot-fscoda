@@ -1,14 +1,20 @@
 ﻿<Properties StartupItem="iot-nofscoda\iot-nofscoda.fsproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="fsharp-wget\Program.fs">
-    <Files>
-      <File FileName="iot-nofscoda\Program.fs" Line="29" Column="13" />
-      <File FileName="iot-fscoda\Program.fs" Line="1" Column="1" />
-      <File FileName="fsharp-wget\Program.fs" Line="4" Column="30" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="iot-fscoda\Program.fs">
+    <Files>
+      <File FileName="iot-nofscoda\Program.fs" Line="29" Column="13" />
+      <File FileName="iot-fscoda\Program.fs" Line="1" Column="1" />
+      <File FileName="fsharp-wget\Program.fs" Line="15" Column="101" />
+      <File FileName="rpi-context\rpi-context.cs" Line="1" Column="1" />
+      <File FileName="rpi-context\rpi-context.P" Line="1" Column="1" />
+      <File FileName="rpi-ctx\rpi-facts.fs" Line="1" Column="1" />
+      <File FileName="rpi-ctx\packages.config" Line="1" Column="1" />
+      <File FileName="rpi-ctx\rpi-types.fs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.iot-nofscoda PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
