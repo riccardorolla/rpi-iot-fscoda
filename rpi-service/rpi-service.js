@@ -7,9 +7,23 @@ var path = require('path');
 var qs = require('qs');
 var childprocess=require('child_process');
 var conf;
+
+var filename_conf='rpi-service.json';
+
+var args = process.argv.slice(2);
+ console.log('myArgs: ', args);
+
  
+switch (args[0]) {
+	case "-dev" : 
+		filename_conf='rpi-service-dev.json';
+		break
+	 default:
+		 filename_conf='rpi-service.json';
+		 break;
+}
 try {
-	conf = fs.readFileSync('rpi-service.json');
+	conf = fs.readFileSync(filename_conf);
 } catch (e) {
 	conf = '{"telegram_key":"224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM",'+
 			    '"vision_url":"https://api.projectoxford.ai/vision/v1.0/analyze",'+
@@ -19,9 +33,9 @@ try {
 				'"rover_cmd":"../rpi-rover/bin/rpi-rover.exe",'+
 				'"photo_cmd":"raspistill",'+
 				'"video_cmd":"raspivid",'+
-				'"video_convert":"avconv",'+
+				'"vconv_cmd":"avconv",'+
 				'"temp_path":"/tmp/"}';
-	fs.writeFileSync('rpi-service.json', conf);
+	fs.writeFileSync(filename_conf, conf);
  
 }
 var configuration = JSON.parse(conf);
@@ -88,7 +102,7 @@ function photo(width,height,quality) {
 	 var idphoto=uuid.v4(); 
 	 var filename = configuration.temp_path+idphoto+'.jpg'
 	 console.log('filename:'+filename + ',width:'+width+',height'+height+',quality:'+quality);
-	 var cmd = 'raspistill -o ' + filename;
+	 var cmd = configuration.photo_cmd +' -o ' + filename;
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
 		else cmd = cmd + ' -w 640'
 	 if (undefined != height) cmd = cmd + ' -h ' + height 
@@ -111,7 +125,7 @@ function video(width,height,time) {
 	var filename = configuration.temp_path+idvideo+'.h264'
 	var filenameconv = configuration.temp_path+idvideo+'.mp4'
 	console.log('filename:'+filenameconv + ',width:'+width+',height'+height+',time:'+time);
-	var cmd = 'raspivid -o ' + filename;
+	var cmd = configuration.video_cmd + ' -o ' + filename;
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
 		else cmd = cmd + ' -w 640'
 	 if (undefined != height) cmd = cmd + ' -h ' + height 
@@ -120,7 +134,9 @@ function video(width,height,time) {
 		else cmd = cmd + ' -t 5000'
 	console.log(cmd);
 	code = execSync(cmd);
-	code2 = execSync('avconv -r 30 -i /tmp/'+idvideo+'.h264 -vcodec copy /tmp/'+idvideo+'.mp4');
+	var vconv_cmd = configuration.vconv_cmd + ' -r 30 -i '+ configuration.temp_path + idvideo+'.h264 -vcodec copy '+ configuration.temp_path +idvideo+'.mp4';
+	console.log(vconv_cmd);
+	code2 = execSync(vconv_cmd);
  
 	return filenameconv;
  
@@ -144,9 +160,9 @@ app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
 	var filename = video(req.query.width,req.query.height,req.query.quality);
 	if (undefined != msg) 
-		bot.sendVideo(idchat,'/tmp/'+idvideo+'.mp4', {caption: msg});
+		bot.sendVideo(idchat,filename, {caption: msg});
 	else 
-		bot.sendVideo(idchat,'/tmp/'+idvideo+'.mp4');
+		bot.sendVideo(idchat,filename);
 	res.send('send video');
  
 	
