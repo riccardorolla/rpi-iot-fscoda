@@ -11,7 +11,7 @@ var conf;
 var filename_conf='rpi-service.json';
 
 var args = process.argv.slice(2);
- console.log('myArgs: ', args);
+ console.log('rpi-service args: ', args);
 
  
 switch (args[0]) {
@@ -41,6 +41,10 @@ try {
 var configuration = JSON.parse(conf);
 
 console.log(configuration);
+
+if (!fs.existsSync(configuration.temp_path)){
+    fs.mkdirSync(configuration.temp_path);
+}
 
 const execSync = childprocess.execSync;
 const execAsync = childprocess.exec;
