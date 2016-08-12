@@ -6,14 +6,35 @@ var fs = require('fs');
 var path = require('path');
 var qs = require('qs');
 var childprocess=require('child_process');
+var conf;
+ 
+try {
+	conf = fs.readFileSync('rpi-service.json');
+} catch (e) {
+	conf = '{"telegram_key":"224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM",'+
+			    '"vision_url":"https://api.projectoxford.ai/vision/v1.0/analyze",'+
+			    '"vision_key":"255ec2de41124b42a6ae6428f7f03b84",'+
+				'"translate_url":"http://translate.googleapis.com/translate_a/single",'+
+				'"port":8081,'+
+				'"rover_cmd":"../rpi-rover/bin/rpi-rover.exe",'+
+				'"photo_cmd":"raspistill",'+
+				'"video_cmd":"raspivid",'+
+				'"video_convert":"avconv",'+
+				'"temp_path":"/tmp/"}';
+	fs.writeFileSync('rpi-service.json', conf);
+ 
+}
+var configuration = JSON.parse(conf);
+
+console.log(configuration);
+
 const execSync = childprocess.execSync;
 const execAsync = childprocess.exec;
 var app = express();
-var telegram_key = '224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM';
 var lastmsg=[];
-var vision_key='255ec2de41124b42a6ae6428f7f03b84'
  
-var bot = new TelegramBot(telegram_key, {polling: true});
+ 
+var bot = new TelegramBot(configuration.telegram_key, {polling: true});
 bot.on('message', function (msg) {
   var chatId = msg.chat.id;
   var idmsg=uuid.v4();
@@ -24,10 +45,10 @@ bot.on('message', function (msg) {
 });
 
 function whatdoyousee(img,callback,fcallback){
-     var response = request('POST','https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Description',
+     var response = request('POST',configuration.vision_url+'?visualFeatures=Description',
 						{ 
 							headers:{
-								'Ocp-Apim-Subscription-Key': visionkey,
+								'Ocp-Apim-Subscription-Key': configuration.vision_key,
 								'Content-type': ' application/octet-stream'
 								},
 							body:img
@@ -44,7 +65,7 @@ function translate(sourceText,sourceLang,targetLang,callback){
 		q : sourceText
 	});
 	
-	request('GET','http://translate.googleapis.com/translate_a/single?'+qst,
+	request('GET',configuration.translate_url+'?'+qst,
 		{ 
 			headers : { 
 				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
@@ -65,7 +86,7 @@ function translate(sourceText,sourceLang,targetLang,callback){
 
 function photo(width,height,quality) {
 	 var idphoto=uuid.v4(); 
-	 var filename = '/tmp/'+idphoto+'.jpg'
+	 var filename = configuration.temp_path+idphoto+'.jpg'
 	 console.log('filename:'+filename + ',width:'+width+',height'+height+',quality:'+quality);
 	 var cmd = 'raspistill -o ' + filename;
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
@@ -87,8 +108,8 @@ function video(width,height,time) {
 	var idvideo=uuid.v4();
 
 	
-	var filename = '/tmp/'+idvideo+'.h264'
-	var filenameconv = '/tmp/'+idvideo+'.mp4'
+	var filename = configuration.temp_path+idvideo+'.h264'
+	var filenameconv = configuration.temp_path+idvideo+'.mp4'
 	console.log('filename:'+filenameconv + ',width:'+width+',height'+height+',time:'+time);
 	var cmd = 'raspivid -o ' + filename;
 	 if (undefined != width)  cmd = cmd + ' -w ' + width 
@@ -167,17 +188,17 @@ app.get('/telegram/:idchat/text',function(req,res) {
 });
 
 app.get('/rpi/motor/:command',function(req,res) {
-	code = execSync("../rpi-rover/bin/rpi-rover.exe motor "+ req.params.command);
+	code = execSync(configuration.rover_cmd +" motor "+ req.params.command);
 	res.send(code.toString());
 	res.end();
 });
 app.get('/rpi/led/:numled/:command',function(req,res) {
-	code = execSync("../rpi-rover/bin/rpi-rover.exe led  " +req.params.numled + " " + req.params.command);
+	code = execSync(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.command);
 	res.send(code.toString());
 	res.end();
 	});
 app.get('/rpi/distance/',function(req,res) {
-	code = execSync("../rpi-rover/bin/rpi-rover.exe uds");
+	code = execSync(configuration.rover_cmd +" uds");
 	res.send(code.toString());
 	res.end();
 });
@@ -234,7 +255,7 @@ app.get('/whatdoyousee',function(req,res) {
 
 
 
-var server = app.listen(8081, function () {
+var server = app.listen(configuration.port, function () {
 
   var host = server.address().address
   var port = server.address().port
