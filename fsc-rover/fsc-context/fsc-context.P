@@ -1,0 +1,15 @@
+% facts
+
+rover_motor(direction) :- rover_motor_(direction).
+rover_led(nled,status) :- rover_led_(nled,status).
+rover_request(nuser,cmd) :- rover_request_(nuser,cmd).
+rover_command(cmd,out) :- rover_command_(cmd,out).
+rover_distance(distance,status) :- rover_distance_(distance,status).
+rover_response(nuser,out) :- rover_request(nuser,cmd),rover_command(cmd,out).
+rover_obstacle(status) :- rover_command('distance',distance),rover_distance(distance,status).
+rover_is_on(nled) :- rover_command('led',out),rover_led(nled,out).
+rover_stop(status) :- rover_obstacle(status).
+
+
+
+
