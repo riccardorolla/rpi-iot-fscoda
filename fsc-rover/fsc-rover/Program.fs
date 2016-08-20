@@ -1,106 +1,91 @@
-﻿// Learn more about F# at http://fsharp.net
-[<CoDa.Code>]
-module Rpi.Test
+﻿[<CoDa.Code>]
+module Fsc.App
 
 open CoDa.Runtime
 open Fsc.Types
+open FSharp.Data
+open FSharp.Data.JsonExtensions
 
 open System.Threading
 open System
 
-let get_gpio_resistor pin = 
-    try 
-        let dr = ctx?resistor |- (gpio_resistor(pin,ctx?resistor))
-        dr
-    with e->
-         PinResistor.None
+let urlbuild server port command =  sprintf "http://%s:%i/%s" server port command
 
 
-let get_gpio_direction pin = 
-    try 
-        let dr = ctx?direction |- (gpio_direction(pin,ctx?direction))
-        dr
-    with e->
-          PinDirection.Output
-let get_gpio_digital pin = 
-    try 
-        let dg = ctx?status |- (gpio_digital(pin,ctx?status))
-        dg
-    with e->
-          false
+let (|Prefix|_|) (p:string) (s:string) =
+    if s.StartsWith(p) then
+        Some(s.Substring(p.Length))
+    else
+        None
+let cmdbuild (text : string)  =
+ match text with
+ | Prefix "go" rest -> sprintf "/rpi/motor/%s" ((rest).Trim()) 
+ | Prefix "led" rest -> 
+   match ((rest).Trim()) with
+   | Prefix "on" rest -> sprintf "/rpi/led/%s/on" ((rest).Trim()) 
+   | Prefix "off" rest -> sprintf "/rpi/led/%s/off" ((rest).Trim()) 
+   | _ -> sprintf "neither"
+ | Prefix "telegram" rest -> 
+   match ((rest).Trim()) with
+   | Prefix "photo" rest -> sprintf "/telegram/%s/photo" ((rest).Trim()) 
+   | Prefix "video" rest -> sprintf "/telegram/%s/video" ((rest).Trim()) 
+   | Prefix "text" rest -> sprintf "/telegram/%s/text" ((rest).Trim()) 
+   | _ -> sprintf "neither"
+ | Prefix "get" rest -> 
+  match ((rest).Trim()) with
+   | Prefix "distance" rest -> sprintf "/rpi/distance" 
+   | Prefix "photo" rest -> sprintf "/rpi/photo" 
+   | Prefix "video" rest -> sprintf "/rpi/video" 
+   | _ -> sprintf "neither"
+ | Prefix "whatdoyousee" rest -> sprintf "/whatdoyousee"
+ | _ -> sprintf "neither"
 
-let pin1 = ConnectorPin.P1Pin11.ToProcessor()
-//let led = ConnectorPin.P1Pin11.ToProcessor()
-//let button = ConnectorPin.P1Pin12.ToProcessor()
-let pin2 = ConnectorPin.P1Pin12.ToProcessor()
 
-
-let driver = GpioConnectionSettings.DefaultDriver
-
-let get_value (pin:ProcessorPin) = driver.Read(pin)
-
-
-[<CoDa.ContextInit>]
-let initFacts () =
- tell <| Rpi.Facts.gpio_device("led",pin1)
- tell <| Rpi.Facts.gpio_direction(pin1,PinDirection.Output)
+printfn "cmdbuild:%s" (cmdbuild("led on 1"))
+//let cmdbuild (text : string)  =
+// let words = text.Split [|' '|]
+// let nWords = words.Length
+// match words with
+//  | [] -> 
+//       sprintf "/none"
+//  | "go"::xs -> 
+//       sprintf "/rpi/motor/%s" xs
  
- tell <| Rpi.Facts.gpio_device("button",pin2)
- tell <| Rpi.Facts.gpio_direction(pin2,PinDirection.Input)
- tell <| Rpi.Facts.gpio_resistor(pin2,PinResistor.PullUp)     
-           
-[<CoDa.Context("rpi-ctx")>]
-[<CoDa.EntryPoint>]
-let main () =
-  initFacts ()
+type Jsonlistchat = JsonProvider<""" [1, 2, 3, 100] """>
+type JsonMsgPop = JsonProvider<""" {"idmsg":"82c3b5b7-431a-4b7e-bcc7-70f3b9ba156d","txt":"Message"}""">
+type JsonMsg = JsonProvider<""" [{"idmsg":"82c3b5b7-431a-4b7e-bcc7-70f3b9ba156d","txt":"Message"}]""">
+let resp = Http.RequestString((urlbuild "localhost" 8081 "telegram/listchat"), silentHttpErrors = true)
 
- // for _ in !-- gpio_direction(ctx?pin,PinDirection.Output) do
-   //  
- //        driver.Allocate (ctx?pin, (get_gpio_direction ctx?pin))
-  for _ in !-- gpio_direction(ctx?pin,ctx?direction) do
-         driver.Allocate (ctx?pin, ctx?direction)
+if not (resp.Length = 0) then
+ let listchat = Jsonlistchat.Parse(resp)
+ let activechat = listchat |> Seq.length
+ printfn "total active chat:%i" activechat
+ for idchat in listchat do 
+  printfn "\tidchat:%i" idchat
+  let response = Http.RequestString((urlbuild "localhost" 8081 (sprintf "telegram/%i/msg" idchat)), silentHttpErrors = true)
+  if not (response.Length = 0) then
+   let messages = JsonMsg.Parse(response)
+   let nMessages = messages |> Seq.length
+   printfn "\t\tnMessages:%i" nMessages
+   let response = Http.RequestString((urlbuild "localhost" 8081 (sprintf "telegram/%i/msg/pop" idchat)), silentHttpErrors = true)
+   if not (response.Length = 0) then
+    let msg=JsonMsgPop.Parse(response)
+    printfn "\t\t\tidmsg:%A,txtmsg:%s" msg.Idmsg  msg.Txt
+//[<CoDa.ContextInit>]
+//let initFacts () =
+// tell <| Rpi.Facts.gpio_device("led",pin1)
+ 
+//[<CoDa.Context("fsc-ctx")>]
+//[<CoDa.EntryPoint>]
+//let main () =
+//  initFacts ()
 
-  for _ in !-- gpio_resistor(ctx?pin,ctx?resistor) do
-         driver.SetPinResistor(ctx?pin, ctx?resistor)
-  
-
-  
-
-  let mutable light = true;
-  while (true) do
-                for _ in !-- gpio_direction(ctx?pin,PinDirection.Input) do
-                        retract <| Rpi.Facts.gpio_digital(ctx?pin, get_gpio_digital ctx?pin)                    
-                        tell <| Rpi.Facts.gpio_digital(ctx?pin,get_value(ctx?pin))
-
-                for _ in !-- gpio_direction(ctx?pin,PinDirection.Output) do
-                        driver.Write(ctx?pin, (get_gpio_digital ctx?pin))
-                        retract<| Rpi.Facts.gpio_digital(ctx?pin,get_gpio_digital ctx?pin)
-                
-                tell <| Rpi.Facts.gpio_digital(pin1,get_gpio_digital pin2)
-
-               // driver.Write(pin1, (get_gpio_digital pin1))
-               // light <- not light
-              //  Thread.Sleep(1000)
-   
-   
-  
-  //printfn "%s" (get_gpio "1")
-
-// 
-//  driver.Allocate(button,PinDirection.Input)
-//  driver.SetPinResistor(button,PinResistor.PullUp)
-//  while true do
-//    if driver.Read(button)  then
- //               driver.Write(led, true)
-               // printf "led on...n" 
-             //   tell <| button_press("1") 
-   //          else
-       //         tell <| button_press("0") 
-     //           driver.Write(led, false)
-               // printf "...led off\n" 
-         
-  printfn "exit"
+ 
+ 
+ // while (true) do
+            
+//  printfn "exit"
 //  driver.Release(led)
-do
-  run ()
+//do
+ // run ()
   //debug ()

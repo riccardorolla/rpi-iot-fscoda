@@ -7,7 +7,7 @@
     <ProjectGuid>{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>fsc_context</RootNamespace>
+    <RootNamespace>fsc-context</RootNamespace>
     <AssemblyName>fsc-context</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -79,6 +79,10 @@
     <Reference Include="Unquote">
       <HintPath>..\packages\Unquote.3.1.2\lib\net45\Unquote.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -87,4 +91,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\fsc-context\fsc-context.csproj">
+      <Project>{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}</Project>
+      <Name>fsc-context</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\fsc-ctx\fsc-ctx.fsproj">
+      <Project>{1A9E00B1-3FE5-4B7F-9944-8FE5BCEA812C}</Project>
+      <Name>fsc-ctx</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
