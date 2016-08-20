@@ -7,22 +7,7 @@ open CoDa
 
 
 
-[<TypedPred>]
-[<Code>]
-let rover_motor(s:string) =
-  if true then
-    failwith "Solved by JIT"
-  else
-    Fsc.FscContext.rover_motor(s)
 
-[<TypedPred>]
-[<Code>]
-let rover_led(m:int,e:bool) =
-  if true then
-    failwith "Solved by JIT"
-  else
-    Fsc.FscContext.rover_led(m,e)
-           
 [<TypedPred>]
 [<Code>]
 let rover_command(s:string,t:string) =

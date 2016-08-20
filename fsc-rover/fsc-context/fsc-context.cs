@@ -7,35 +7,6 @@ public class FscContext {
 public class YPInnerClass { }
 public static Type getDeclaringClass() { return typeof(YPInnerClass).DeclaringType; }
 
-public static IEnumerable<bool> rover_motor(object arg1)
-{
-    {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("direction")))
-        {
-            foreach (bool l3 in YP.matchDynamic(Atom.a("rover_motor_"), new object[] { Atom.a("direction") }))
-            {
-                yield return false;
-            }
-        }
-    }
-}
-
-public static IEnumerable<bool> rover_led(object arg1, object arg2)
-{
-    {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("nled")))
-        {
-            foreach (bool l3 in YP.unify(arg2, Atom.a("status")))
-            {
-                foreach (bool l4 in YP.matchDynamic(Atom.a("rover_led_"), new object[] { Atom.a("nled"), Atom.a("status") }))
-                {
-                    yield return false;
-                }
-            }
-        }
-    }
-}
-
 public static IEnumerable<bool> rover_request(object arg1, object arg2)
 {
     {
@@ -114,35 +85,6 @@ public static IEnumerable<bool> rover_obstacle(object arg1)
                 {
                     yield return false;
                 }
-            }
-        }
-    }
-}
-
-public static IEnumerable<bool> rover_is_on(object arg1)
-{
-    {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("nled")))
-        {
-            foreach (bool l3 in rover_command(Atom.a("led"), Atom.a("out")))
-            {
-                foreach (bool l4 in rover_led(Atom.a("nled"), Atom.a("out")))
-                {
-                    yield return false;
-                }
-            }
-        }
-    }
-}
-
-public static IEnumerable<bool> rover_stop(object arg1)
-{
-    {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("status")))
-        {
-            foreach (bool l3 in rover_obstacle(Atom.a("status")))
-            {
-                yield return false;
             }
         }
     }
