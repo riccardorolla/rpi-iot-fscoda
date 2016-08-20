@@ -1,12 +1,35 @@
 ﻿[<CoDa.Code>]
 module Fsc.App
  
+open System
+open System.IO
 open CoDa.Runtime
 open Fsc.Types
 open FSharp.Data
-open FSharp.Data.JsonExtensions
+
 open Newtonsoft.Json
  
+
+
+type Configuration(server:string,port:int) =
+     member this.Server=server 
+     member this.Port=port
+ 
+
+let confjson =
+ try  
+  File.ReadAllText(@"fsc-rover.json")
+ with
+  | :? System.IO.FileNotFoundException  -> 
+        File.WriteAllText(@"fsc-rover.json","""{"server":"localhost","port":8081}""")
+        """{"server":"localhost","port":8081}"""
+      
+      
+      
+let conf = JsonConvert.DeserializeObject<Configuration>(confjson)
+
+printfn "server:%s,port:%i" conf.Server conf.Port
+
 let urlbuild server port command =  sprintf "http://%s:%i/%s" server port command
 
 
@@ -40,12 +63,10 @@ let cmdbuild (text : string)  =
  | Prefix "translate" rest -> sprintf "translate"
  | _ -> sprintf "neither"
 
-  
-
 
 type execCommand (cmd :string , ?q0) =
  let q = defaultArg q0 []
- let resp = Http.RequestString((urlbuild "localhost" 8081 (cmdbuild(cmd))), q,  silentHttpErrors = true)
+ let resp = Http.RequestString((urlbuild conf.Server conf.Port (cmdbuild(cmd))), q,  silentHttpErrors = true)
  member this.output 
   with get() = sprintf "%s" (resp)
 
@@ -70,7 +91,7 @@ let initFacts () =
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
- let resp = Http.RequestString((urlbuild "localhost" 8081 "telegram/listchat"), silentHttpErrors = true)
+ let resp = Http.RequestString((urlbuild conf.Server conf.Port "telegram/listchat"), silentHttpErrors = true)
  printfn "%s" resp
  if not (resp.Length = 0) then
   let listchat = JsonConvert.DeserializeObject<List<int>>(resp)
@@ -78,12 +99,12 @@ let main () =
   printfn "total active chat:%i" activechat
   for idchat in listchat do 
    printfn "\tidchat:%i" idchat
-   let response = Http.RequestString((urlbuild "localhost" 8081 (sprintf "telegram/%i/msg" idchat)), silentHttpErrors = true)
+   let response = Http.RequestString((urlbuild conf.Server conf.Port (sprintf "telegram/%i/msg" idchat)), silentHttpErrors = true)
    if not (response.Length = 0) then
     let messages = JsonConvert.DeserializeObject<List<Message>>(response)
     let nMessages = messages |> Seq.length
     printfn "\t\tnMessages:%i" nMessages
-    let response = Http.RequestString((urlbuild "localhost" 8081 (sprintf "telegram/%i/msg/pop" idchat)), silentHttpErrors = true)
+    let response = Http.RequestString((urlbuild conf.Server conf.Port (sprintf "telegram/%i/msg/pop" idchat)), silentHttpErrors = true)
     if not (response.Length = 0) then
      let msg=JsonConvert.DeserializeObject<Message>(response)
      let cmd=cmdbuild (msg.Txt)
