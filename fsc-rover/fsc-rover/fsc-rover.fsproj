@@ -8,7 +8,6 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>rpiiot</RootNamespace>
     <AssemblyName>fsc-rover</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>fsc-rover</Name>
@@ -70,6 +69,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="YieldProlog">
       <HintPath>..\packages\yieldprolog.coda.1.0.1.0\lib\YieldProlog.dll</HintPath>
     </Reference>
@@ -82,7 +82,6 @@
     <Reference Include="FSharp.Data">
       <HintPath>..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>

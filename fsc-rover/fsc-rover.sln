@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fsc-context", "fsc-context\
 EndProject
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fsc-rover", "fsc-rover\fsc-rover.fsproj", "{2275ABE4-578B-4012-9899-F1828FBFECCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fscdata", "fscdata\fscdata.csproj", "{0C0CF184-BEE5-4108-A6F9-EF6A32306B0E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,10 +35,6 @@ Global
 		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Debug|x86.Build.0 = Debug|Any CPU
 		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Release|x86.ActiveCfg = Release|Any CPU
 		{2275ABE4-578B-4012-9899-F1828FBFECCB}.Release|x86.Build.0 = Release|Any CPU
-		{0C0CF184-BEE5-4108-A6F9-EF6A32306B0E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0C0CF184-BEE5-4108-A6F9-EF6A32306B0E}.Debug|x86.Build.0 = Debug|Any CPU
-		{0C0CF184-BEE5-4108-A6F9-EF6A32306B0E}.Release|x86.ActiveCfg = Release|Any CPU
-		{0C0CF184-BEE5-4108-A6F9-EF6A32306B0E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

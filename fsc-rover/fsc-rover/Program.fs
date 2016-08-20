@@ -52,9 +52,6 @@ type execCommand (cmd :string , ?q0) =
 //printfn "%s" (new execCommand ("translate",["src","it";"dst","en";"text","ciao ciao"])).output
 //printfn "%s" (new execCommand ("telegram text 189202739",["text",(new execCommand ("translate",["src","en";"dst","it";"text",(new execCommand ("whatdoyousee")).output])).output])).output
 
-type Jsonlistchat = JsonProvider<""" [1, 2, 3, 100] """>
-type JsonMsgPop = JsonProvider<""" {"idmsg":"82c3b5b7-431a-4b7e-bcc7-70f3b9ba156d","txt":"Message"}""">
-type JsonMsg = JsonProvider<""" [{"idmsg":"82c3b5b7-431a-4b7e-bcc7-70f3b9ba156d","txt":"Message"}]""">
 
 type Message(idmsg:string, txt:string) = 
   member this.Idmsg=idmsg
