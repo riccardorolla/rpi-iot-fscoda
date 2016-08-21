@@ -7,85 +7,32 @@ public class FscContext {
 public class YPInnerClass { }
 public static Type getDeclaringClass() { return typeof(YPInnerClass).DeclaringType; }
 
-public static IEnumerable<bool> rover_request(object arg1, object arg2)
+public static IEnumerable<bool> rover_request(object IdChat, object Cmd)
 {
     {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("nuser")))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_request_"), new object[] { IdChat, Cmd }))
         {
-            foreach (bool l3 in YP.unify(arg2, Atom.a("cmd")))
-            {
-                foreach (bool l4 in YP.matchDynamic(Atom.a("rover_request_"), new object[] { Atom.a("nuser"), Atom.a("cmd") }))
-                {
-                    yield return false;
-                }
-            }
+            yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> rover_command(object arg1, object arg2)
+public static IEnumerable<bool> rover_command(object Cmd, object Out)
 {
     {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("cmd")))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_command_"), new object[] { Cmd, Out }))
         {
-            foreach (bool l3 in YP.unify(arg2, Atom.a("out")))
-            {
-                foreach (bool l4 in YP.matchDynamic(Atom.a("rover_command_"), new object[] { Atom.a("cmd"), Atom.a("out") }))
-                {
-                    yield return false;
-                }
-            }
+            yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> rover_distance(object arg1, object arg2)
+public static IEnumerable<bool> rover_validate(object Out, object Status)
 {
     {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("distance")))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_validate_"), new object[] { Out, Status }))
         {
-            foreach (bool l3 in YP.unify(arg2, Atom.a("status")))
-            {
-                foreach (bool l4 in YP.matchDynamic(Atom.a("rover_distance_"), new object[] { Atom.a("distance"), Atom.a("status") }))
-                {
-                    yield return false;
-                }
-            }
-        }
-    }
-}
-
-public static IEnumerable<bool> rover_response(object arg1, object arg2)
-{
-    {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("nuser")))
-        {
-            foreach (bool l3 in YP.unify(arg2, Atom.a("out")))
-            {
-                foreach (bool l4 in rover_request(Atom.a("nuser"), Atom.a("cmd")))
-                {
-                    foreach (bool l5 in rover_command(Atom.a("cmd"), Atom.a("out")))
-                    {
-                        yield return false;
-                    }
-                }
-            }
-        }
-    }
-}
-
-public static IEnumerable<bool> rover_obstacle(object arg1)
-{
-    {
-        foreach (bool l2 in YP.unify(arg1, Atom.a("status")))
-        {
-            foreach (bool l3 in rover_command(Atom.a("distance"), Atom.a("distance")))
-            {
-                foreach (bool l4 in rover_distance(Atom.a("distance"), Atom.a("status")))
-                {
-                    yield return false;
-                }
-            }
+            yield return false;
         }
     }
 }

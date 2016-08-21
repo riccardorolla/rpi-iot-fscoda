@@ -1,9 +1,9 @@
 % facts
-rover_request(nuser,cmd) :- rover_request_(nuser,cmd).
-rover_command(cmd,out) :- rover_command_(cmd,out).
-rover_distance(distance,status) :- rover_distance_(distance,status).
-rover_response(nuser,out) :- rover_request(nuser,cmd),rover_command(cmd,out).
-rover_obstacle(status) :- rover_command('distance',distance),rover_distance(distance,status).
+rover_request(IdChat,Cmd) :- rover_request_(IdChat,Cmd).
+rover_command(Cmd,Out) :- rover_command_(Cmd,Out).
+rover_validate(Out,Status) :- rover_validate_(Out,Status).
+
+ 
 
 
 

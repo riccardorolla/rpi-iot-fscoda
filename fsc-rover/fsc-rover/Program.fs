@@ -6,9 +6,8 @@ open System.IO
 open CoDa.Runtime
 open Fsc.Types
 open FSharp.Data
-open Fsc
 open Newtonsoft.Json
- 
+//open Fsc.Facts
 
 
 type Configuration(server:string,port:int) =
@@ -42,6 +41,7 @@ let (|Prefix|_|) (p:string) (s:string) =
 let cmdbuild (text : string)  =
  match text with
  | Prefix "go" rest -> sprintf "rpi/motor/%s" ((rest).Trim())
+ | Prefix "stop" rest -> sprintf "rpi/motor/stop"
  | Prefix "led" rest -> 
    match ((rest).Trim()) with
    | Prefix "on" rest -> sprintf "rpi/led/%s/on" ((rest).Trim()) 
@@ -91,19 +91,42 @@ type Message(idmsg:string, txt:string) =
   member this.Txt=txt
   
 
+let get_out  cmd = 
+      try 
+          let dr = ctx?out |- (rover_command(cmd,ctx?out))
+          dr
+      with e-> ""
+let get_req idchat =
+     try 
+         let dr = ctx?cmd |- (rover_request(idchat,ctx?cmd))
+         dr
+     with e-> ""
 
- 
+let get_distance dist = 
+  try 
+   let dr= ctx?status |- (rover_validate(sprintf "%i" (int dist),ctx?status))
+   dr
+  with e-> false
+
+
+let display_request idchat cmd =
+  match ctx with
+  | _ when !- rover_request(idchat, cmd) -> printfn " - %s" cmd
+  | _ -> printfn " - %s (this chat not execute cmd)" cmd
+
+let display_out cmd out =
+  match ctx with
+  | _ when !- rover_command(cmd, out) -> printfn " - %s" out
+  | _ -> printfn " - %s (this cmd not output)" out
 
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.rover_distance("0",true)
- tell <| Fsc.Facts.rover_distance("1",true)
- tell <| Fsc.Facts.rover_distance("2",false)
- tell <| Fsc.Facts.rover_distance("3",false)
+ tell <| Fsc.Facts.rover_command("led on 1","OK")
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
+ display_out "led on 1" "OK"
  let mutable continueLooping = true
  while (continueLooping) do
  
@@ -111,12 +134,14 @@ let main () =
       retract <| Fsc.Facts.rover_command("get distance", ctx?out) 
   let distance = float (new execCommand<string>("get distance")).output
   tell <| Fsc.Facts.rover_command("get distance",sprintf "%i" (int distance))
+
+  //if (is_stop) then printfn "%s" (new execCommand<string>("stop")).output
+ //  let stop = (new execCommand<string>("stop")).output
   let listchat = (new execCommand<List<int>>("telegram list")).output
   let activechat = listchat |> Seq.length
-//  printfn "total active chat:%i" activechat
-  for idchat in listchat do 
- //    printfn "\tidchat:%i" idchat
 
+
+  for idchat in listchat do 
      let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat)).output
      let nMessages = messages |> Seq.length
    //  printfn "\t\tnMessages:%i" nMessages
@@ -124,11 +149,13 @@ let main () =
       let msg = (new execCommand<Message>(sprintf "telegram pop %i" idchat)).output
       let cmd = msg.Txt.ToLower()
       tell <| Fsc.Facts.rover_request(idchat,cmd)
-      let outcmd=(new execCommand<string>(cmd)).output
+      let outcmd=((new execCommand<string>(cmd)).output).Trim()
       tell <| Fsc.Facts.rover_command(cmd,outcmd)
-  //    for _ in !-- FscContext.rover_response(idchat,ctx?out) do
+   //   display_out "led on 1" "OK"
+      // for _ in !-- rover_response(ctx?idchat,"get photo") do
+      //  let output=(new execCommand<string>((sprintf "telegram photo %i" idchat),["text", (sprintf "%s" outcmd)])).output
       let output=(new execCommand<string>((sprintf "telegram text %i" idchat),["text", (sprintf "%s" outcmd)])).output
        
       printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.Idmsg  msg.Txt outcmd output
 
-do run ()
+do debug ()
