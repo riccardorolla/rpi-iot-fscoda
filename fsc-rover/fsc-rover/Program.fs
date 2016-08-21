@@ -6,7 +6,7 @@ open System.IO
 open CoDa.Runtime
 open Fsc.Types
 open FSharp.Data
-
+open Fsc
 open Newtonsoft.Json
  
 
@@ -52,6 +52,9 @@ let cmdbuild (text : string)  =
    | Prefix "photo" rest -> sprintf "telegram/%s/photo" ((rest).Trim()) 
    | Prefix "video" rest -> sprintf "telegram/%s/video" ((rest).Trim()) 
    | Prefix "text" rest -> sprintf "telegram/%s/text" ((rest).Trim()) 
+   | Prefix "list" rest -> sprintf "telegram/listchat"
+   | Prefix "message" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
+   | Prefix "pop" rest -> sprintf "telegram/%s/msg/pop" ((rest).Trim()) 
    | _ -> sprintf "neither"
  | Prefix "get" rest -> 
   match ((rest).Trim()) with
@@ -64,14 +67,23 @@ let cmdbuild (text : string)  =
  | _ -> sprintf "neither"
 
 
-type execCommand (cmd :string , ?q0) =
+type execCommand<'T>(cmd :string , ?q0) =
  let q = defaultArg q0 []
- let resp = Http.RequestString((urlbuild conf.Server conf.Port (cmdbuild(cmd))), q,  silentHttpErrors = true)
+ let out = 
+     let resp=try 
+               Http.RequestString((urlbuild conf.Server conf.Port (cmdbuild(cmd))), q,  silentHttpErrors = true)
+              with 
+              | :? System.Net.WebException -> ""
+     try 
+      JsonConvert.DeserializeObject<'T>(sprintf "%s" (resp))       
+     with 
+     | :? Newtonsoft.Json.JsonReaderException -> 
+      JsonConvert.DeserializeObject<'T>(JsonConvert.SerializeObject(resp)) 
  member this.output 
-  with get() = sprintf "%s" (resp)
-
-//printfn "%s" (new execCommand ("translate",["src","it";"dst","en";"text","ciao ciao"])).output
-//printfn "%s" (new execCommand ("telegram text 189202739",["text",(new execCommand ("translate",["src","en";"dst","it";"text",(new execCommand ("whatdoyousee")).output])).output])).output
+   with get() =  out
+  
+ 
+ 
 
 
 type Message(idmsg:string, txt:string) = 
@@ -84,34 +96,39 @@ type Message(idmsg:string, txt:string) =
 
 [<CoDa.ContextInit>]
 let initFacts () =
+ tell <| Fsc.Facts.rover_distance("0",true)
  tell <| Fsc.Facts.rover_distance("1",true)
- 
-
+ tell <| Fsc.Facts.rover_distance("2",false)
+ tell <| Fsc.Facts.rover_distance("3",false)
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
- let resp = Http.RequestString((urlbuild conf.Server conf.Port "telegram/listchat"), silentHttpErrors = true)
- printfn "%s" resp
- if not (resp.Length = 0) then
-  let listchat = JsonConvert.DeserializeObject<List<int>>(resp)
+ let mutable continueLooping = true
+ while (continueLooping) do
+ 
+  for _ in !-- rover_command("get distance",ctx?out) do
+      retract <| Fsc.Facts.rover_command("get distance", ctx?out) 
+  let distance = float (new execCommand<string>("get distance")).output
+  tell <| Fsc.Facts.rover_command("get distance",sprintf "%i" (int distance))
+  let listchat = (new execCommand<List<int>>("telegram list")).output
   let activechat = listchat |> Seq.length
-  printfn "total active chat:%i" activechat
+//  printfn "total active chat:%i" activechat
   for idchat in listchat do 
-   printfn "\tidchat:%i" idchat
-   let response = Http.RequestString((urlbuild conf.Server conf.Port (sprintf "telegram/%i/msg" idchat)), silentHttpErrors = true)
-   if not (response.Length = 0) then
-    let messages = JsonConvert.DeserializeObject<List<Message>>(response)
-    let nMessages = messages |> Seq.length
-    printfn "\t\tnMessages:%i" nMessages
-    let response = Http.RequestString((urlbuild conf.Server conf.Port (sprintf "telegram/%i/msg/pop" idchat)), silentHttpErrors = true)
-    if not (response.Length = 0) then
-     let msg=JsonConvert.DeserializeObject<Message>(response)
-     let cmd=cmdbuild (msg.Txt)
-     tell <| Fsc.Facts.rover_request(idchat,cmd)
-     let outcmd=(new execCommand(cmd)).output
-     tell <| Fsc.Facts.rover_command(cmd,outcmd)
-     printfn "\t\t\tidmsg:%s,txt:%s" msg.Idmsg  msg.Txt
+ //    printfn "\tidchat:%i" idchat
+
+     let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat)).output
+     let nMessages = messages |> Seq.length
+   //  printfn "\t\tnMessages:%i" nMessages
+     if (nMessages>0) then
+      let msg = (new execCommand<Message>(sprintf "telegram pop %i" idchat)).output
+      let cmd = msg.Txt.ToLower()
+      tell <| Fsc.Facts.rover_request(idchat,cmd)
+      let outcmd=(new execCommand<string>(cmd)).output
+      tell <| Fsc.Facts.rover_command(cmd,outcmd)
+  //    for _ in !-- FscContext.rover_response(idchat,ctx?out) do
+      let output=(new execCommand<string>((sprintf "telegram text %i" idchat),["text", (sprintf "%s" outcmd)])).output
+       
+      printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.Idmsg  msg.Txt outcmd output
 
 do run ()
- // debug ()
