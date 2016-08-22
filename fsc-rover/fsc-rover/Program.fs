@@ -67,13 +67,13 @@ let cmdbuild (text : string)  =
  | _ -> sprintf "neither"
 
 
-type execCommand<'T>(cmd :string , ?q0) =
+type execCommand<'T>(cmd :string , value, ?q0) =
  let q = defaultArg q0 []
  let out = 
      let resp=try 
                Http.RequestString((urlbuild conf.Server conf.Port (cmdbuild(cmd))), q,  silentHttpErrors = true)
               with 
-              | :? System.Net.WebException -> ""
+              | :? System.Net.WebException -> value
      try 
       JsonConvert.DeserializeObject<'T>(sprintf "%s" (resp))       
      with 
@@ -102,12 +102,13 @@ let get_req idchat =
          dr
      with e-> ""
 
-let get_distance dist = 
+let validate out = 
   try 
-   let dr= ctx?status |- (rover_validate(sprintf "%i" (int dist),ctx?status))
+   let dr= ctx?status |- (rover_validate(out,ctx?status))
    dr
   with e-> false
 
+ 
 
 let display_request idchat cmd =
   match ctx with
@@ -118,10 +119,12 @@ let display_out cmd out =
   match ctx with
   | _ when !- rover_command(cmd, out) -> printfn " - %s" out
   | _ -> printfn " - %s (this cmd not output)" out
-
+ 
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.rover_command("led on 1","OK")
+ tell <| Fsc.Facts.rover_validate("OK",true)
+ tell <| Fsc.Facts.rover_command("get distance","0")
+ tell <| Fsc.Facts.rover_validate("0",true)
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
@@ -132,30 +135,35 @@ let main () =
  
   for _ in !-- rover_command("get distance",ctx?out) do
       retract <| Fsc.Facts.rover_command("get distance", ctx?out) 
-  let distance = float (new execCommand<string>("get distance")).output
+  let distance = float (new execCommand<string>("get distance","0.0")).output
+                 
   tell <| Fsc.Facts.rover_command("get distance",sprintf "%i" (int distance))
 
+  let mutable o = "OK"
+  for _ in !-- stop(ctx?status) do 
+    o <- (new execCommand<string>("stop","")).output
+
+  
   //if (is_stop) then printfn "%s" (new execCommand<string>("stop")).output
  //  let stop = (new execCommand<string>("stop")).output
-  let listchat = (new execCommand<List<int>>("telegram list")).output
-  let activechat = listchat |> Seq.length
-
+  let listchat =  (new execCommand<List<int>>("telegram list","[]")).output
+                
 
   for idchat in listchat do 
-     let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat)).output
+     let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat,"[]")).output
      let nMessages = messages |> Seq.length
    //  printfn "\t\tnMessages:%i" nMessages
      if (nMessages>0) then
-      let msg = (new execCommand<Message>(sprintf "telegram pop %i" idchat)).output
+      let msg = (new execCommand<Message>(sprintf "telegram pop %i" idchat,"{}")).output
       let cmd = msg.Txt.ToLower()
       tell <| Fsc.Facts.rover_request(idchat,cmd)
-      let outcmd=((new execCommand<string>(cmd)).output).Trim()
+      let outcmd=((new execCommand<string>(cmd,"")).output).Trim()
       tell <| Fsc.Facts.rover_command(cmd,outcmd)
-   //   display_out "led on 1" "OK"
-      // for _ in !-- rover_response(ctx?idchat,"get photo") do
-      //  let output=(new execCommand<string>((sprintf "telegram photo %i" idchat),["text", (sprintf "%s" outcmd)])).output
-      let output=(new execCommand<string>((sprintf "telegram text %i" idchat),["text", (sprintf "%s" outcmd)])).output
-       
+      let output =
+       if (validate outcmd) then
+        (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", (sprintf "%s" outcmd)])).output
+       else
+        (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
       printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.Idmsg  msg.Txt outcmd output
 
 do debug ()

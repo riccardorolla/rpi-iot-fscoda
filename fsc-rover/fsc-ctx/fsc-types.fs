@@ -28,3 +28,11 @@ let rover_validate(s:string,m:bool) =
     failwith "Solved by JIT"
   else
     Fsc.FscContext.rover_validate(s,m)
+
+[<TypedPred>]
+[<Code>]
+let stop(m:bool) =
+  if true then
+    failwith "Solved by JIT"
+  else
+    Fsc.FscContext.stop(m)

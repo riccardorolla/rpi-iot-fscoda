@@ -37,4 +37,27 @@ public static IEnumerable<bool> rover_validate(object Out, object Status)
     }
 }
 
+public static IEnumerable<bool> rover_next(object Out, object Cmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_next_"), new object[] { Out, Cmd }))
+        {
+            yield return false;
+        }
+    }
+}
+
+public static IEnumerable<bool> stop(object Status)
+{
+    {
+        foreach (bool l2 in rover_command(Atom.a("get distance"), Atom.a("0")))
+        {
+            foreach (bool l3 in rover_validate(Atom.a("0"), Status))
+            {
+                yield return false;
+            }
+        }
+    }
+}
+
 }}
