@@ -10,9 +10,10 @@ open Newtonsoft.Json
 //open Fsc.Facts
 
 
-type Configuration(server:string,port:int) =
+type Configuration(server:string,port:int,debug:bool) =
      member this.Server=server 
      member this.Port=port
+     member this.Debug=debug
  
 
 let confjson =
@@ -20,11 +21,9 @@ let confjson =
   File.ReadAllText(@"fsc-rover.json")
  with
   | :? System.IO.FileNotFoundException  -> 
-        File.WriteAllText(@"fsc-rover.json","""{"server":"localhost","port":8081}""")
-        """{"server":"localhost","port":8081}"""
-      
-      
-      
+        File.WriteAllText(@"fsc-rover.json","""{"server":"localhost","port":8081,"debug":false}""")
+        """{"server":"localhost","port":8081,"debug":false}"""
+		
 let conf = JsonConvert.DeserializeObject<Configuration>(confjson)
 
 printfn "server:%s,port:%i" conf.Server conf.Port
@@ -166,4 +165,5 @@ let main () =
         (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
       printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.Idmsg  msg.Txt outcmd output
 
-do debug ()
+do if (conf.Debug) then debug()
+    else run()
