@@ -54,7 +54,7 @@ public static IEnumerable<bool> response(object IdChat, object Out)
 public static IEnumerable<bool> stop(object Status)
 {
     {
-        foreach (bool l2 in observe(Atom.a("obstacole"), Status))
+        foreach (bool l2 in observe(Atom.a("obstacle"), Status))
         {
             yield return false;
         }

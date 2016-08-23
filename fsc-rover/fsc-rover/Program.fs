@@ -67,7 +67,7 @@ let cmdbuild (text : string)  =
  | _ -> sprintf "neither"
 
 
-type execCommand<'T>(cmd :string , value, ?q0) =
+type Command<'T>(cmd :string , value, ?q0) =
  let q = defaultArg q0 []
  let command = cmd
  let out = 
@@ -160,6 +160,17 @@ let is_confidence confidence =
     if (confidence>0.9) then "true"
      else "false"
 
+
+let new_execute cmd out =
+    for _ in !-- execute(cmd,ctx?out) do
+     retract <| Fsc.Facts.execute(cmd, ctx?out) 
+    tell <| Fsc.Facts.execute(cmd,out)
+
+let new_observe name status =
+    for _ in !-- observe(name,ctx?status) do
+     retract <| Fsc.Facts.observe(name, ctx?status) 
+    tell <| Fsc.Facts.observe(name,status)
+
 [<CoDa.ContextInit>]
 let initFacts () =
  
@@ -173,40 +184,34 @@ let main () =
  let mutable continueLooping = true
  while (continueLooping) do
 
-  let  distance = float (new execCommand<string>("get distance","0.0")).output
-  for _ in !-- execute("get distance",ctx?out) do
-   retract <| Fsc.Facts.execute("get distance", ctx?out) 
-  tell <| Fsc.Facts.execute("get distance",sprintf "%f" distance)
-  
-  for _ in !-- observe("obstacle", ctx?status)  do
-   retract <| Fsc.Facts.observe("obstacle", ctx?status) 
-  tell <| Fsc.Facts.observe("obstacle",is_obstacle distance)  
+  let  distance = float (new Command<string>("get distance","0.0")).output
+  do new_execute "get distance"  (sprintf "%f" distance)
+  do new_observe "obstacle"  (is_obstacle distance)
  
-  let descimg = (new execCommand<ImageRecognition>("whatdoyousee","{\"tags\":[],\"description\":{\"tags\":[]}")).output
+ 
+  let descimg = (new Command<ImageRecognition>("whatdoyousee","{\"tags\":[],\"description\":{\"tags\":[]}")).output
   let tags = descimg.tags
 
   for tag in  tags do
-    for _ in !-- observe(tag.name, ctx?out)  do
-        retract <| Fsc.Facts.observe(tag.name, ctx?out) 
+    do new_observe tag.name (is_confidence tag.confidence)
     
-    tell <| Fsc.Facts.observe(tag.name,is_confidence tag.confidence)   
   
-  let listchat = (new execCommand<List<int>>("telegram list","[]")).output
+  let listchat = (new Command<List<int>>("telegram list","[]")).output
   for idchat in listchat do 
-     let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat,"[]")).output
+     let messages = (new Command<List<Message>>(sprintf "telegram message %i" idchat,"[]")).output
      let nMessages = messages |> Seq.length
    //  printfn "\t\tnMessages:%i" nMessages
      if (nMessages>0) then
-      let msg = (new execCommand<Message>(sprintf "telegram pop %i" idchat,"{}")).output
+      let msg = (new Command<Message>(sprintf "telegram pop %i" idchat,"{}")).output
+
       let cmd = msg.txt.ToLower()
       tell <| Fsc.Facts.request(sprintf "%i" idchat,cmd)
-      let outcmd=((new execCommand<string>(cmd,"")).output).Trim()
-      tell <| Fsc.Facts.execute(cmd,outcmd)
+      do new_execute cmd ((new Command<string>(cmd,"")).output).Trim()
       let output =
      //  if (validate outcmd) then
-        (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", (sprintf "%s" outcmd)])).output
+        (new Command<string>((sprintf "telegram text %i" idchat),"",["text", (sprintf "%s" outcmd)])).output
       // else
-      //  (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
+      //  (new Command<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
       printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.idmsg  msg.txt outcmd output
 do if (conf.debug) then debug()
     else run()

@@ -4,7 +4,7 @@ execute(Cmd,Out) :- execute_(Cmd,Out).
 observe(Obj,Status) :- observe_(Obj,Status).
 
 response(IdChat,Out) :- request(IdChat,Cmd),execute(Cmd,Out).
-stop(Status) :- observe('obstacole',Status).
+stop(Status) :- observe('obstacle',Status).
 
  
 
