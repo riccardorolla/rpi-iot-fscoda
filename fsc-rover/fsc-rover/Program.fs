@@ -170,21 +170,18 @@ let initFacts () =
 let main () =
  initFacts ()
  display_out "led on 1" "OK"
- let aobjse = async {
-   let distance = float (new execCommand<string>("get distance","0.0")).output
-   for _ in !-- execute("get distance",ctx?out) do
-    retract <| Fsc.Facts.execute("get distance", ctx?out) 
-    tell <| Fsc.Facts.execute("get distance",sprintf "%f" distance)
-  
-   for _ in !-- observe("obstacle", ctx?status)  do
-     retract <| Fsc.Facts.observe("obstacle", ctx?status) 
-   tell <| Fsc.Facts.observe("obstacle",is_obstacle distance)  
-  }
  let mutable continueLooping = true
  while (continueLooping) do
-  Async.Start(aobjse)  
- 
+
+  let  distance = float (new execCommand<string>("get distance","0.0")).output
+  for _ in !-- execute("get distance",ctx?out) do
+   retract <| Fsc.Facts.execute("get distance", ctx?out) 
+  tell <| Fsc.Facts.execute("get distance",sprintf "%f" distance)
   
+  for _ in !-- observe("obstacle", ctx?status)  do
+   retract <| Fsc.Facts.observe("obstacle", ctx?status) 
+  tell <| Fsc.Facts.observe("obstacle",is_obstacle distance)  
+ 
   let descimg = (new execCommand<ImageRecognition>("whatdoyousee","{\"tags\":[],\"description\":{\"tags\":[]}")).output
   let tags = descimg.tags
 
