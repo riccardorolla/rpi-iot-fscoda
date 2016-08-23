@@ -37,12 +37,29 @@ public static IEnumerable<bool> rover_validate(object Out, object Status)
     }
 }
 
-public static IEnumerable<bool> rover_next(object Out, object Cmd)
+public static IEnumerable<bool> rover_outcmd(object Out, object Cmd)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_next_"), new object[] { Out, Cmd }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_outcmd_"), new object[] { Out, Cmd }))
         {
             yield return false;
+        }
+    }
+}
+
+public static IEnumerable<bool> rover_nextcmd(object Cmd1, object Cmd2)
+{
+    {
+        Variable Out = new Variable();
+        foreach (bool l2 in rover_command(Cmd1, Out))
+        {
+            foreach (bool l3 in YP.matchDynamic(Atom.a("rover_validate_"), new object[] { Out, Atom.a("true") }))
+            {
+                foreach (bool l4 in rover_outcmd(Out, Cmd2))
+                {
+                    yield return false;
+                }
+            }
         }
     }
 }

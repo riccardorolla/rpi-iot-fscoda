@@ -23,7 +23,7 @@ let confjson =
   | :? System.IO.FileNotFoundException  -> 
         File.WriteAllText(@"fsc-rover.json","""{"server":"localhost","port":8081,"debug":false}""")
         """{"server":"localhost","port":8081,"debug":false}"""
-		
+
 let conf = JsonConvert.DeserializeObject<Configuration>(confjson)
 
 printfn "server:%s,port:%i" conf.Server conf.Port
@@ -82,7 +82,22 @@ type execCommand<'T>(cmd :string , value, ?q0) =
    with get() =  out
   
  
- 
+type ImageDescription =
+ { description: Descrition ;
+   requestId: string;
+   metadata: Meta}
+and Descrition =
+ { tags:List<string>;
+   captions: List<Caption>}
+and Caption =
+ { text:string;
+   confidence:double}
+and Meta =
+    {width:int;
+     height:int;
+     format:string}
+
+        
 
 
 type Message(idmsg:string, txt:string) = 
@@ -132,6 +147,7 @@ let main () =
  let mutable continueLooping = true
  while (continueLooping) do
  
+  
   for _ in !-- rover_command("get distance",ctx?out) do
       retract <| Fsc.Facts.rover_command("get distance", ctx?out) 
   let distance = float (new execCommand<string>("get distance","0.0")).output
@@ -141,13 +157,14 @@ let main () =
   let mutable o = "OK"
   for _ in !-- stop(ctx?status) do 
     o <- (new execCommand<string>("stop","")).output
-
   
+  let descimg = (new execCommand<ImageDescription>("whatdoyousee","{\"description\":{\"tags\":[]}")).output
+  let tags = descimg.description.tags
+  for tag in  tags do
+   printfn "tag:%s" tag
   //if (is_stop) then printfn "%s" (new execCommand<string>("stop")).output
  //  let stop = (new execCommand<string>("stop")).output
-  let listchat =  (new execCommand<List<int>>("telegram list","[]")).output
-                
-
+  let listchat = (new execCommand<List<int>>("telegram list","[]")).output
   for idchat in listchat do 
      let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat,"[]")).output
      let nMessages = messages |> Seq.length

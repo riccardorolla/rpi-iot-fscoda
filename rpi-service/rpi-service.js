@@ -293,12 +293,15 @@ app.get('/whatdoyousee',function(req,res) {
 	 lang = req.query.lang;
 	 if (lang===undefined) lang=configuration.default_lang;
      var resvision = whatdoyousee(img,function(response) {
-										console.log(response.getBody().toString('utf-8')); 
-										translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
-											function(strout) {
-												res.send(strout.toString());
-												res.end();
-											})},
+								             console.log(response.getBody().toString('utf-8')); 
+									//	translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
+										//	function(strout) {
+										//		res.send(strout.toString());
+										//		res.end();
+											//})
+											res.send(response.getBody().toString('utf-8'));
+											res.end();
+											},
 								function (err) {
 									res.send(err);
 									res.end();
