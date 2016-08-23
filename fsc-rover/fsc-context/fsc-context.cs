@@ -7,58 +7,45 @@ public class FscContext {
 public class YPInnerClass { }
 public static Type getDeclaringClass() { return typeof(YPInnerClass).DeclaringType; }
 
-public static IEnumerable<bool> rover_request(object IdChat, object Cmd)
+public static IEnumerable<bool> request(object IdChat, object Cmd)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_request_"), new object[] { IdChat, Cmd }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("request_"), new object[] { IdChat, Cmd }))
         {
             yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> rover_command(object Cmd, object Out)
+public static IEnumerable<bool> execute(object Cmd, object Out)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_command_"), new object[] { Cmd, Out }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("execute_"), new object[] { Cmd, Out }))
         {
             yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> rover_validate(object Out, object Status)
+public static IEnumerable<bool> observe(object Obj, object Status)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_validate_"), new object[] { Out, Status }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("observe_"), new object[] { Obj, Status }))
         {
             yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> rover_outcmd(object Out, object Cmd)
+public static IEnumerable<bool> response(object IdChat, object Out)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("rover_outcmd_"), new object[] { Out, Cmd }))
+        Variable Cmd = new Variable();
+        foreach (bool l2 in request(IdChat, Cmd))
         {
-            yield return false;
-        }
-    }
-}
-
-public static IEnumerable<bool> rover_nextcmd(object Cmd1, object Cmd2)
-{
-    {
-        Variable Out = new Variable();
-        foreach (bool l2 in rover_command(Cmd1, Out))
-        {
-            foreach (bool l3 in YP.matchDynamic(Atom.a("rover_validate_"), new object[] { Out, Atom.a("true") }))
+            foreach (bool l3 in execute(Cmd, Out))
             {
-                foreach (bool l4 in rover_outcmd(Out, Cmd2))
-                {
-                    yield return false;
-                }
+                yield return false;
             }
         }
     }
@@ -67,12 +54,9 @@ public static IEnumerable<bool> rover_nextcmd(object Cmd1, object Cmd2)
 public static IEnumerable<bool> stop(object Status)
 {
     {
-        foreach (bool l2 in rover_command(Atom.a("get distance"), Atom.a("0")))
+        foreach (bool l2 in observe(Atom.a("obstacole"), Status))
         {
-            foreach (bool l3 in rover_validate(Atom.a("0"), Status))
-            {
-                yield return false;
-            }
+            yield return false;
         }
     }
 }

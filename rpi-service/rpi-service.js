@@ -77,7 +77,7 @@ bot.on('message', function (msg) {
 });
 
 function whatdoyousee(img,callback,fcallback){
-     var response = request('POST',configuration.vision_url+'?visualFeatures=Description',
+     var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
 						{ 
 							headers:{
 								'Ocp-Apim-Subscription-Key': configuration.vision_key,

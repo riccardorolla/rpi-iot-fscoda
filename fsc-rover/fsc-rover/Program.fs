@@ -10,11 +10,12 @@ open Newtonsoft.Json
 //open Fsc.Facts
 
 
-type Configuration(server:string,port:int,debug:bool) =
-     member this.Server=server 
-     member this.Port=port
-     member this.Debug=debug
- 
+type Configuration =
+ {
+  server:string;
+  port:int;
+  debug:bool
+ }
 
 let confjson =
  try  
@@ -26,9 +27,9 @@ let confjson =
 
 let conf = JsonConvert.DeserializeObject<Configuration>(confjson)
 
-printfn "server:%s,port:%i" conf.Server conf.Port
+printfn "server:%s,port:%i" conf.server conf.port
 
-let urlbuild server port command =  sprintf "http://%s:%i/%s" server port command
+let urlbuild command =  sprintf "http://%s:%i/%s" conf.server conf.port command
 
 
 let (|Prefix|_|) (p:string) (s:string) =
@@ -68,9 +69,10 @@ let cmdbuild (text : string)  =
 
 type execCommand<'T>(cmd :string , value, ?q0) =
  let q = defaultArg q0 []
+ let command = cmd
  let out = 
      let resp=try 
-               Http.RequestString((urlbuild conf.Server conf.Port (cmdbuild(cmd))), q,  silentHttpErrors = true)
+               Http.RequestString((urlbuild (cmdbuild(cmd))), q,  silentHttpErrors = true)
               with 
               | :? System.Net.WebException -> value
      try 
@@ -78,92 +80,120 @@ type execCommand<'T>(cmd :string , value, ?q0) =
      with 
      | :? Newtonsoft.Json.JsonReaderException -> 
       JsonConvert.DeserializeObject<'T>(JsonConvert.SerializeObject(resp)) 
+
  member this.output 
-   with get() =  out
+   with get() =  
+
+       out
   
  
-type ImageDescription =
- { description: Descrition ;
+type ImageRecognition =
+ { 
+   tags:List<Tag>;
+   description: Descrition ;
    requestId: string;
-   metadata: Meta}
+   metadata: Meta
+ }
+and Tag = 
+ {
+   name:string;
+   confidence:double
+ }
 and Descrition =
- { tags:List<string>;
-   captions: List<Caption>}
+ { 
+   tags:List<string>;
+   captions: List<Caption>
+ }
 and Caption =
- { text:string;
-   confidence:double}
+ { 
+   text:string;
+   confidence:double
+ }
 and Meta =
-    {width:int;
-     height:int;
-     format:string}
+ { 
+   width:int;
+   height:int;
+   format:string
+ }
 
         
 
 
-type Message(idmsg:string, txt:string) = 
-  member this.Idmsg=idmsg
-  member this.Txt=txt
-  
+type Message = 
+ {
+   idmsg:string; 
+   txt:string
+ } 
 
 let get_out  cmd = 
       try 
-          let dr = ctx?out |- (rover_command(cmd,ctx?out))
+          let dr = ctx?out |- (execute(cmd,ctx?out))
           dr
       with e-> ""
 let get_req idchat =
      try 
-         let dr = ctx?cmd |- (rover_request(idchat,ctx?cmd))
+         let dr = ctx?cmd |- (execute(idchat,ctx?cmd))
          dr
      with e-> ""
 
-let validate out = 
-  try 
-   let dr= ctx?status |- (rover_validate(out,ctx?status))
-   dr
-  with e-> false
 
- 
+let get_observe obj  =
+    try
+        let s = ctx?status |- observe(obj,ctx?status)
+        bool.Parse(s)
+     with e-> false
+
 
 let display_request idchat cmd =
   match ctx with
-  | _ when !- rover_request(idchat, cmd) -> printfn " - %s" cmd
+  | _ when !- request(idchat, cmd) -> printfn " - %s" cmd
   | _ -> printfn " - %s (this chat not execute cmd)" cmd
 
 let display_out cmd out =
   match ctx with
-  | _ when !- rover_command(cmd, out) -> printfn " - %s" out
+  | _ when !- execute(cmd, out) -> printfn " - %s" out
   | _ -> printfn " - %s (this cmd not output)" out
- 
+let is_obstacle distance =
+    if (distance<0.3) then "true"
+     else "false" 
+let is_confidence confidence =
+    if (confidence>0.9) then "true"
+     else "false"
+
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.rover_validate("OK",true)
- tell <| Fsc.Facts.rover_command("get distance","0")
- tell <| Fsc.Facts.rover_validate("0",true)
+ 
+ tell <| Fsc.Facts.execute("get distance","0")
+ tell <| Fsc.Facts.observe("obstacle","true")
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
  display_out "led on 1" "OK"
+ let aobjse = async {
+   let distance = float (new execCommand<string>("get distance","0.0")).output
+   for _ in !-- execute("get distance",ctx?out) do
+    retract <| Fsc.Facts.execute("get distance", ctx?out) 
+    tell <| Fsc.Facts.execute("get distance",sprintf "%f" distance)
+  
+   for _ in !-- observe("obstacle", ctx?status)  do
+     retract <| Fsc.Facts.observe("obstacle", ctx?status) 
+   tell <| Fsc.Facts.observe("obstacle",is_obstacle distance)  
+  }
  let mutable continueLooping = true
  while (continueLooping) do
+  Async.Start(aobjse)  
  
   
-  for _ in !-- rover_command("get distance",ctx?out) do
-      retract <| Fsc.Facts.rover_command("get distance", ctx?out) 
-  let distance = float (new execCommand<string>("get distance","0.0")).output
-                 
-  tell <| Fsc.Facts.rover_command("get distance",sprintf "%i" (int distance))
+  let descimg = (new execCommand<ImageRecognition>("whatdoyousee","{\"tags\":[],\"description\":{\"tags\":[]}")).output
+  let tags = descimg.tags
 
-  let mutable o = "OK"
-  for _ in !-- stop(ctx?status) do 
-    o <- (new execCommand<string>("stop","")).output
-  
-  let descimg = (new execCommand<ImageDescription>("whatdoyousee","{\"description\":{\"tags\":[]}")).output
-  let tags = descimg.description.tags
   for tag in  tags do
-   printfn "tag:%s" tag
-  //if (is_stop) then printfn "%s" (new execCommand<string>("stop")).output
- //  let stop = (new execCommand<string>("stop")).output
+    for _ in !-- observe(tag.name, ctx?out)  do
+        retract <| Fsc.Facts.observe(tag.name, ctx?out) 
+    
+    tell <| Fsc.Facts.observe(tag.name,is_confidence tag.confidence)   
+  
   let listchat = (new execCommand<List<int>>("telegram list","[]")).output
   for idchat in listchat do 
      let messages = (new execCommand<List<Message>>(sprintf "telegram message %i" idchat,"[]")).output
@@ -171,16 +201,15 @@ let main () =
    //  printfn "\t\tnMessages:%i" nMessages
      if (nMessages>0) then
       let msg = (new execCommand<Message>(sprintf "telegram pop %i" idchat,"{}")).output
-      let cmd = msg.Txt.ToLower()
-      tell <| Fsc.Facts.rover_request(idchat,cmd)
+      let cmd = msg.txt.ToLower()
+      tell <| Fsc.Facts.request(sprintf "%i" idchat,cmd)
       let outcmd=((new execCommand<string>(cmd,"")).output).Trim()
-      tell <| Fsc.Facts.rover_command(cmd,outcmd)
+      tell <| Fsc.Facts.execute(cmd,outcmd)
       let output =
-       if (validate outcmd) then
+     //  if (validate outcmd) then
         (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", (sprintf "%s" outcmd)])).output
-       else
-        (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
-      printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.Idmsg  msg.Txt outcmd output
-
-do if (conf.Debug) then debug()
+      // else
+      //  (new execCommand<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
+      printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.idmsg  msg.txt outcmd output
+do if (conf.debug) then debug()
     else run()

@@ -6,28 +6,36 @@ open CoDa
 
 [<TypedPred>]
 [<Code>]
-let rover_command(s:string,t:string) =
+let execute(s:string,t:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.rover_command(s,t)
+    Fsc.FscContext.execute(s,t)
 
 
 [<TypedPred>]
 [<Code>]
-let rover_request(m:int,s:string) =
+let request(m:int,s:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.rover_request(m,s)
+    Fsc.FscContext.request(m,s)
   
 [<TypedPred>]
 [<Code>]
-let rover_validate(s:string,m:bool) =
+let observe(s:string,m:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.rover_validate(s,m)
+    Fsc.FscContext.observe(s,m)
+
+[<TypedPred>]
+[<Code>]
+let response(m:int,s:string) =
+  if true then
+    failwith "Solved by JIT"
+  else
+    Fsc.FscContext.response(m,s)
 
 [<TypedPred>]
 [<Code>]

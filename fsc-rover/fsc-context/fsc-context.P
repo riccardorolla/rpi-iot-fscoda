@@ -1,11 +1,10 @@
 % facts
-rover_request(IdChat,Cmd) :- rover_request_(IdChat,Cmd).
-rover_command(Cmd,Out) :- rover_command_(Cmd,Out).
-rover_validate(Out,Status) :- rover_validate_(Out,Status).
-rover_outcmd(Out,Cmd) :- rover_outcmd_(Out,Cmd).
-rover_nextcmd(Cmd1,Cmd2) :- rover_command(Cmd1,Out),rover_validate_(Out,true),rover_outcmd(Out,Cmd2).
-stop(Status) :- rover_command('get distance','0'),  
-                 rover_validate('0',Status).
+request(IdChat,Cmd) :- request_(IdChat,Cmd).
+execute(Cmd,Out) :- execute_(Cmd,Out).
+observe(Obj,Status) :- observe_(Obj,Status).
+
+response(IdChat,Out) :- request(IdChat,Cmd),execute(Cmd,Out).
+stop(Status) :- observe('obstacole',Status).
 
  
 
