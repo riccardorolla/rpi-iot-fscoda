@@ -306,8 +306,8 @@ app.get('/translate',function(req,res) {
 							  
     });
 app.get('/whatdoyousee',function(req,res) {
- 
-	 var filename = photo(req.query.width,req.query.height,req.query.quality);
+     var idphoto=req.query.idphoto
+	 var filename = configuration.temp_path+idphoto+'.jpg' //photo(req.query.width,req.query.height,req.query.quality);
 	 var img = fs.readFileSync(filename);
 	 var lang;
 	 lang = req.query.lang;
