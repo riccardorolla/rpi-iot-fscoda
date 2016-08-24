@@ -132,7 +132,7 @@ let get_out  cmd =
 
 let get_req idchat =
      try 
-         let dr = ctx?cmd |- (execute(idchat,ctx?cmd))
+         let dr = ctx?cmd |- (request(idchat,ctx?cmd))
          dr
      with e-> ""
 
@@ -194,7 +194,10 @@ let get_distance =
         do new_execute "get distance"  
         float(get_out "get distance")
     with e-> float(0)
-
+let get_idphoto =
+    try 
+       get_out "get photo"
+    with e -> ""
 let get_messages idchat=
     try
      let msgs = command (sprintf "telegram message %i" idchat)   []
@@ -241,13 +244,16 @@ let initFacts () =
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
- initFacts ()
+  initFacts ()
 
- let mutable continueLooping = true
- while (continueLooping) do
+  let mutable continueLooping = true
+// while (continueLooping) do
  
   do new_observe "obstacle"  (is_obstacle (get_distance))
-  let descimg =  command "whatdoyousee" [] |> imagerecognition
+  do new_execute "get photo"
+  //let idphoto=
+ // printfn "%s" idphoto
+  let descimg =  command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition
   for tag in descimg.tags 
     do new_observe tag.name (is_confidence tag.confidence)
        new_execute (get_nextcmd tag.name)
