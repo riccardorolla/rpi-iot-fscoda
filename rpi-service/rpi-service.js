@@ -132,7 +132,7 @@ function photo(width,height,quality) {
 	 
 	 code = execSync(cmd);
 	
-	 return filename;
+	 return idphoto;
 }
 
 function video(width,height,time) {
@@ -156,7 +156,7 @@ function video(width,height,time) {
 	console.log(vconv_cmd);
 	code2 = execSync(vconv_cmd);
  
-	return filenameconv;
+	return idvideo;
  
 	
 }
@@ -193,7 +193,9 @@ app.get('/telegram/:idchat/msg/shift',function(req,res) {
 })
 app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
-	var filename = video(req.query.width,req.query.height,req.query.quality);
+	var idvideo=req.query.idvideo
+	var msg = req.query.msg;
+	var filename = configuration.temp_path+idvideo+'.mp4';
 	if (undefined != msg) 
 		bot.sendVideo(idchat,filename, {caption: msg});
 	else 
@@ -206,10 +208,9 @@ app.get('/telegram/:idchat/video',function(req,res) {
 
 app.get('/telegram/:idchat/photo',function(req,res) {
 	var idchat=req.params.idchat
-	
-	 var filename = photo(req.query.width,req.query.height,req.query.quality);
-	 var img = fs.readFileSync(filename);
-	 var msg = req.query.msg;
+	var idphoto=req.query.idphoto
+	var filename = configuration.temp_path+idphoto+'.jpg'
+	var msg = req.query.msg;
 	 
 	 
      var resvision =  whatdoyousee(img,
@@ -235,6 +236,7 @@ app.get('/telegram/:idchat/text',function(req,res) {
  var txt = req.query.text ;
  bot.sendMessage(idchat,txt);
  res.send('send msg');
+ 
 });
 
 app.get('/rpi/motor/:command',function(req,res) {
@@ -252,6 +254,7 @@ app.get('/rpi/distance/',function(req,res) {
 	res.send(code.toString());
 	res.end();
 });
+/*
 app.get('/rpi/photo',function(req,res) {
 	 var filename = photo(req.query.width,req.query.height,req.query.quality);
 	 var img = fs.readFileSync(filename);
@@ -266,6 +269,23 @@ app.get('/rpi/video',function(req,res) {
 	 var vid = fs.readFileSync(filename);
      res.writeHead(200, {'Content-Type': 'video/mp4' });
      res.end(vid, 'binary');
+  
+							  
+    });
+*/
+app.get('/rpi/photo',function(req,res) {
+	 var idphoto = photo(req.query.width,req.query.height,req.query.quality);
+	 res.send(idphoto);
+	 res.end();
+	  
+  
+							  
+    });
+app.get('/rpi/video',function(req,res) {
+ 
+	 var idvideo = video(req.query.width,req.query.height,req.query.time);
+	 res.send(idvideo);
+	 res.end();
   
 							  
     });
