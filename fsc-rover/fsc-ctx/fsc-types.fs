@@ -15,7 +15,7 @@ let execute(s:string,t:string) =
 
 [<TypedPred>]
 [<Code>]
-let request(m:int,s:string) =
+let request(m:string,s:string) =
   if true then
     failwith "Solved by JIT"
   else
@@ -31,7 +31,7 @@ let observe(s:string,m:string) =
 
 [<TypedPred>]
 [<Code>]
-let response(m:int,s:string) =
+let response(m:string,s:string) =
   if true then
     failwith "Solved by JIT"
   else
@@ -39,8 +39,16 @@ let response(m:int,s:string) =
 
 [<TypedPred>]
 [<Code>]
-let stop(m:bool) =
+let then_next(m:string,s:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.stop(m)
+    Fsc.FscContext.then_next(m,s)
+
+[<TypedPred>]
+[<Code>]
+let else_next(m:string,s:string) =
+  if true then
+    failwith "Solved by JIT"
+  else
+    Fsc.FscContext.else_next(m,s)

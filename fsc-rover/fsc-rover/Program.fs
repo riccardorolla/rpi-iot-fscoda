@@ -64,42 +64,41 @@ let cmdbuild (text : string)  =
    | _ -> sprintf "neither"
  | Prefix "whatdoyousee" rest -> sprintf "whatdoyousee"
  | Prefix "translate" rest -> sprintf "translate"
- | _ -> sprintf "neither"
+ | _ -> sprintf "nop"
 
 
-type Command<'T>(cmd :string , value, ?q0) =
- let q = defaultArg q0 []
- let command = cmd
- let out = 
+let command  cmd q   =
+
+ 
      let resp=try 
-               Http.RequestString((urlbuild (cmdbuild(cmd))), q,  silentHttpErrors = true)
+               Http.RequestString((urlbuild (cmdbuild(cmd))), q , silentHttpErrors = true)
               with 
-              | :? System.Net.WebException -> value
-     try 
-      JsonConvert.DeserializeObject<'T>(sprintf "%s" (resp))       
-     with 
-     | :? Newtonsoft.Json.JsonReaderException -> 
-      JsonConvert.DeserializeObject<'T>(JsonConvert.SerializeObject(resp)) 
+              | :? System.Net.WebException ->    "error"
+     resp
+ 
+ 
 
- member this.output 
-   with get() =  
+//let command cmd default_out = command cmd default_out []
+  //member this.output 
+//   with get() =  
 
-       out
+     
   
  
 type ImageRecognition =
  { 
    tags:List<Tag>;
-   description: Descrition ;
+   description: Description ;
    requestId: string;
    metadata: Meta
+   
  }
 and Tag = 
  {
    name:string;
    confidence:double
  }
-and Descrition =
+and Description =
  { 
    tags:List<string>;
    captions: List<Caption>
@@ -130,6 +129,7 @@ let get_out  cmd =
           let dr = ctx?out |- (execute(cmd,ctx?out))
           dr
       with e-> ""
+
 let get_req idchat =
      try 
          let dr = ctx?cmd |- (execute(idchat,ctx?cmd))
@@ -143,7 +143,15 @@ let get_observe obj  =
         bool.Parse(s)
      with e-> false
 
-
+let get_nextcmd obj = 
+    try 
+        if (get_observe obj) then
+         let cmd = ctx?cmd |- then_next(obj,ctx?cmd)
+         cmd
+        else 
+         let cmd = ctx?cmd |- else_next(obj,ctx?cmd)
+         cmd
+    with e -> "nop"
 let display_request idchat cmd =
   match ctx with
   | _ when !- request(idchat, cmd) -> printfn " - %s" cmd
@@ -161,57 +169,90 @@ let is_confidence confidence =
      else "false"
 
 
-let new_execute cmd out =
+let new_execute cmd  =
     for _ in !-- execute(cmd,ctx?out) do
      retract <| Fsc.Facts.execute(cmd, ctx?out) 
-    tell <| Fsc.Facts.execute(cmd,out)
+    tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
 
 let new_observe name status =
     for _ in !-- observe(name,ctx?status) do
      retract <| Fsc.Facts.observe(name, ctx?status) 
     tell <| Fsc.Facts.observe(name,status)
 
+let chats str =
+    try
+     JsonConvert.DeserializeObject<List<int>>(str)
+    with e ->    JsonConvert.DeserializeObject<List<int>>("[]")
+ 
+let imagerecognition str =
+ try
+  JsonConvert.DeserializeObject<ImageRecognition>(str)
+ with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
+
+let get_distance =
+    try 
+        do new_execute "get distance"  
+        float(get_out "get distance")
+    with e-> float(0)
+
+let get_messages idchat=
+    try
+     let msgs = command (sprintf "telegram message %i" idchat)   []
+     JsonConvert.DeserializeObject<List<Message>>(msgs)
+    with e-> JsonConvert.DeserializeObject<List<Message>>("[]")
+
+let get_message idchat =
+    try
+     let msg=command (sprintf "telegram pop %i" idchat) []
+     let out=JsonConvert.DeserializeObject<Message>(msg)
+     out.txt.ToLower()
+    with e-> "nop"
+
+let process_chat idchat =
+     let cmd= match (get_message idchat) with
+              | Prefix "photo" rest -> sprintf "telegram photo %i" idchat 
+              | Prefix "video" rest -> sprintf "telegram video %i" idchat
+              | Prefix "distance" rest -> sprintf "get distance"
+              | Prefix "left" rest -> sprintf "go left"
+              | Prefix "forward" rest -> sprintf "go forward"
+              | Prefix "backward" rest -> sprintf "go backward"
+              | Prefix "right" rest -> sprintf "go right"
+              | _ -> "nop"
+
+     for _ in !-- request(sprintf "%i" idchat,ctx?cmd) do
+      retract <| Fsc.Facts.request(sprintf "%i" idchat,ctx?cmd) 
+     tell<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
+     do new_execute cmd
+     try
+      let out = ctx?out |- response(sprintf "%i" idchat,ctx?out)
+      out
+     with e-> "error"
+
 [<CoDa.ContextInit>]
 let initFacts () =
- 
+ tell <| Fsc.Facts.request("0","nop")
  tell <| Fsc.Facts.execute("get distance","0")
  tell <| Fsc.Facts.observe("obstacle","true")
+ tell <| Fsc.Facts.then_next("obstacle","stop")
+ tell <| Fsc.Facts.else_next("obstacle","go forward")
+ tell <| Fsc.Facts.then_next("person","led on 1")
+ tell <| Fsc.Facts.else_next("person","led off 1")
+
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
- display_out "led on 1" "OK"
+
  let mutable continueLooping = true
  while (continueLooping) do
-
-  let  distance = float (new Command<string>("get distance","0.0")).output
-  do new_execute "get distance"  (sprintf "%f" distance)
-  do new_observe "obstacle"  (is_obstacle distance)
  
- 
-  let descimg = (new Command<ImageRecognition>("whatdoyousee","{\"tags\":[],\"description\":{\"tags\":[]}")).output
-  let tags = descimg.tags
-
-  for tag in  tags do
+  do new_observe "obstacle"  (is_obstacle (get_distance))
+  let descimg =  command "whatdoyousee" [] |> imagerecognition
+  for tag in descimg.tags 
     do new_observe tag.name (is_confidence tag.confidence)
-    
-  
-  let listchat = (new Command<List<int>>("telegram list","[]")).output
-  for idchat in listchat do 
-     let messages = (new Command<List<Message>>(sprintf "telegram message %i" idchat,"[]")).output
-     let nMessages = messages |> Seq.length
-   //  printfn "\t\tnMessages:%i" nMessages
-     if (nMessages>0) then
-      let msg = (new Command<Message>(sprintf "telegram pop %i" idchat,"{}")).output
-
-      let cmd = msg.txt.ToLower()
-      tell <| Fsc.Facts.request(sprintf "%i" idchat,cmd)
-      do new_execute cmd ((new Command<string>(cmd,"")).output).Trim()
-      let output =
-     //  if (validate outcmd) then
-        (new Command<string>((sprintf "telegram text %i" idchat),"",["text", (sprintf "%s" outcmd)])).output
-      // else
-      //  (new Command<string>((sprintf "telegram text %i" idchat),"",["text", "not validate"])).output
-      printfn "\t\t\tidmsg:%s,txt:%s,outcmd:%s,output:%s" msg.idmsg  msg.txt outcmd output
+       new_execute (get_nextcmd tag.name)
+  let listchat = command  "telegram list"     [] |> chats
+  for idchat in listchat 
+   do printfn "chat %i,output:%s" idchat (process_chat idchat)
 do if (conf.debug) then debug()
     else run()

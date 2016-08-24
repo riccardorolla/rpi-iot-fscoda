@@ -37,6 +37,26 @@ public static IEnumerable<bool> observe(object Obj, object Status)
     }
 }
 
+public static IEnumerable<bool> then_next(object Obj, object Cmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("then_next_"), new object[] { Obj, Cmd }))
+        {
+            yield return false;
+        }
+    }
+}
+
+public static IEnumerable<bool> else_next(object Obj, object Cmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("else_next_"), new object[] { Obj, Cmd }))
+        {
+            yield return false;
+        }
+    }
+}
+
 public static IEnumerable<bool> response(object IdChat, object Out)
 {
     {
@@ -47,16 +67,6 @@ public static IEnumerable<bool> response(object IdChat, object Out)
             {
                 yield return false;
             }
-        }
-    }
-}
-
-public static IEnumerable<bool> stop(object Status)
-{
-    {
-        foreach (bool l2 in observe(Atom.a("obstacle"), Status))
-        {
-            yield return false;
         }
     }
 }
