@@ -68,14 +68,13 @@ let cmdbuild (text : string)  =
 
 
 let command  cmd q   =
-
- 
      let resp=try 
                Http.RequestString((urlbuild (cmdbuild(cmd))), q , silentHttpErrors = true)
               with 
               | :? System.Net.WebException ->    "error"
+     printfn "command %s -> %s" cmd resp
      resp
- 
+    
  
 
 //let command cmd default_out = command cmd default_out []
@@ -152,6 +151,13 @@ let get_nextcmd obj =
          let cmd = ctx?cmd |- else_next(obj,ctx?cmd)
          cmd
     with e -> "nop"
+
+let get_response idchat =
+    try
+     let out = ctx?out |- (response(sprintf "%i" idchat,ctx?out))
+     out
+    with e-> "error"
+
 let display_request idchat cmd =
   match ctx with
   | _ when !- request(idchat, cmd) -> printfn " - %s" cmd
@@ -170,6 +176,7 @@ let is_confidence confidence =
 
 
 let new_execute cmd  =
+    printfn "new_execute %s" cmd 
     for _ in !-- execute(cmd,ctx?out) do
      retract <| Fsc.Facts.execute(cmd, ctx?out) 
     tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
@@ -210,23 +217,26 @@ let get_message idchat =
      let msg=command (sprintf "telegram pop %i" idchat) []
      let out=JsonConvert.DeserializeObject<Message>(msg)
      out.txt.ToLower()
-    with e-> "nop"
 
-let send_message idchat text=
-    let snd= match (get_message idchat) with
+    with e-> "nop"
+   
+let send_message idchat cmd text:string=
+    printfn "send_message %i %s %s" idchat cmd text
+    let snd= match (cmd) with
              | Prefix "get photo" rest -> command (sprintf "telegram photo %i" idchat)
                                               ["idphoto",get_out "get photo";
                                                "text",((command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition).description.captions.[0].text)]
              | Prefix "get video" rest -> command (sprintf "telegram video %i" idchat) 
                                               ["idvideo",get_out "get video";
                                                "text",(command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition).description.captions.[0].text ]
-             | _   -> command  (sprintf "telegram text %i" idchat) [ "text",text]
+             | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd text]
  
     snd
  
 
 
 let process_chat idchat =
+     printfn "process_chat %i" idchat 
      let cmd= match (get_message idchat) with
               | Prefix "photo" rest -> sprintf "get photo"  
               | Prefix "video" rest -> sprintf "get video"  
@@ -236,16 +246,15 @@ let process_chat idchat =
               | Prefix "backward" rest -> sprintf "go backward"
               | Prefix "right" rest -> sprintf "go right"
               | _ -> "nop"
+     printfn "proccess_chat %i {%s}" idchat cmd
      if not (cmd="nop") then 
-       for _ in !-- request(sprintf "%i" idchat,ctx?cmd) do
-        retract <| Fsc.Facts.request(sprintf "%i" idchat,ctx?cmd) 
-       tell<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
-       do new_execute cmd
-       try
-        let out = ctx?out |- response(sprintf "%i" idchat,ctx?out)
-        send_message idchat out
-       with e-> "error"
-      else "nop"
+
+        tell <| Fsc.Facts.request(sprintf "%i" idchat,cmd)       
+        do new_execute cmd
+        let snd=send_message idchat cmd (get_response idchat)
+        retract<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
+        sprintf "%s" snd
+     else "nop"
 
 [<CoDa.ContextInit>]
 let initFacts () =
@@ -276,6 +285,6 @@ let main () =
   let listchat = command  "telegram list"     [] |> chats
   for idchat in listchat do
     let result =  process_chat idchat 
-    printfn "%s" result
+    printfn "result %s" result
 do if (conf.debug) then debug()
     else run()
