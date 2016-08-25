@@ -209,23 +209,12 @@ app.get('/telegram/:idchat/video',function(req,res) {
 app.get('/telegram/:idchat/photo',function(req,res) {
 	var idchat=req.params.idchat
 	var idphoto=req.query.idphoto
+ 
 	var filename = configuration.temp_path+idphoto+'.jpg'
-	var msg = req.query.msg;
+	var msg = req.query.text;
+	bot.sendPhoto(idchat, filename, {caption:msg})
 	 
-	 
-     var resvision =  whatdoyousee(img,
-							function(response) {
-								console.log(response.getBody().toString('utf-8')); 
-								translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en','it',function(strout) {
-										bot.sendPhoto(idchat, filename, {caption:strout});
-										res.send('send photo:'+strout);
-										res.end();
-								});
-							},
-							function (err) {
-									res.send(err);
-									res.end();
-								});
+     
 							  
     });
  
