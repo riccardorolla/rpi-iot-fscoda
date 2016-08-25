@@ -77,7 +77,7 @@ namespace Rover
             _leftMotor.MoveBackward();
             _rightMotor.MoveForward();
 
-			await Task.Delay(TimeSpan.FromMilliseconds(time))
+			await Task.Delay(TimeSpan.FromMilliseconds(time));
 
             _leftMotor.Stop();
             _rightMotor.Stop();
