@@ -1,7 +1,7 @@
 ﻿using System;
 using Raspberry.IO.GeneralPurpose;
 using Raspberry.IO.GeneralPurpose.Behaviors;
-
+using System.Threading;
 namespace Rover
 
 {
@@ -21,21 +21,32 @@ namespace Rover
 				case "motor":
 					{
 						TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor);
-						if (args.Length > 1)
+						if (args.Length > 2)
 						{
+							int time = 1;
+							bool result = int.TryParse(args[3], out time);
 							switch (args[1])
 							{
+								
 								case "left":
 									motors.TurnLeft();
+									Thread.Sleep(time * 1000);
+									motors.Stop();
 									break;
 								case "right":
 									motors.TurnRight();
+									Thread.Sleep(time * 1000);
+									motors.Stop();
 									break;
 								case "forward":
 									motors.MoveForward();
+									Thread.Sleep(time * 1000);
+									motors.Stop();
 									break;
 								case "backward":
 									motors.MoveBackward();
+									Thread.Sleep(time * 1000);
+									motors.Stop();
 									break;
 								case "stop":
 									motors.Stop();
