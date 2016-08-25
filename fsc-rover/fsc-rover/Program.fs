@@ -178,7 +178,7 @@ let new_observe name status =
     for _ in !-- observe(name,ctx?status) do
      retract <| Fsc.Facts.observe(name, ctx?status) 
     tell <| Fsc.Facts.observe(name,status)
-
+ 
 let chats str =
     try
      JsonConvert.DeserializeObject<List<int>>(str)
@@ -188,7 +188,8 @@ let imagerecognition str =
  try
   JsonConvert.DeserializeObject<ImageRecognition>(str)
  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
-
+let get_caption ir =
+    ir.captions.[0].text
 let get_distance =
     try 
         do new_execute "get distance"  
@@ -211,25 +212,40 @@ let get_message idchat =
      out.txt.ToLower()
     with e-> "nop"
 
+let send_message idchat text=
+    let snd= match (get_message idchat) with
+             | Prefix "get photo" rest -> command (sprintf "telegram photo %i" idchat)
+                                              ["idphoto",get_out "get photo";
+                                               "text",((command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition).description.captions.[0].text)]
+             | Prefix "get video" rest -> command (sprintf "telegram video %i" idchat) 
+                                              ["idvideo",get_out "get video";
+                                               "text",(command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition).description.captions.[0].text ]
+             | _   -> command  (sprintf "telegram text %i" idchat) [ "text",text]
+ 
+    snd
+ 
+
+
 let process_chat idchat =
      let cmd= match (get_message idchat) with
-              | Prefix "photo" rest -> sprintf "telegram photo %i" idchat 
-              | Prefix "video" rest -> sprintf "telegram video %i" idchat
+              | Prefix "photo" rest -> sprintf "get photo"  
+              | Prefix "video" rest -> sprintf "get video"  
               | Prefix "distance" rest -> sprintf "get distance"
               | Prefix "left" rest -> sprintf "go left"
               | Prefix "forward" rest -> sprintf "go forward"
               | Prefix "backward" rest -> sprintf "go backward"
               | Prefix "right" rest -> sprintf "go right"
               | _ -> "nop"
-
-     for _ in !-- request(sprintf "%i" idchat,ctx?cmd) do
-      retract <| Fsc.Facts.request(sprintf "%i" idchat,ctx?cmd) 
-     tell<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
-     do new_execute cmd
-     try
-      let out = ctx?out |- response(sprintf "%i" idchat,ctx?out)
-      out
-     with e-> "error"
+     if not (cmd="nop") then 
+       for _ in !-- request(sprintf "%i" idchat,ctx?cmd) do
+        retract <| Fsc.Facts.request(sprintf "%i" idchat,ctx?cmd) 
+       tell<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
+       do new_execute cmd
+       try
+        let out = ctx?out |- response(sprintf "%i" idchat,ctx?out)
+        send_message idchat out
+       with e-> "error"
+      else "nop"
 
 [<CoDa.ContextInit>]
 let initFacts () =
@@ -244,10 +260,10 @@ let initFacts () =
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
-  initFacts ()
+ initFacts ()
 
-  let mutable continueLooping = true
-// while (continueLooping) do
+ let mutable continueLooping = true
+ while (continueLooping) do
  
   do new_observe "obstacle"  (is_obstacle (get_distance))
   do new_execute "get photo"
@@ -258,7 +274,8 @@ let main () =
     do new_observe tag.name (is_confidence tag.confidence)
        new_execute (get_nextcmd tag.name)
   let listchat = command  "telegram list"     [] |> chats
-  for idchat in listchat 
-   do printfn "chat %i,output:%s" idchat (process_chat idchat)
+  for idchat in listchat do
+    let result =  process_chat idchat 
+    printfn "%s" result
 do if (conf.debug) then debug()
     else run()
