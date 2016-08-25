@@ -21,7 +21,7 @@ namespace Rover
 				case "motor":
 					{
 						TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor);
-						if (args.Length > 2)
+						if (args.Length > 1)
 						{
 					
 							switch (args[1])
