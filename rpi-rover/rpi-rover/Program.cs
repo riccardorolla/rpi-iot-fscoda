@@ -20,23 +20,22 @@ namespace Rover
 			{
 				case "motor":
 					{
-						TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor);
+						
 						if (args.Length > 1)
 						{
 							int time = 1;
 							if (args.Length==3) int.TryParse(args[2], out time);
+							TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor,time);
 							switch (args[1])
 							{
 								
 								case "left":
 									motors.TurnLeft();
-									Thread.Sleep(time * 3000);
-									motors.Stop();
+ 
 									break;
 								case "right":
 									motors.TurnRight();
-									Thread.Sleep(time * 3000);
-									motors.Stop();
+
 									break;
 								case "forward":
 									motors.MoveForward();
@@ -45,7 +44,7 @@ namespace Rover
 									break;
 								case "backward":
 									motors.MoveBackward();
-									Thread.Sleep(time * 700);
+									Thread.Sleep(time * 500);
 									motors.Stop();
 									break;
 								case "stop":
