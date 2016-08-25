@@ -194,7 +194,7 @@ app.get('/telegram/:idchat/msg/shift',function(req,res) {
 app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
 	var idvideo=req.query.idvideo
-	var msg = req.query.msg;
+	var msg = req.query.text;
 	var filename = configuration.temp_path+idvideo+'.mp4';
 	if (undefined != msg) 
 		bot.sendVideo(idchat,filename, {caption: msg});
@@ -213,8 +213,8 @@ app.get('/telegram/:idchat/photo',function(req,res) {
 	var filename = configuration.temp_path+idphoto+'.jpg'
 	var msg = req.query.text;
 	bot.sendPhoto(idchat, filename, {caption:msg})
-	 
-     
+	res.send('send photo')
+     res.end();
 							  
     });
  

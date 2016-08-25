@@ -37,20 +37,10 @@ public static IEnumerable<bool> observe(object Obj, object Status)
     }
 }
 
-public static IEnumerable<bool> then_next(object Obj, object Cmd)
+public static IEnumerable<bool> rule(object Obj, object Status, object Cmd)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("then_next_"), new object[] { Obj, Cmd }))
-        {
-            yield return false;
-        }
-    }
-}
-
-public static IEnumerable<bool> else_next(object Obj, object Cmd)
-{
-    {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("else_next_"), new object[] { Obj, Cmd }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("rule_"), new object[] { Obj, Status, Cmd }))
         {
             yield return false;
         }
@@ -64,6 +54,20 @@ public static IEnumerable<bool> response(object IdChat, object Out)
         foreach (bool l2 in request(IdChat, Cmd))
         {
             foreach (bool l3 in execute(Cmd, Out))
+            {
+                yield return false;
+            }
+        }
+    }
+}
+
+public static IEnumerable<bool> next(object Obj, object Cmd)
+{
+    {
+        Variable Status = new Variable();
+        foreach (bool l2 in observe(Obj, Status))
+        {
+            foreach (bool l3 in rule(Obj, Status, Cmd))
             {
                 yield return false;
             }

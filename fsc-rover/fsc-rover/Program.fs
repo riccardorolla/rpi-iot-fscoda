@@ -68,8 +68,11 @@ let cmdbuild (text : string)  =
 
 
 let command  cmd q   =
+    printfn "command %s" cmd
+    if (cmd="nop") then sprintf "OK"
+    else
      let resp=try 
-               Http.RequestString((urlbuild (cmdbuild(cmd))), q , silentHttpErrors = true)
+               Http.RequestString((urlbuild (cmdbuild(cmd))), q , headers = [ "Cache-Control","NoCache" ])
               with 
               | :? System.Net.WebException ->    "error"
      printfn "command %s -> %s" cmd resp
@@ -139,17 +142,15 @@ let get_req idchat =
 let get_observe obj  =
     try
         let s = ctx?status |- observe(obj,ctx?status)
-        bool.Parse(s)
-     with e-> false
+        printfn "get_objerve %s -> %s" obj s
+        s
+     with e-> "false"
 
 let get_nextcmd obj = 
     try 
-        if (get_observe obj) then
-         let cmd = ctx?cmd |- then_next(obj,ctx?cmd)
+         let cmd = ctx?cmd |- next(obj,ctx?cmd)
          cmd
-        else 
-         let cmd = ctx?cmd |- else_next(obj,ctx?cmd)
-         cmd
+        
     with e -> "nop"
 
 let get_response idchat =
@@ -168,9 +169,11 @@ let display_out cmd out =
   | _ when !- execute(cmd, out) -> printfn " - %s" out
   | _ -> printfn " - %s (this cmd not output)" out
 let is_obstacle distance =
+    printfn "is_osbtacle %f" distance
     if (distance<0.3) then "true"
      else "false" 
 let is_confidence confidence =
+    printfn "is_confidence %f" confidence
     if (confidence>0.9) then "true"
      else "false"
 
@@ -179,9 +182,13 @@ let new_execute cmd  =
     printfn "new_execute %s" cmd 
     for _ in !-- execute(cmd,ctx?out) do
      retract <| Fsc.Facts.execute(cmd, ctx?out) 
-    tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
+    if (cmd="whatdoyousee") then 
+     tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
+    else
+     tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
 
 let new_observe name status =
+    printfn "new_observe %s %s" name status
     for _ in !-- observe(name,ctx?status) do
      retract <| Fsc.Facts.observe(name, ctx?status) 
     tell <| Fsc.Facts.observe(name,status)
@@ -195,13 +202,8 @@ let imagerecognition str =
  try
   JsonConvert.DeserializeObject<ImageRecognition>(str)
  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
-let get_caption ir =
-    ir.captions.[0].text
-let get_distance =
-    try 
-        do new_execute "get distance"  
-        float(get_out "get distance")
-    with e-> float(0)
+ 
+ 
 let get_idphoto =
     try 
        get_out "get photo"
@@ -225,10 +227,10 @@ let send_message idchat cmd text:string=
     let snd= match (cmd) with
              | Prefix "get photo" rest -> command (sprintf "telegram photo %i" idchat)
                                               ["idphoto",get_out "get photo";
-                                               "text",((command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition).description.captions.[0].text)]
+                                               "text",((get_out "whatdoyousee") |> imagerecognition).description.captions.[0].text]
              | Prefix "get video" rest -> command (sprintf "telegram video %i" idchat) 
                                               ["idvideo",get_out "get video";
-                                               "text",(command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition).description.captions.[0].text ]
+                                               "text",(get_out "whatdoyousee" |> imagerecognition).description.captions.[0].text ]
              | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd text]
  
     snd
@@ -245,43 +247,56 @@ let process_chat idchat =
               | Prefix "forward" rest -> sprintf "go forward"
               | Prefix "backward" rest -> sprintf "go backward"
               | Prefix "right" rest -> sprintf "go right"
-              | _ -> "nop"
-     printfn "proccess_chat %i {%s}" idchat cmd
-     if not (cmd="nop") then 
-
+              | Prefix "nop" rest -> sprintf "nop"
+              | _ -> "help"
+     printfn "process_chat %i {%s}" idchat cmd
+     match (cmd) with
+       | "help" ->
+        let snd=send_message idchat cmd (sprintf "you can use this command:\n\tphoto\n\tvideo\n\tdistance\n\tleft\n\tright\n\tforward\n\tbackward\n")
+        sprintf "%s" snd
+       | "nop" -> sprintf "nop"
+       | _ -> 
         tell <| Fsc.Facts.request(sprintf "%i" idchat,cmd)       
         do new_execute cmd
         let snd=send_message idchat cmd (get_response idchat)
         retract<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
         sprintf "%s" snd
-     else "nop"
 
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Fsc.Facts.request("0","nop")
  tell <| Fsc.Facts.execute("get distance","0")
- tell <| Fsc.Facts.observe("obstacle","true")
- tell <| Fsc.Facts.then_next("obstacle","stop")
- tell <| Fsc.Facts.else_next("obstacle","go forward")
- tell <| Fsc.Facts.then_next("person","led on 1")
- tell <| Fsc.Facts.else_next("person","led off 1")
-
+ tell <| Fsc.Facts.rule("obstacle","false","get photo")
+ tell <| Fsc.Facts.rule("obstacle","false","whatdoyousee")
+ tell <| Fsc.Facts.rule("obstacle","true","stop")
+ tell <| Fsc.Facts.rule("obstacle","false","go forward")
+ tell <| Fsc.Facts.rule("obstacle","false","get distance")
+ tell <| Fsc.Facts.rule("obstacle","true","get distance")
+ tell <| Fsc.Facts.rule("person","true","led on 1")
+ tell <| Fsc.Facts.rule("person","false","led off 1")
+ for _ in !-- rule(ctx?obj,"false",ctx?cmd) do
+   tell<|Fsc.Facts.observe(ctx?obj,"false")
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
-
+ new_execute "get distance"
+ new_execute "get photo"
+ new_execute "whatdoyousee"
  let mutable continueLooping = true
  while (continueLooping) do
  
-  do new_observe "obstacle"  (is_obstacle (get_distance))
-  do new_execute "get photo"
-  //let idphoto=
- // printfn "%s" idphoto
-  let descimg =  command "whatdoyousee" ["idphoto",get_out "get photo"] |> imagerecognition
-  for tag in descimg.tags 
-    do new_observe tag.name (is_confidence tag.confidence)
-       new_execute (get_nextcmd tag.name)
+ 
+  new_observe "obstacle"  (is_obstacle
+                              ( try 
+                                (float(get_out "get distance"))
+                                with e-> float(0) ))
+
+  let recognition = get_out "whatdoyousee" |> imagerecognition
+  for tag in recognition.tags do 
+       new_observe tag.name (is_confidence tag.confidence)
+  for _ in !-- next(ctx?obj,ctx?cmd) do
+       new_execute ctx?cmd
   let listchat = command  "telegram list"     [] |> chats
   for idchat in listchat do
     let result =  process_chat idchat 

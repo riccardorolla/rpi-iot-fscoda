@@ -2,13 +2,12 @@
 request(IdChat,Cmd) :- request_(IdChat,Cmd).
 execute(Cmd,Out) :- execute_(Cmd,Out).
 observe(Obj,Status) :- observe_(Obj,Status).
-then_next(Obj,Cmd) :- then_next_(Obj,Cmd).
-else_next(Obj,Cmd) :- else_next_(Obj,Cmd).
- 
+rule(Obj,Status,Cmd) :- rule_(Obj,Status,Cmd).
+
 
 response(IdChat,Out) :- request(IdChat,Cmd),execute(Cmd,Out).
+next(Obj,Cmd) :- observe(Obj,Status),rule(Obj,Status,Cmd).
  
-
  
 
 

@@ -39,16 +39,17 @@ let response(m:string,s:string) =
 
 [<TypedPred>]
 [<Code>]
-let then_next(m:string,s:string) =
+let rule(x:string,y:string,z:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.then_next(m,s)
+    Fsc.FscContext.rule(x,y,z)
 
 [<TypedPred>]
 [<Code>]
-let else_next(m:string,s:string) =
-  if true then
-    failwith "Solved by JIT"
-  else
-    Fsc.FscContext.else_next(m,s)
+let next(x:string,y:string) =
+   if true then
+     failwith "Solved by JIT"
+   else
+     Fsc.FscContext.next(x,y)
+ 
