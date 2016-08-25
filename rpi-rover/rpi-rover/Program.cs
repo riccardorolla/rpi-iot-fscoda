@@ -24,7 +24,7 @@ namespace Rover
 						if (args.Length > 2)
 						{
 							int time = 1;
-							bool result = int.TryParse(args[3], out time);
+							bool result = int.TryParse(args[2], out time);
 							switch (args[1])
 							{
 								
