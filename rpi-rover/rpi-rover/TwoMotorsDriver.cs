@@ -10,12 +10,11 @@ namespace Rover
     {
  
         private readonly Motor _leftMotor;
-		private int time;
+	 
         private readonly Motor _rightMotor;
-		public TwoMotorsDriver (int[] pin,int time){
+		public TwoMotorsDriver (int[] pin){
 			_leftMotor = new Motor(pin[0], pin[1]);
 			_rightMotor = new Motor(pin[2], pin[3]);
-			this.time = time;
 			  }
         public TwoMotorsDriver(Motor leftMotor, Motor rightMotor)
         {
@@ -39,14 +38,13 @@ namespace Rover
         {
             _leftMotor.MoveBackward();
             _rightMotor.MoveBackward();
-
         }
 		public void TurnRight()
 		{
 			_leftMotor.MoveForward();
 			_rightMotor.MoveBackward();
 
-			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(time));
+			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
 
 
 			_leftMotor.Stop();
@@ -57,7 +55,7 @@ namespace Rover
             _leftMotor.MoveForward();
             _rightMotor.MoveBackward();
 
-            await Task.Delay(TimeSpan.FromMilliseconds(time));
+            await Task.Delay(TimeSpan.FromMilliseconds(250));
 
             _leftMotor.Stop();
             _rightMotor.Stop();
@@ -67,7 +65,7 @@ namespace Rover
 			_leftMotor.MoveBackward();
 			_rightMotor.MoveForward();
 
-			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(time));
+			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
 
 			_leftMotor.Stop();
 			_rightMotor.Stop();
@@ -77,7 +75,7 @@ namespace Rover
             _leftMotor.MoveBackward();
             _rightMotor.MoveForward();
 
-			await Task.Delay(TimeSpan.FromMilliseconds(time));
+            await Task.Delay(TimeSpan.FromMilliseconds(250));
 
             _leftMotor.Stop();
             _rightMotor.Stop();
