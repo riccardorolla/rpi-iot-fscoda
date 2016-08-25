@@ -23,8 +23,7 @@ namespace Rover
 						TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor);
 						if (args.Length > 2)
 						{
-							int time = 1;
-							bool result = int.TryParse(args[3], out time);
+					
 							switch (args[1])
 							{
 								
