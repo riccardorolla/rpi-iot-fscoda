@@ -30,22 +30,22 @@ namespace Rover
 								
 								case "left":
 									motors.TurnLeft();
-									Thread.Sleep(time * 1000);
+									Thread.Sleep(time * 3000);
 									motors.Stop();
 									break;
 								case "right":
 									motors.TurnRight();
-									Thread.Sleep(time * 1000);
+									Thread.Sleep(time * 3000);
 									motors.Stop();
 									break;
 								case "forward":
 									motors.MoveForward();
-									Thread.Sleep(time * 1000);
+									Thread.Sleep(time * 500);
 									motors.Stop();
 									break;
 								case "backward":
 									motors.MoveBackward();
-									Thread.Sleep(time * 1000);
+									Thread.Sleep(time * 700);
 									motors.Stop();
 									break;
 								case "stop":
