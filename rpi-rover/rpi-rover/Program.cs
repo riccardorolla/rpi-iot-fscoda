@@ -21,10 +21,10 @@ namespace Rover
 				case "motor":
 					{
 						TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor);
-						if (args.Length > 2)
+						if (args.Length > 1)
 						{
 							int time = 1;
-							bool result = int.TryParse(args[2], out time);
+							if (args.Length==3) int.TryParse(args[2], out time);
 							switch (args[1])
 							{
 								
