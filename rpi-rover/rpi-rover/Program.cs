@@ -29,25 +29,30 @@ namespace Rover
 								
 								case "left":
 									motors.TurnLeft();
+									Console.Write("OK");
 									break;
 								case "right":
 									motors.TurnRight();
+									Console.Write("OK");
 									break;
 								case "forward":
 									motors.MoveForward();
+									Console.Write("OK");
 									break;
 								case "backward":
 									motors.MoveBackward();
+									Console.Write("OK");
 									break;
 								case "stop":
 									motors.Stop();
+									Console.Write("OK");
 									break;
 								default:
 									{ }
 									break;
 							}
 						}
-						Console.Write("OK");
+
 					}
 					break;
 				case "uds":
