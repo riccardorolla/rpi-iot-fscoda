@@ -6,14 +6,48 @@ open System.IO
 open CoDa.Runtime
 open Fsc.Types
 open Fsc.Utils
- 
+open Newtonsoft.Json
+
+type ImageRecognition =
+ { 
+   tags:List<Tag>;
+   description: Description ;
+   requestId: string;
+   metadata: Meta
+   
+ }
+and Tag = 
+ {
+   name:string;
+   confidence:double
+ }
+and Description =
+ { 
+   tags:List<string>;
+   captions: List<Caption>
+ }
+and Caption =
+ { 
+   text:string;
+   confidence:double
+ }
+and Meta =
+ { 
+   width:int;
+   height:int;
+   format:string
+ }
 
 
-
-
+let imagerecognition str =
+  try
+   JsonConvert.DeserializeObject<ImageRecognition>(str)
+  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
+  
 let get_out  cmd = 
                   try 
                       let dr = ctx?out |- (execute(cmd,ctx?out))
+                      printfn "get_out cmd:%s out:%s" cmd dr
                       dr
                   with e-> ""
 let new_execute cmd  =
@@ -25,7 +59,11 @@ let new_execute cmd  =
                  else
                   tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
  
-               
+let caption str =  
+              try
+               let imageinfo = str |> imagerecognition
+               sprintf  "description %s" imageinfo.description.captions.[0].text 
+              with e-> "no desc"             
         
 
 let send_message idchat cmd text:string=
@@ -33,10 +71,10 @@ let send_message idchat cmd text:string=
         let snd= match (cmd) with
                  | Prefix "get photo" rest ->  command (sprintf "telegram photo %i" idchat)
                                                   ["idphoto",text;
-                                                   "text",""]
+                                                   "text",caption (get_out "whatdoyousee")]
                  | Prefix "get video" rest ->  command (sprintf "telegram video %i" idchat) 
                                                   ["idvideo",text;
-                                                   "text",""]
+                                                   "text",caption (get_out "whatdoyousee")]
                  | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd text]
      
         snd
@@ -138,18 +176,14 @@ let main () =
  new_execute "get distance"
  new_execute "get photo"
  new_execute "whatdoyousee"
- 
-
- 
- 
-
- 
-
+ printfn "caption:%s" (caption (get_out "whatdoyousee"))
 
  //Async.Start (telegram)
 
  let mutable continueLooping = true
  while (continueLooping) do
+   //  for _ in !-- execute(ctx?cmd,ctx?out) do
+   //   printfn "cmd(%s,%s)" ctx?cmd ctx?out
      let listchat = command  "telegram list"     [] |> chats
      for idchat in listchat do
       let result =  process_chat idchat 
@@ -172,8 +206,7 @@ let main () =
      for _ in !-- next(ctx?obj,ctx?cmd) do
       new_execute ctx?cmd
  
-   //  for _ in !-- execute(ctx?cmd,ctx?out) do
-   //   printfn "cmd(%s,%s)" ctx?cmd ctx?out
+
      for _ in !-- observe(ctx?obj,ctx?status) do
       printfn "obj(%s,%s)" ctx?obj ctx?status
  

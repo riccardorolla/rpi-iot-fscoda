@@ -11,35 +11,7 @@ type Configuration =
   port:int;
   debug:bool
  }
-type ImageRecognition =
- { 
-   tags:List<Tag>;
-   description: Description ;
-   requestId: string;
-   metadata: Meta
-   
- }
-and Tag = 
- {
-   name:string;
-   confidence:double
- }
-and Description =
- { 
-   tags:List<string>;
-   captions: List<Caption>
- }
-and Caption =
- { 
-   text:string;
-   confidence:double
- }
-and Meta =
- { 
-   width:int;
-   height:int;
-   format:string
- }
+
 
 
 
@@ -111,11 +83,7 @@ let command  cmd q   =
  
 
 
-let imagerecognition str =
-  try
-   JsonConvert.DeserializeObject<ImageRecognition>(str)
-  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
-  
+
 type Message = 
    {
      idmsg:string; 
