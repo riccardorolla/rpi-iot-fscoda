@@ -6,44 +6,9 @@ open System.IO
 open CoDa.Runtime
 open Fsc.Types
 open Fsc.Utils
-open Newtonsoft.Json
-
-type ImageRecognition =
- { 
-   tags:List<Tag>;
-   description: Description ;
-   requestId: string;
-   metadata: Meta
-   
- }
-and Tag = 
- {
-   name:string;
-   confidence:double
- }
-and Description =
- { 
-   tags:List<string>;
-   captions: List<Caption>
- }
-and Caption =
- { 
-   text:string;
-   confidence:double
- }
-and Meta =
- { 
-   width:int;
-   height:int;
-   format:string
- }
+ 
 
 
-let imagerecognition str =
-  try
-   JsonConvert.DeserializeObject<ImageRecognition>(str)
-  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
-  
 let get_out  cmd = 
                   try 
                       let dr = ctx?out |- (execute(cmd,ctx?out))
@@ -52,13 +17,16 @@ let get_out  cmd =
                   with e-> ""
 let new_execute cmd  =
                  printfn "new_execute %s" cmd 
-                 for _ in !-- execute(cmd,ctx?out) do
-                  retract <| Fsc.Facts.execute(cmd, ctx?out) 
-                 if (cmd="whatdoyousee") then 
-                  tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
-                 else
-                  tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
- 
+                 match ctx with
+                  | _ when !- execute(cmd,ctx?out) -> retract <| Fsc.Facts.execute(cmd, ctx?out) 
+                                                      if (cmd="whatdoyousee") then 
+                                                       tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
+                                                      else
+                                                       tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
+                  | _ -> if (cmd="whatdoyousee") then 
+                          tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
+                         else
+                          tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
 let caption str =  
               try
                let imageinfo = str |> imagerecognition
@@ -106,7 +74,7 @@ let process_chat idchat =
        | "nop" -> sprintf "nop"
        | _ -> 
         tell <| Fsc.Facts.request(sprintf "%i" idchat,cmd)       
-        do new_execute cmd
+        //do new_execute cmd
         let snd=send_message idchat cmd (get_response idchat)
         retract<|Fsc.Facts.request(sprintf "%i" idchat, cmd) 
         sprintf "%s" snd
@@ -150,14 +118,19 @@ let is_confidence confidence =
 
 
 let new_observe obj status  =
-    retract <| Fsc.Facts.observe(obj,"true")
-    retract <| Fsc.Facts.observe(obj,"false")
-    tell <| Fsc.Facts.observe(obj,status)
+    match ctx with
+     | _ when !- observe(obj,ctx?status) -> retract <| Fsc.Facts.observe(obj,ctx?status)
  
+                                            tell <| Fsc.Facts.observe(obj,status) 
+     | _ ->  tell <| Fsc.Facts.observe(obj,status)
+ 
+
+
 
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Fsc.Facts.request("0","nop")
+ tell <| Fsc.Facts.observe("exit","false")
  tell <| Fsc.Facts.execute("get distance","0")
  tell <| Fsc.Facts.rule("obstacle","false","get photo")
  tell <| Fsc.Facts.rule("obstacle","false","whatdoyousee")
@@ -177,39 +150,32 @@ let main () =
  new_execute "get photo"
  new_execute "whatdoyousee"
  printfn "caption:%s" (caption (get_out "whatdoyousee"))
+ //while (true) do
+ while (true) do
+     for _ in !-- execute(ctx?cmd,ctx?out) do
+      printfn "cmd(%s,%s)" ctx?cmd ctx?out
+     
+     match ctx with
+      | _ when !- rule(ctx?obj,"true",ctx?cmd) -> retract<|Fsc.Facts.observe(ctx?obj,"true")
+      | _ when !- rule(ctx?obj,"false",ctx?cmd) ->   new_observe ctx?obj "false"                                                                                                 
+      | _ ->  printfn "no rule defined"
 
- //Async.Start (telegram)
-
- let mutable continueLooping = true
- while (continueLooping) do
-   //  for _ in !-- execute(ctx?cmd,ctx?out) do
-   //   printfn "cmd(%s,%s)" ctx?cmd ctx?out
-     let listchat = command  "telegram list"     [] |> chats
-     for idchat in listchat do
-      let result =  process_chat idchat 
-      printfn "result %s" result
-     for _ in !-- rule(ctx?obj,"true",ctx?cmd) do
-       retract<|Fsc.Facts.observe(ctx?obj,"true")
-     for _ in !-- rule(ctx?obj,"false",ctx?cmd) do
-       new_observe ctx?obj "false" 
      new_observe "obstacle" (is_obstacle (
                                  try 
                                    (float(get_out "get distance"))
                                  with e-> float(0) ))
-    
-   
      let recognition = get_out "whatdoyousee" |> imagerecognition
      for tag in recognition.tags do 
          printfn "obj %s" tag.name
          new_observe tag.name (is_confidence tag.confidence)
-
-     for _ in !-- next(ctx?obj,ctx?cmd) do
-      new_execute ctx?cmd
- 
-
+     
      for _ in !-- observe(ctx?obj,ctx?status) do
       printfn "obj(%s,%s)" ctx?obj ctx?status
- 
-
+     for _ in !-- next(ctx?obj,ctx?cmd) do
+      new_execute ctx?cmd     
+     let listchat = command  "telegram list"     [] |> chats
+     for idchat in listchat do
+      let result =  process_chat idchat
+      printfn "result %s" result
 do if (conf.debug) then debug()
     else run()
