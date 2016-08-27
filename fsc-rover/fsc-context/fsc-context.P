@@ -1,12 +1,12 @@
 % facts
-request(IdChat,Cmd) :- request_(IdChat,Cmd).
-execute(Cmd,Out) :- execute_(Cmd,Out).
-observe(Obj,Status) :- observe_(Obj,Status).
+request(IdChat,Cmd,Param) :- request_(IdChat,Cmd,Param).
+result(Cmd,Out) :- result_(Cmd,Out).
+found(Obj,Status) :- found_(Obj,Status).
 rule(Obj,Status,Cmd) :- rule_(Obj,Status,Cmd).
 user_command(Prompt,Cmd) :- user_command_(Prompt,Cmd).
 
-response(IdChat,Out) :- request(IdChat,Cmd),execute(Cmd,Out).
-next(Obj,Cmd) :- observe(Obj,Status),rule(Obj,Status,Cmd).
+response(IdChat,Out) :- request(IdChat,Cmd,Param),result(Cmd,Out).
+next(Obj,Cmd) :- found(Obj,Status),rule(Obj,Status,Cmd).
  
  
 

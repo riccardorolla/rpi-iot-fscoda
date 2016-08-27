@@ -10,19 +10,18 @@ open Fsc.Utils
 
 
 let get_out  cmd =  try 
-                      let c = ctx?out |- (execute(cmd,ctx?out))
+                      let c = ctx?out |- (result(cmd,ctx?out))
                       c
                     with e-> ""
 
-let new_execute cmd  =
+let execute cmd  =
                  match ctx with
 
-                  | _ when !- execute(cmd,ctx?out) -> retract <| Fsc.Facts.execute(cmd, ctx?out)                                                    
+                  | _ when !- result(cmd,ctx?out) -> retract <| Fsc.Facts.result(cmd, ctx?out)                                                    
                   | _ -> printfn "_ -> new_execute %s" cmd 
                  match cmd with
-                         | "discovery" -> tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
-                         | "help" -> tell <| Fsc.Facts.execute(cmd,"?")
-                         | _ -> tell <| Fsc.Facts.execute(cmd,sprintf "%s" (command  cmd  []))
+                         | "discovery" -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
+                         | _ -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command  cmd  []))
 
 let get_command usercommand =  
             try
@@ -43,14 +42,14 @@ let get_response idchat =
  
 let get_req idchat =
      try 
-         let req = ctx?cmd |- (request(idchat,ctx?cmd))
+         let req = ctx?cmd |- (request(idchat,ctx?cmd,ctx?param))
          req
      with e-> ""
 
 
-let get_observe obj  =
+let get_found obj  =
     try
-        let s = ctx?status |- observe(obj,ctx?status)
+        let s = ctx?status |- found(obj,ctx?status)
         s
      with e-> "false"
 
@@ -63,20 +62,19 @@ let get_nextcmd obj =
 
 
 
-let new_observe obj status  =
+let discovery obj status  =
     match ctx with
-     | _ when !- observe(obj,ctx?status) -> retract <| Fsc.Facts.observe(obj,ctx?status)
-                                            tell <| Fsc.Facts.observe(obj,status) 
-     | _ ->  tell <| Fsc.Facts.observe(obj,status)
+     | _ when !- found(obj,ctx?status) ->   retract <| Fsc.Facts.found(obj,ctx?status)
+                                            tell <| Fsc.Facts.found(obj,status) 
+     | _ ->  tell <| Fsc.Facts.found(obj,status)
  
 
 
 
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.request("0","nop")
- tell <| Fsc.Facts.observe("exit","false")
- 
+ tell <| Fsc.Facts.request("0","nop","")
+ tell <| Fsc.Facts.found("exit","false")
  tell <| Fsc.Facts.rule("obstacle","false","get photo")
  tell <| Fsc.Facts.rule("obstacle","false","discovery")
  tell <| Fsc.Facts.rule("obstacle","true","stop")
@@ -100,7 +98,7 @@ let initFacts () =
  for _ in !--  user_command(ctx?prompt,ctx?cmd) do
        help <- sprintf "%s\n\t%s:%s" help ctx?prompt ctx?cmd
  
- tell <| Fsc.Facts.execute("help",help)
+ tell <| Fsc.Facts.result("help",help)
   
 
 [<CoDa.Context("fsc-ctx")>]
@@ -109,26 +107,27 @@ let main () =
  initFacts ()
 
 
- new_execute "get distance"
- new_execute "get photo"
- new_execute "discovery"
+ execute "get distance"
+ execute "get photo"
+ execute "discovery"
  printfn "caption:%s" (caption (get_out "discovery"))
 
  while (true) do
- 
-     for _ in !--  rule(ctx?obj,ctx?status,ctx?cmd) do
-                 new_observe ctx?obj "false"
-
-     new_observe "obstacle" (is_obstacle (
+      
+     for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do 
+                                                       discovery ctx?obj "false"
+    
+     discovery "obstacle" (is_obstacle (
                                  try 
                                    (float(get_out "get distance"))
                                  with e-> float(0) ))
+     
      let recognition = get_out "discovery" |> imagerecognition
      for tag in recognition.tags do 
-         new_observe tag.name (is_confidence tag.confidence)
+         discovery tag.name (is_confidence tag.confidence)
     
-     for _ in !-- observe(ctx?obj,ctx?status) do
-      printfn "observe(%s,%s)" ctx?obj ctx?status
+     for _ in !-- found(ctx?obj,ctx?status) do
+      printfn "found(%s,%s)" ctx?obj ctx?status
 
      let listchat = command  "get channels" [] |> chats
 
@@ -136,20 +135,21 @@ let main () =
          let msg=get_message idchat
       
                      
-         if (msg.Length >0) then // let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
-                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0] ) 
+         if (msg.Length >0) then  let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
+                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
                                   
        
          
      match ctx with
-     | _ when !- request(ctx?idchat,"help") ->  let result=send_message ctx?idchat  "help" (get_out "help") (caption (get_out "discovery"))
-                                                retract<|Fsc.Facts.request(ctx?idchat, "help")    
-     | _ when !- request(ctx?idchat,ctx?cmd) -> do new_execute ctx?cmd
-                                                printfn "request(%s,%s)" ctx?idchat ctx?cmd
+     | _ when !- request(ctx?idchat,"help",ctx?param) ->  let result=send_message ctx?idchat  "help" (get_out "help") (caption (get_out "discovery"))
+                                                          retract<|Fsc.Facts.request(ctx?idchat, "help",ctx?param)    
+     | _ when !- request(ctx?idchat,ctx?cmd,ctx?param) -> do 
+                                                execute ctx?cmd
+                                                printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
-                                                retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd)     
+                                                retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
      | _ -> for _ in !-- next(ctx?obj,ctx?cmd) do  
-                                                  new_execute ctx?cmd     
+                                                  execute ctx?cmd     
 
  
 

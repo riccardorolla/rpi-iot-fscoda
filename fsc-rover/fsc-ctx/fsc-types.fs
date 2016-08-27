@@ -6,28 +6,28 @@ open CoDa
 
 [<TypedPred>]
 [<Code>]
-let execute(s:string,t:string) =
+let result(s:string,t:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.execute(s,t)
+    Fsc.FscContext.result(s,t)
 
 
 [<TypedPred>]
 [<Code>]
-let request(m:string,s:string) =
+let request(m:string,s:string,p:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.request(m,s)
+    Fsc.FscContext.request(m,s,p)
   
 [<TypedPred>]
 [<Code>]
-let observe(s:string,m:string) =
+let found(s:string,m:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.observe(s,m)
+    Fsc.FscContext.found(s,m)
 
 [<TypedPred>]
 [<Code>]

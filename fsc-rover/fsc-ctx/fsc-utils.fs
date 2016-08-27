@@ -141,7 +141,7 @@ and Meta =
  }
 
 let is_obstacle distance =
-    if (distance<0.3) then "true"
+    if (distance<1000.0) then "true"
      else "false" 
 let is_confidence confidence =
     if (confidence>0.9) then "true"
