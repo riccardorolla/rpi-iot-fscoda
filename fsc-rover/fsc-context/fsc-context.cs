@@ -47,6 +47,16 @@ public static IEnumerable<bool> rule(object Obj, object Status, object Cmd)
     }
 }
 
+public static IEnumerable<bool> user_command(object Prompt, object Cmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("user_command_"), new object[] { Prompt, Cmd }))
+        {
+            yield return false;
+        }
+    }
+}
+
 public static IEnumerable<bool> response(object IdChat, object Out)
 {
     {

@@ -48,23 +48,26 @@ let cmdbuild (text : string)  =
    match ((rest).Trim()) with
    | Prefix "on" rest -> sprintf "rpi/led/%s/on" ((rest).Trim()) 
    | Prefix "off" rest -> sprintf "rpi/led/%s/off" ((rest).Trim()) 
-   | _ -> sprintf "neither"
+   | _ -> sprintf "nop"
  | Prefix "telegram" rest -> 
    match ((rest).Trim()) with
    | Prefix "photo" rest -> sprintf "telegram/%s/photo" ((rest).Trim()) 
    | Prefix "video" rest -> sprintf "telegram/%s/video" ((rest).Trim()) 
    | Prefix "text" rest -> sprintf "telegram/%s/text" ((rest).Trim()) 
    | Prefix "list" rest -> sprintf "telegram/listchat"
-   | Prefix "message" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
+   | Prefix "messages" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
    | Prefix "pop" rest -> sprintf "telegram/%s/msg/shift" ((rest).Trim()) 
-   | _ -> sprintf "neither"
+   | _ -> sprintf "nop"
  | Prefix "get" rest -> 
   match ((rest).Trim()) with
    | Prefix "distance" rest -> sprintf "rpi/distance" 
    | Prefix "photo" rest -> sprintf "rpi/photo" 
    | Prefix "video" rest -> sprintf "rpi/video" 
-   | _ -> sprintf "neither"
+   | Prefix "messages" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
+   | Prefix "channels" rest -> sprintf "telegram/listchat"
+   | _ -> sprintf "nop"
  | Prefix "whatdoyousee" rest -> sprintf "whatdoyousee"
+ | Prefix "discovery" rest -> sprintf "whatdoyousee"
  | Prefix "translate" rest -> sprintf "translate"
  | _ -> sprintf "nop"
 
@@ -99,9 +102,9 @@ let get_message idchat =
       try
        let msg=command (sprintf "telegram pop %i" idchat) []
        let out=JsonConvert.DeserializeObject<Message>(msg)
-       out.txt.ToLower()
-  
-      with e-> "nop"
+       out.txt.ToLower().Split ' '
+   
+      with e-> [||]
 let chats str =
      try
       JsonConvert.DeserializeObject<List<int>>(str)
@@ -137,9 +140,35 @@ and Meta =
    format:string
  }
 
+let is_obstacle distance =
+    if (distance<0.3) then "true"
+     else "false" 
+let is_confidence confidence =
+    if (confidence>0.9) then "true"
+     else "false"
 
 let imagerecognition str =
   try
    JsonConvert.DeserializeObject<ImageRecognition>(str)
   with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
+
+let caption str =  
+                try
+                 let imageinfo = str |> imagerecognition
+                 sprintf  "description %s" imageinfo.description.captions.[0].text 
+                with e-> "no desc"             
+          
   
+let send_message idchat   cmd text cap=
+          printfn "send_message %s %s %s" idchat cmd text
+          let snd= match (cmd) with
+                   | Prefix "get photo" rest ->  command (sprintf "telegram photo %s" idchat)
+                                                    ["idphoto",text;
+                                                     "text",cap]
+                   | Prefix "get video" rest ->  command (sprintf "telegram video %s" idchat) 
+                                                    ["idvideo",text;
+                                                     "text",cap]
+                   | Prefix "nop" rest -> sprintf "%s" "nop"
+                   | _   -> command  (sprintf "telegram text %s" idchat) [ "text", sprintf "%s -> %s" cmd  text]
+       
+          snd

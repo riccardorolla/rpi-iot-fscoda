@@ -52,4 +52,12 @@ let next(x:string,y:string) =
      failwith "Solved by JIT"
    else
      Fsc.FscContext.next(x,y)
- 
+
+[<TypedPred>]
+[<Code>]
+let user_command(x:string,y:string) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.user_command(x,y)
+  

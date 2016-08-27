@@ -9,5 +9,6 @@ let inline private fact head (x:string, y: string) =
 let request = fact "request_"
 let observe = fact "observe_"
 let execute = fact "execute_" 
+let user_command = fact "user_command_" 
 let rule (x:string,y:string,z:string) = Fact  ("rule_", [| x :> obj ; y :> obj ; z :> obj|])
  
