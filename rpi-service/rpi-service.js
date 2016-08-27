@@ -179,17 +179,20 @@ app.get('/telegram/:idchat',function (req, res) {
 app.get('/telegram/:idchat/msg', function (req, res) {
 	var idchat=req.params.idchat
    res.send(getchat(idchat).msg);
+     res.end();
 
 })
 
 app.get('/telegram/:idchat/msg/pop',function(req,res) {
 	var idchat=req.params.idchat
 	res.send(getchat(idchat).msg.pop());
+	  res.end();
 })
 
 app.get('/telegram/:idchat/msg/shift',function(req,res) {
 	var idchat=req.params.idchat
 	res.send(getchat(idchat).msg.shift());
+	  res.end();
 })
 app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
@@ -201,7 +204,7 @@ app.get('/telegram/:idchat/video',function(req,res) {
 	else 
 		bot.sendVideo(idchat,filename);
 	res.send('send video');
- 
+   res.end();
 	
 })
 
