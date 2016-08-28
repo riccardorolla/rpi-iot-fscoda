@@ -15,12 +15,13 @@ namespace Rover
 			//time 
 			//pins 
 			Configuration rover = Configuration.Read();
-
+			UltrasonicDistanceSensor uds = new UltrasonicDistanceSensor(rover.uds);
 			switch (args[0])
 			{
 				case "motor":
 					{
 						TwoMotorsDriver motors = new TwoMotorsDriver(rover.motor);
+					 
 						if (args.Length > 1)
 						{
 					
@@ -29,34 +30,40 @@ namespace Rover
 								
 								case "left":
 									motors.TurnLeft();
-									Console.Write("OK");
+
+				 
 									break;
 								case "right":
 									motors.TurnRight();
-									Console.Write("OK");
+								 
 									break;
 								case "forward":
+									
 									motors.MoveForward();
-									Console.Write("OK");
+							 
 									break;
 								case "backward":
 									motors.MoveBackward();
-									Console.Write("OK");
+									 
 									break;
 								case "stop":
 									motors.Stop();
-									Console.Write("OK");
+							 
 									break;
 								default:
 									{ }
 									break;
+									
 							}
+							System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(1000*rover.timestep));
+							motors.Stop();
+							Console.Write("OK");
 						}
 
 					}
 					break;
 				case "uds":
-					UltrasonicDistanceSensor uds = new UltrasonicDistanceSensor(rover.uds);
+		 
 					Console.Write(uds.getCM());
 					break;
 				case "led":
@@ -70,7 +77,9 @@ namespace Rover
 								Led led = new Led(numled,rover.led[numled]);
 								if ((args[2]) == "on") led.on();
 								else led.off();
+								Console.Write("OK");
 							}
+
 						}
 					}
 					break;

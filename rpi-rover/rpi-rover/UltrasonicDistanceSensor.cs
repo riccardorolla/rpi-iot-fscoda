@@ -59,6 +59,7 @@ namespace Rover
 					{
 						i = i + 50;
 						connection.Timeout = TimeSpan.FromMilliseconds(i);
+						dist = 0;
 						//		Console.WriteLine("(Timeout): " + e.Message);
 					}
 
