@@ -4,7 +4,7 @@ result(Cmd,Out) :- result_(Cmd,Out).
 found(Obj,Status) :- found_(Obj,Status).
 rule(Obj,Status,Cmd) :- rule_(Obj,Status,Cmd).
 user_command(Prompt,Cmd) :- user_command_(Prompt,Cmd).
-
+confidence(Obj,Min,Max) :- confidence_(Obj,Min,Max).
 response(IdChat,Out) :- request(IdChat,Cmd,Param),result(Cmd,Out).
 next(Obj,Cmd) :- found(Obj,Status),rule(Obj,Status,Cmd).
  

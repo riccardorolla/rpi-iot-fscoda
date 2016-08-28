@@ -23,7 +23,7 @@ let request(m:string,s:string,p:string) =
   
 [<TypedPred>]
 [<Code>]
-let found(s:string,m:string) =
+let found(s:string,m:bool) =
   if true then
     failwith "Solved by JIT"
   else
@@ -39,7 +39,7 @@ let response(m:string,s:string) =
 
 [<TypedPred>]
 [<Code>]
-let rule(x:string,y:string,z:string) =
+let rule(x:string,y:bool,z:string) =
   if true then
     failwith "Solved by JIT"
   else
@@ -60,4 +60,13 @@ let user_command(x:string,y:string) =
       failwith "Solved by JIT"
     else
       Fsc.FscContext.user_command(x,y)
-  
+
+[<TypedPred>]
+[<Code>]
+let confidence(x:string,y:float,z:float) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.confidence(x,y,z)
+ 
+ 

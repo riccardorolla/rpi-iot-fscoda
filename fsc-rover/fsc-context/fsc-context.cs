@@ -57,6 +57,16 @@ public static IEnumerable<bool> user_command(object Prompt, object Cmd)
     }
 }
 
+public static IEnumerable<bool> confidence(object Obj, object Min, object Max)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("confidence_"), new object[] { Obj, Min, Max }))
+        {
+            yield return false;
+        }
+    }
+}
+
 public static IEnumerable<bool> response(object IdChat, object Out)
 {
     {

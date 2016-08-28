@@ -14,6 +14,13 @@ let get_out  cmd =  try
                       c
                     with e-> ""
 
+let get_confidence obj value= 
+                
+                           match ctx with
+                             | _ when !- confidence(obj,ctx?min,ctx?max)
+                                 ->  ((value>ctx?min) && (value<ctx?max))
+                             | _ -> false
+                       
 let execute cmd  =
                  match ctx with
 
@@ -51,7 +58,7 @@ let get_found obj  =
     try
         let s = ctx?status |- found(obj,ctx?status)
         s
-     with e-> "false"
+     with e-> false
 
 let get_nextcmd obj = 
     try 
@@ -62,27 +69,39 @@ let get_nextcmd obj =
 
 
 
-let discovery obj status  =
+let discovery obj value  =
+    let status=
+     match ctx with
+       | _ when !- confidence(obj,ctx?min,ctx?max)
+           ->  ((value>=ctx?min) && (value<=ctx?max))
+       | _ -> false
     match ctx with
      | _ when !- found(obj,ctx?status) ->   retract <| Fsc.Facts.found(obj,ctx?status)
                                             tell <| Fsc.Facts.found(obj,status) 
      | _ ->  tell <| Fsc.Facts.found(obj,status)
  
 
+let reset obj =
 
+    discovery obj  (float(num.MinValue))
 
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Fsc.Facts.request("0","nop","")
- tell <| Fsc.Facts.found("exit","false")
- tell <| Fsc.Facts.rule("obstacle","false","get photo")
- tell <| Fsc.Facts.rule("obstacle","false","discovery")
- tell <| Fsc.Facts.rule("obstacle","true","stop")
- tell <| Fsc.Facts.rule("obstacle","false","go forward")
- tell <| Fsc.Facts.rule("obstacle","false","get distance")
- tell <| Fsc.Facts.rule("obstacle","true","get distance")
- tell <| Fsc.Facts.rule("person","true","led on 0")
- tell <| Fsc.Facts.rule("person","false","led off 0")
+ tell <| Fsc.Facts.found("exit",false)
+ tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
+ tell <| Fsc.Facts.confidence("person",0.9,1.0)
+ tell <| Fsc.Facts.confidence("wall",0.8,1.0)
+ tell <| Fsc.Facts.confidence("exit",1.0,1.0)
+ tell <| Fsc.Facts.rule("obstacle",false,"get photo")
+ tell <| Fsc.Facts.rule("obstacle",true,"get photo")
+ tell <| Fsc.Facts.rule("obstacle",true,"stop")
+ tell <| Fsc.Facts.rule("indoor",true,"stop")
+ tell <| Fsc.Facts.rule("obstacle",false,"get distance")
+ tell <| Fsc.Facts.rule("obstacle",true,"get distance")
+ tell <| Fsc.Facts.rule("person",true,"led on 0")
+ tell <| Fsc.Facts.rule("person",true,"broadcast there is a person")
+ tell <| Fsc.Facts.rule("person",false,"led off 0")
  tell <| Fsc.Facts.user_command("photo","get photo")
  tell <| Fsc.Facts.user_command("video","get video")  
  tell <| Fsc.Facts.user_command("distance","get distance")
@@ -94,6 +113,8 @@ let initFacts () =
  tell <| Fsc.Facts.user_command("right","go right")
  tell <| Fsc.Facts.user_command("stop","stop")
  tell <| Fsc.Facts.user_command("help","help")
+ //tell <| Fsc.Facts.user_command("exit","exit")
+// tell <| Fsc.Facts.user_command("discovery","discovery")
  let mutable help="?"
  for _ in !--  user_command(ctx?prompt,ctx?cmd) do
        help <- sprintf "%s\n\t%s:%s" help ctx?prompt ctx?cmd
@@ -106,32 +127,31 @@ let initFacts () =
 let main () =
  initFacts ()
 
-
+ execute "broadcast start fsc-rover"
  execute "get distance"
  execute "get photo"
  execute "discovery"
  printfn "caption:%s" (caption (get_out "discovery"))
 
- while (true) do
+ while (not(get_found "exit")) do
       
-     for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do 
-                                                       discovery ctx?obj "false"
+     for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
     
-     discovery "obstacle" (is_obstacle (
-                                 try 
-                                   (float(get_out "get distance"))
-                                 with e-> float(0) ))
+     discovery "obstacle" (try 
+                            float(get_out "get distance")
+                           with e-> 0.0) 
+ 
      
      let recognition = get_out "discovery" |> imagerecognition
      for tag in recognition.tags do 
-         discovery tag.name (is_confidence tag.confidence)
+         discovery tag.name tag.confidence 
     
      for _ in !-- found(ctx?obj,ctx?status) do
-      printfn "found(%s,%s)" ctx?obj ctx?status
+      printfn "found(%s,%b)" ctx?obj ctx?status
 
-     let listchat = command  "get channels" [] |> chats
+     let channels = command  "get channels" [] |> get_list
 
-     for idchat in listchat do
+     for idchat in channels do
          let msg=get_message idchat
       
                      
@@ -139,10 +159,11 @@ let main () =
                                   tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
                                   
        
-         
+        
      match ctx with
      | _ when !- request(ctx?idchat,"help",ctx?param) ->  let result=send_message ctx?idchat  "help" (get_out "help") (caption (get_out "discovery"))
-                                                          retract<|Fsc.Facts.request(ctx?idchat, "help",ctx?param)    
+                                                          retract<|Fsc.Facts.request(ctx?idchat, "help",ctx?param)
+
      | _ when !- request(ctx?idchat,ctx?cmd,ctx?param) -> do 
                                                 execute ctx?cmd
                                                 printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param

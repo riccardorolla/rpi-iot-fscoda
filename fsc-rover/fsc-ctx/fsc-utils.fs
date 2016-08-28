@@ -13,7 +13,43 @@ type Configuration =
  }
 
 
+type Message = 
+    {
+      idmsg:string; 
+      txt:string
+    }
 
+ 
+type ImageRecognition =
+  { 
+    tags:List<Tag>;
+    description: Description ;
+    requestId: string;
+    metadata: Meta
+    
+  }
+and Tag = 
+  {
+    name:string;
+    confidence:double
+  }
+and Description =
+  { 
+    tags:List<string>;
+    captions: List<Caption>
+  }
+and Caption =
+  { 
+    text:string;
+    confidence:double
+  }
+and Meta =
+  { 
+    width:int;
+    height:int;
+    format:string
+  }
+type num=int
 
   
 let confjson =
@@ -69,6 +105,7 @@ let cmdbuild (text : string)  =
  | Prefix "whatdoyousee" rest -> sprintf "whatdoyousee"
  | Prefix "discovery" rest -> sprintf "whatdoyousee"
  | Prefix "translate" rest -> sprintf "translate"
+ | Prefix "broadcast" rest -> sprintf "telegram/broadcast/%s" ((rest).Trim()) 
  | _ -> sprintf "nop"
 
 
@@ -87,65 +124,25 @@ let command  cmd q   =
 
 
 
-type Message = 
-   {
-     idmsg:string; 
-     txt:string
-   }
+
 let get_messages idchat=
-      try
-       let msgs = command (sprintf "telegram message %i" idchat)   []
-       JsonConvert.DeserializeObject<List<Message>>(msgs)
-      with e-> JsonConvert.DeserializeObject<List<Message>>("[]")
-  
+       try
+        let msgs = command (sprintf "telegram message %i" idchat)   []
+        JsonConvert.DeserializeObject<List<Message>>(msgs)
+       with e-> JsonConvert.DeserializeObject<List<Message>>("[]")
+   
 let get_message idchat =
+       try
+        let msg=command (sprintf "telegram pop %i" idchat) []
+        let out=JsonConvert.DeserializeObject<Message>(msg)
+        out.txt.ToLower().Split ' '
+    
+       with e-> [||]
+let get_list str =
       try
-       let msg=command (sprintf "telegram pop %i" idchat) []
-       let out=JsonConvert.DeserializeObject<Message>(msg)
-       out.txt.ToLower().Split ' '
-   
-      with e-> [||]
-let chats str =
-     try
-      JsonConvert.DeserializeObject<List<int>>(str)
-     with e ->    JsonConvert.DeserializeObject<List<int>>("[]")
+       JsonConvert.DeserializeObject<List<int>>(str)
+      with e ->    JsonConvert.DeserializeObject<List<int>>("[]")
 
-type ImageRecognition =
- { 
-   tags:List<Tag>;
-   description: Description ;
-   requestId: string;
-   metadata: Meta
-   
- }
-and Tag = 
- {
-   name:string;
-   confidence:double
- }
-and Description =
- { 
-   tags:List<string>;
-   captions: List<Caption>
- }
-and Caption =
- { 
-   text:string;
-   confidence:double
- }
-and Meta =
- { 
-   width:int;
-   height:int;
-   format:string
- }
-
-let is_obstacle distance =
-    if (distance<1000.0) then "true"
-     else "false" 
-let is_confidence confidence =
-    if (confidence>0.9) then "true"
-     else "false"
 
 let imagerecognition str =
   try
@@ -155,7 +152,7 @@ let imagerecognition str =
 let caption str =  
                 try
                  let imageinfo = str |> imagerecognition
-                 sprintf  "description %s" imageinfo.description.captions.[0].text 
+                 sprintf  "%s" imageinfo.description.captions.[0].text 
                 with e-> "no desc"             
           
   
