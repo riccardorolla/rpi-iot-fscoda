@@ -44,11 +44,11 @@ namespace Rover
 			_leftMotor.MoveForward();
 			_rightMotor.MoveBackward();
 
-			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
+			//	System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
 
 
-			_leftMotor.Stop();
-			_rightMotor.Stop();
+			//	_leftMotor.Stop();
+			//	_rightMotor.Stop();
 		}
         public async Task TurnRightAsync()
         {
@@ -65,10 +65,10 @@ namespace Rover
 			_leftMotor.MoveBackward();
 			_rightMotor.MoveForward();
 
-			System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
+			//	System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
 
-			_leftMotor.Stop();
-			_rightMotor.Stop();
+			//	_leftMotor.Stop();
+			//	_rightMotor.Stop();
 		}
         public async Task TurnLeftAsync()
         {
