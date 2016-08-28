@@ -182,7 +182,7 @@ app.get('/telegram/:idchat/msg', function (req, res) {
      res.end();
 
 })
-
+ 
 app.get('/telegram/:idchat/msg/pop',function(req,res) {
 	var idchat=req.params.idchat
 	res.send(getchat(idchat).msg.pop());
@@ -221,6 +221,16 @@ app.get('/telegram/:idchat/photo',function(req,res) {
 							  
     });
  
+app.get('/telegram/broadcast/:text',function(req,res) {
+  
+ var txt = req.params.text ;
+	for (var i=0; i<listchat.length;i++) {
+		bot.sendMessage(listchat[i].idchat,txt);
+	}
+ 
+ res.send('send broadcast msg');
+ 
+});
 							
 
 app.get('/telegram/:idchat/text',function(req,res) {
