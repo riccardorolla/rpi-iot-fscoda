@@ -55,9 +55,9 @@ namespace Rover
 									break;
 									
 							}
-							System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(1000*rover.timestep));
-							motors.Stop();
-							Console.Write("OK");
+						//	System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(1000*rover.timestep));
+					//		motors.Stop();
+				//			Console.Write("OK");
 						}
 
 					}
