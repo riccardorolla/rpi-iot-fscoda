@@ -109,7 +109,8 @@ let cmdbuild (text : string)  =
  | _ -> sprintf "nop"
 
 
-let command  cmd q   =
+ 
+let command  cmd q =   
     printfn "command %s" cmd
     if (cmd="nop") then sprintf "OK"
     else
@@ -141,7 +142,7 @@ let get_message idchat =
 let get_list str =
       try
        JsonConvert.DeserializeObject<List<int>>(str)
-      with e ->    JsonConvert.DeserializeObject<List<int>>("[]")
+      with e ->   [] 
 
 
 let imagerecognition str =

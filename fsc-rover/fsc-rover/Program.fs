@@ -20,15 +20,26 @@ let get_confidence obj value=
                              | _ when !- confidence(obj,ctx?min,ctx?max)
                                  ->  ((value>ctx?min) && (value<ctx?max))
                              | _ -> false
-                       
-let execute cmd  =
-                 match ctx with
+             
+let addcmd cmd listcmd =
+        //         match ctx with
 
-                  | _ when !- result(cmd,ctx?out) -> retract <| Fsc.Facts.result(cmd, ctx?out)                                                    
-                  | _ -> printfn "_ -> new_execute %s" cmd 
-                 match cmd with
-                         | "discovery" -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
-                         | _ -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command  cmd  []))
+          //        | _ when !- result(cmd,ctx?out) -> if not(cmd="help") then retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
+          //        | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
+                 [|cmd|] |> Array.append listcmd
+                // match cmd with 
+                //  | "discovery" -> [|cmd, ["idphoto",get_out "get photo"]|] |> Array.append listcmd
+                //  | _ -> [|cmd, []|] |> Array.append listcmd
+                // match cmd with
+                //         | "discovery" -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
+                //         | _ -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command  cmd  []))
+let execute cmd = async {
+          let result = match cmd with
+                          | "discovery" -> sprintf "%s"  (command cmd ["idphoto",get_out "get photo"])
+                          | "help" -> get_out "help"
+                          | _ ->  sprintf "%s" (command  cmd  []) 
+          return cmd,result
+          }
 
 let get_command usercommand =  
             try
@@ -96,6 +107,8 @@ let initFacts () =
  tell <| Fsc.Facts.rule("obstacle",false,"get photo")
  tell <| Fsc.Facts.rule("obstacle",true,"get photo")
  tell <| Fsc.Facts.rule("obstacle",true,"stop")
+ tell <| Fsc.Facts.rule("obstacle",true,"discovery")
+ tell <| Fsc.Facts.rule("obstacle",false,"discovery")
  tell <| Fsc.Facts.rule("indoor",true,"stop")
  tell <| Fsc.Facts.rule("obstacle",false,"get distance")
  tell <| Fsc.Facts.rule("obstacle",true,"get distance")
@@ -126,16 +139,46 @@ let initFacts () =
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
-
- execute "broadcast start fsc-rover"
- execute "get distance"
- execute "get photo"
- execute "discovery"
- printfn "caption:%s" (caption (get_out "discovery"))
+ let mutable listresult=[||]
+ let mutable array_cmd =  [|"broadcast start fsc-rover"|]
+ 
+ 
+ //printfn "caption:%s" (caption (get_out "discovery"))
 
  while (not(get_found "exit")) do
-      
+     
      for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
+
+     for _ in !-- request(ctx?idchat,ctx?cmd,ctx?param) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]
+                                
+     for _ in !-- next(ctx?obj,ctx?cmd) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]  
+     
+    // listresult <-[||]
+     listresult <- Async.Parallel [for c in  array_cmd -> execute c] |> Async.RunSynchronously
+    // for c in listcmd do
+    //     listresult <-  ((execute c) |> Array.append listresult )
+     array_cmd <- [|"get channels"|]
+     for r in listresult do
+         match r with
+          |cmd,res -> match ctx with
+                         | _ when !- result(cmd,ctx?out) ->   retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
+                         | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
+                      tell <| Fsc.Facts.result(cmd, res)
+     printfn "channels"
+     let out_channels = get_out "get channels" 
+     printfn "out_channels:%s" out_channels
+     let channels = get_list out_channels
+     printfn "channels :%A" channels
+     for idchat in channels do
+         let msg=get_message idchat
+      
+                     
+         if (msg.Length >0) then  let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
+                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
+                                  
+    
+   
+  
     
      discovery "obstacle" (try 
                             float(get_out "get distance")
@@ -149,30 +192,19 @@ let main () =
      for _ in !-- found(ctx?obj,ctx?status) do
       printfn "found(%s,%b)" ctx?obj ctx?status
 
-     let channels = command  "get channels" [] |> get_list
 
-     for idchat in channels do
-         let msg=get_message idchat
-      
-                     
-         if (msg.Length >0) then  let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
-                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
-                                  
-       
-        
+
+
+
      match ctx with
-     | _ when !- request(ctx?idchat,"help",ctx?param) ->  let result=send_message ctx?idchat  "help" (get_out "help") (caption (get_out "discovery"))
-                                                          retract<|Fsc.Facts.request(ctx?idchat, "help",ctx?param)
 
      | _ when !- request(ctx?idchat,ctx?cmd,ctx?param) -> do 
-                                                execute ctx?cmd
-                                                printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
-                                                let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
-                                                retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
-     | _ -> for _ in !-- next(ctx?obj,ctx?cmd) do  
-                                                  execute ctx?cmd     
+                                                 printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
+                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
+                                                 retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
+     | _ ->  printfn "no request"
 
- 
+
 
 do if (conf.debug) then debug()
     else run()
