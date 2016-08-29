@@ -141,8 +141,9 @@ let get_message idchat =
        with e-> [||]
 let get_list str =
       try
+     
        JsonConvert.DeserializeObject<List<int>>(str)
-      with e ->   [] 
+      with e ->  [] 
 
 
 let imagerecognition str =

@@ -12,7 +12,7 @@ open Fsc.Utils
 let get_out  cmd =  try 
                       let c = ctx?out |- (result(cmd,ctx?out))
                       c
-                    with e-> ""
+                    with e-> "not found"
 
 let get_confidence obj value= 
                 
@@ -21,18 +21,7 @@ let get_confidence obj value=
                                  ->  ((value>ctx?min) && (value<ctx?max))
                              | _ -> false
              
-let addcmd cmd listcmd =
-        //         match ctx with
 
-          //        | _ when !- result(cmd,ctx?out) -> if not(cmd="help") then retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
-          //        | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
-                 [|cmd|] |> Array.append listcmd
-                // match cmd with 
-                //  | "discovery" -> [|cmd, ["idphoto",get_out "get photo"]|] |> Array.append listcmd
-                //  | _ -> [|cmd, []|] |> Array.append listcmd
-                // match cmd with
-                //         | "discovery" -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command cmd ["idphoto",get_out "get photo"]))
-                //         | _ -> tell <| Fsc.Facts.result(cmd,sprintf "%s" (command  cmd  []))
 let execute cmd = async {
           let result = match cmd with
                           | "discovery" -> sprintf "%s"  (command cmd ["idphoto",get_out "get photo"])
@@ -62,7 +51,7 @@ let get_req idchat =
      try 
          let req = ctx?cmd |- (request(idchat,ctx?cmd,ctx?param))
          req
-     with e-> ""
+     with e-> "not found"
 
 
 let get_found obj  =
@@ -102,19 +91,13 @@ let initFacts () =
  tell <| Fsc.Facts.found("exit",false)
  tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
- tell <| Fsc.Facts.confidence("wall",0.8,1.0)
  tell <| Fsc.Facts.confidence("exit",1.0,1.0)
- tell <| Fsc.Facts.rule("obstacle",false,"get photo")
- tell <| Fsc.Facts.rule("obstacle",true,"get photo")
- tell <| Fsc.Facts.rule("obstacle",true,"stop")
- tell <| Fsc.Facts.rule("obstacle",true,"discovery")
- tell <| Fsc.Facts.rule("obstacle",false,"discovery")
- tell <| Fsc.Facts.rule("indoor",true,"stop")
- tell <| Fsc.Facts.rule("obstacle",false,"get distance")
- tell <| Fsc.Facts.rule("obstacle",true,"get distance")
- tell <| Fsc.Facts.rule("person",true,"led on 0")
- tell <| Fsc.Facts.rule("person",true,"broadcast there is a person")
- tell <| Fsc.Facts.rule("person",false,"led off 0")
+ tell <| Fsc.Facts.confidence("never",0.0,0.0)
+ tell <| Fsc.Facts.rule("never",true,"discovery")
+ tell <| Fsc.Facts.rule("never",false,"get distance")
+ tell <| Fsc.Facts.rule("never",true,"get photo")
+ tell <| Fsc.Facts.rule("obstacle",true,"led on 0")
+ tell <| Fsc.Facts.rule("obstacle",false,"led off 0")
  tell <| Fsc.Facts.user_command("photo","get photo")
  tell <| Fsc.Facts.user_command("video","get video")  
  tell <| Fsc.Facts.user_command("distance","get distance")
@@ -126,8 +109,7 @@ let initFacts () =
  tell <| Fsc.Facts.user_command("right","go right")
  tell <| Fsc.Facts.user_command("stop","stop")
  tell <| Fsc.Facts.user_command("help","help")
- //tell <| Fsc.Facts.user_command("exit","exit")
-// tell <| Fsc.Facts.user_command("discovery","discovery")
+
  let mutable help="?"
  for _ in !--  user_command(ctx?prompt,ctx?cmd) do
        help <- sprintf "%s\n\t%s:%s" help ctx?prompt ctx?cmd
@@ -141,14 +123,12 @@ let main () =
  initFacts ()
  let mutable listresult=[||]
  let mutable array_cmd =  [|"broadcast start fsc-rover"|]
- 
- 
- //printfn "caption:%s" (caption (get_out "discovery"))
 
- while (not(get_found "exit")) do
+
+ while (not (get_found "exit")) do
      
-     for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
 
+     array_cmd <- [|"get channels"|]
      for _ in !-- request(ctx?idchat,ctx?cmd,ctx?param) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]
                                 
      for _ in !-- next(ctx?obj,ctx?cmd) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]  
@@ -157,19 +137,18 @@ let main () =
      listresult <- Async.Parallel [for c in  array_cmd -> execute c] |> Async.RunSynchronously
     // for c in listcmd do
     //     listresult <-  ((execute c) |> Array.append listresult )
-     array_cmd <- [|"get channels"|]
+     
      for r in listresult do
          match r with
           |cmd,res -> match ctx with
                          | _ when !- result(cmd,ctx?out) ->   retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
                          | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
                       tell <| Fsc.Facts.result(cmd, res)
-     printfn "channels"
-     let out_channels = get_out "get channels" 
-     printfn "out_channels:%s" out_channels
-     let channels = get_list out_channels
-     printfn "channels :%A" channels
-     for idchat in channels do
+     
+
+ 
+ 
+     for idchat in (get_out "get channels" |> get_list) do
          let msg=get_message idchat
       
                      
@@ -177,9 +156,15 @@ let main () =
                                   tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
                                   
     
-   
-  
-    
+     match ctx with
+
+     | _ when !- (request(ctx?idchat,ctx?cmd,ctx?param),result(ctx?cmd,ctx?out)) -> do 
+                                                 printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
+                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
+                                                 retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
+     | _ ->  printfn "no request"
+
+     for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
      discovery "obstacle" (try 
                             float(get_out "get distance")
                            with e-> 0.0) 
@@ -188,22 +173,9 @@ let main () =
      let recognition = get_out "discovery" |> imagerecognition
      for tag in recognition.tags do 
          discovery tag.name tag.confidence 
-    
+
      for _ in !-- found(ctx?obj,ctx?status) do
       printfn "found(%s,%b)" ctx?obj ctx?status
-
-
-
-
-
-     match ctx with
-
-     | _ when !- request(ctx?idchat,ctx?cmd,ctx?param) -> do 
-                                                 printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
-                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
-                                                 retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
-     | _ ->  printfn "no request"
-
 
 
 do if (conf.debug) then debug()
