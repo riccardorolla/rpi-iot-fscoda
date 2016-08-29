@@ -89,7 +89,7 @@ let reset obj =
 let initFacts () =
  tell <| Fsc.Facts.request("0","nop","")
  tell <| Fsc.Facts.found("exit",false)
- tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
+ tell <| Fsc.Facts.confidence("obstacle",0.1,50.0)
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
  tell <| Fsc.Facts.confidence("exit",1.0,1.0)
  tell <| Fsc.Facts.confidence("never",0.0,0.0)
@@ -122,47 +122,27 @@ let initFacts () =
 let main () =
  initFacts ()
  let mutable listresult=[||]
- let mutable array_cmd =  [|"broadcast start fsc-rover"|]
+ let mutable array_cmd =  [|"broadcast start";"get channels"|]
 
 
  while (not (get_found "exit")) do
      
 
-     array_cmd <- [|"get channels"|]
+   
      for _ in !-- request(ctx?idchat,ctx?cmd,ctx?param) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]
                                 
      for _ in !-- next(ctx?obj,ctx?cmd) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]  
-     
-    // listresult <-[||]
+
      listresult <- Async.Parallel [for c in  array_cmd -> execute c] |> Async.RunSynchronously
-    // for c in listcmd do
-    //     listresult <-  ((execute c) |> Array.append listresult )
-     
+     array_cmd <-   [|"get channels";"get photo","discovery"|]
      for r in listresult do
          match r with
-          |cmd,res -> match ctx with
-                         | _ when !- result(cmd,ctx?out) ->   retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
-                         | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
+          |cmd,res -> for _ in !-- result(cmd,ctx?out) do retract <| Fsc.Facts.result(cmd, ctx?out)   
+                     // match ctx with
+                     //    | _ when !- result(cmd,ctx?out) ->   retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
+                     //    | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
                       tell <| Fsc.Facts.result(cmd, res)
      
-
- 
- 
-     for idchat in (get_out "get channels" |> get_list) do
-         let msg=get_message idchat
-      
-                     
-         if (msg.Length >0) then  let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
-                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
-                                  
-    
-     match ctx with
-
-     | _ when !- (request(ctx?idchat,ctx?cmd,ctx?param),result(ctx?cmd,ctx?out)) -> do 
-                                                 printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
-                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
-                                                 retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
-     | _ ->  printfn "no request"
 
      for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
      discovery "obstacle" (try 
@@ -176,6 +156,24 @@ let main () =
 
      for _ in !-- found(ctx?obj,ctx?status) do
       printfn "found(%s,%b)" ctx?obj ctx?status
+ 
+     for idchat in (get_out "get channels" |> get_list) do
+         let msg=get_message idchat
+      
+                     
+         if (msg.Length >0) then  let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
+                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
+                                  
+     
+     match ctx with
+
+     | _ when !- (request(ctx?idchat,ctx?cmd,ctx?param),result(ctx?cmd,ctx?out)) -> do 
+                                                 printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
+                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
+                                                 retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
+     | _ ->  printfn "no request"
+
+   
 
 
 do if (conf.debug) then debug()
