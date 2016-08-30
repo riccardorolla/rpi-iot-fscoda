@@ -115,7 +115,7 @@ let initFacts () =
        help <- sprintf "%s\n\t%s:%s" help ctx?prompt ctx?cmd
  
  tell <| Fsc.Facts.result("help",help)
-  
+ for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
 
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
@@ -124,17 +124,15 @@ let main () =
  let mutable listresult=[||]
  let mutable array_cmd =  [|"broadcast start";"get channels"|]
 
-
+ //Async.Start( async{
  while (not (get_found "exit")) do
-     
 
-   
      for _ in !-- request(ctx?idchat,ctx?cmd,ctx?param) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]
                                 
      for _ in !-- next(ctx?obj,ctx?cmd) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]  
 
      listresult <- Async.Parallel [for c in  array_cmd -> execute c] |> Async.RunSynchronously
-     array_cmd <-   [|"get channels";"get photo","discovery"|]
+     array_cmd <-   [|"get channels";"get photo";"discovery"|]
      for r in listresult do
          match r with
           |cmd,res -> for _ in !-- result(cmd,ctx?out) do retract <| Fsc.Facts.result(cmd, ctx?out)   
@@ -142,9 +140,11 @@ let main () =
                      //    | _ when !- result(cmd,ctx?out) ->   retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
                      //    | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
                       tell <| Fsc.Facts.result(cmd, res)
+ // }) 
+    
+ //while (not (get_found "exit")) do
      
 
-     for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
      discovery "obstacle" (try 
                             float(get_out "get distance")
                            with e-> 0.0) 
