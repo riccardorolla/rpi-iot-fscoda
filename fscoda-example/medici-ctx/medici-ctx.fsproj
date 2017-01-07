@@ -75,13 +75,12 @@
       <Name>medici-context</Name>
       <Project>{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}</Project>
     </ProjectReference>
-    <Reference Include="Unquote">
-      <HintPath>..\packages\Unquote.3.1.1\lib\net45\Unquote.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="YieldProlog">
       <HintPath>..\packages\yieldprolog.coda.1.0.1.0\lib\YieldProlog.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Unquote">
+      <HintPath>..\packages\Unquote.3.1.2\lib\net45\Unquote.dll</HintPath>
     </Reference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
