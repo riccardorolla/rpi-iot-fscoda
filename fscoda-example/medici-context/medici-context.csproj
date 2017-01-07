@@ -60,7 +60,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(ProjectDir)\..\packages\ypc.coda.1.0.3.0\bin\ypc.exe Physicians $(ProjectDir)\medici-context.P $(ProjectDir)\medici-context.cs
+    <PreBuildEvent>$(ProjectDir)\..\packages\ypc.coda.1.0.4.0\bin\ypc.exe Physicians $(ProjectDir)\medici-context.P $(ProjectDir)\medici-context.cs
 </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
