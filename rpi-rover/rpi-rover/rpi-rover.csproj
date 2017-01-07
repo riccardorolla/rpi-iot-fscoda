@@ -9,7 +9,7 @@
     <AssemblyName>rpi-rover</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 	 <IntermediateOutputPath>..\obj\</IntermediateOutputPath>
-	 <ApplicationManifest>app.manifest</ApplicationManifest>
+
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
