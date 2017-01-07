@@ -83,13 +83,12 @@
       <Name>medici-ctx</Name>
       <Project>{1A9E00B1-3FE5-4B7F-9944-8FE5BCEA812C}</Project>
     </ProjectReference>
-    <Reference Include="Unquote">
-      <HintPath>..\packages\Unquote.3.1.1\lib\net45\Unquote.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="YieldProlog">
       <HintPath>..\packages\yieldprolog.coda.1.0.1.0\lib\YieldProlog.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Unquote">
+      <HintPath>..\packages\Unquote.3.1.2\lib\net45\Unquote.dll</HintPath>
     </Reference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
