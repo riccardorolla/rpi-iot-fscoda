@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.1.11)  11 JAN 2017 10:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.1.11)  11 JAN 2017 10:35
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -1064,6 +1064,28 @@ Package: multirow 2016/10/11 v2.1 Span multiple rows of a table
 \multirow@dima=\skip64
 \bigstrutjot=\dimen152
 )
+("C:\develop\MiKTeX 2.9\tex\generic\babel\babel.sty"
+Package: babel 2016/04/23 3.9r The Babel package
+
+*************************************
+* Local config file bblopts.cfg used
+*
+(C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\arabi\bblopts.cfg
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+(C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\babel-italian\italian.l
+df
+Language: italian 2015/03/26 v1.3n Italian support from the babel system
+ ("C:\develop\MiKTeX 2.9\tex\generic\babel\babel.def"
+File: babel.def 2016/04/23 3.9r Babel common definitions
+\babel@savecnt=\count161
+\U@D=\dimen153
+)
+\it@lettering=\count162
+\it@doublequoteactive=\count163
+\it@ISOcompliance=\count164
+))
 (C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\siunitx\siunitx.sty
 (C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\l3kernel\expl3.sty
 Package: expl3 2016/11/21 v6760 L3 programming layer (loader) 
@@ -1078,31 +1100,31 @@ L3 Module: l3tl 2016/08/19 v6692 L3 Token lists
 L3 Module: l3str 2016/08/19 v6692 L3 Strings
 L3 Module: l3seq 2016/08/19 v6685 L3 Sequences and stacks
 L3 Module: l3int 2016/09/07 v6700 L3 Integers
-\c_max_int=\count161
-\l_tmpa_int=\count162
-\l_tmpb_int=\count163
-\g_tmpa_int=\count164
-\g_tmpb_int=\count165
+\c_max_int=\count165
+\l_tmpa_int=\count166
+\l_tmpb_int=\count167
+\g_tmpa_int=\count168
+\g_tmpb_int=\count169
 L3 Module: l3quark 2016/08/19 v6685 L3 Quarks
 L3 Module: l3prg 2016/08/18 v6679 L3 Control structures
-\g__prg_map_int=\count166
+\g__prg_map_int=\count170
 L3 Module: l3clist 2016/08/19 v6685 L3 Comma separated lists
 L3 Module: l3token 2016/09/01 v6695 L3 Experimental token manipulation
 L3 Module: l3prop 2016/08/19 v6685 L3 Property lists
 L3 Module: l3msg 2016/08/19 v6691 L3 Messages
 L3 Module: l3file 2016/08/19 v6685 L3 File and I/O operations
-\l_iow_line_count_int=\count167
-\l__iow_target_count_int=\count168
-\l__iow_current_line_int=\count169
-\l__iow_current_word_int=\count170
-\l__iow_current_indentation_int=\count171
+\l_iow_line_count_int=\count171
+\l__iow_target_count_int=\count172
+\l__iow_current_line_int=\count173
+\l__iow_current_word_int=\count174
+\l__iow_current_indentation_int=\count175
 L3 Module: l3skip 2016/08/19 v6692 L3 Dimensions and skips
-\c_zero_dim=\dimen153
-\c_max_dim=\dimen154
-\l_tmpa_dim=\dimen155
-\l_tmpb_dim=\dimen156
-\g_tmpa_dim=\dimen157
-\g_tmpb_dim=\dimen158
+\c_zero_dim=\dimen154
+\c_max_dim=\dimen155
+\l_tmpa_dim=\dimen156
+\l_tmpb_dim=\dimen157
+\g_tmpa_dim=\dimen158
+\g_tmpb_dim=\dimen159
 \c_zero_skip=\skip65
 \c_max_skip=\skip66
 \l_tmpa_skip=\skip67
@@ -1116,17 +1138,17 @@ L3 Module: l3skip 2016/08/19 v6692 L3 Dimensions and skips
 \g_tmpa_muskip=\muskip16
 \g_tmpb_muskip=\muskip17
 L3 Module: l3keys 2016/09/21 v6711 L3 Key-value interfaces
-\l_keys_choice_int=\count172
+\l_keys_choice_int=\count176
 L3 Module: l3fp 2016/11/21 v6761 L3 Floating points
-\c__fp_leading_shift_int=\count173
-\c__fp_middle_shift_int=\count174
-\c__fp_trailing_shift_int=\count175
-\c__fp_big_leading_shift_int=\count176
-\c__fp_big_middle_shift_int=\count177
-\c__fp_big_trailing_shift_int=\count178
-\c__fp_Bigg_leading_shift_int=\count179
-\c__fp_Bigg_middle_shift_int=\count180
-\c__fp_Bigg_trailing_shift_int=\count181
+\c__fp_leading_shift_int=\count177
+\c__fp_middle_shift_int=\count178
+\c__fp_trailing_shift_int=\count179
+\c__fp_big_leading_shift_int=\count180
+\c__fp_big_middle_shift_int=\count181
+\c__fp_big_trailing_shift_int=\count182
+\c__fp_Bigg_leading_shift_int=\count183
+\c__fp_Bigg_middle_shift_int=\count184
+\c__fp_Bigg_trailing_shift_int=\count185
 L3 Module: l3box 2016/08/19 v6685 L3 Experimental boxes
 \c_empty_box=\box28
 \l_tmpa_box=\box29
@@ -1135,13 +1157,13 @@ L3 Module: l3box 2016/08/19 v6685 L3 Experimental boxes
 \g_tmpb_box=\box32
 L3 Module: l3coffins 2016/08/19 v6685 L3 Coffin code layer
 \l__coffin_internal_box=\box33
-\l__coffin_internal_dim=\dimen159
-\l__coffin_offset_x_dim=\dimen160
-\l__coffin_offset_y_dim=\dimen161
-\l__coffin_x_dim=\dimen162
-\l__coffin_y_dim=\dimen163
-\l__coffin_x_prime_dim=\dimen164
-\l__coffin_y_prime_dim=\dimen165
+\l__coffin_internal_dim=\dimen160
+\l__coffin_offset_x_dim=\dimen161
+\l__coffin_offset_y_dim=\dimen162
+\l__coffin_x_dim=\dimen163
+\l__coffin_y_dim=\dimen164
+\l__coffin_x_prime_dim=\dimen165
+\l__coffin_y_prime_dim=\dimen166
 \c_empty_coffin=\box34
 \l__coffin_aligned_coffin=\box35
 \l__coffin_aligned_internal_coffin=\box36
@@ -1150,49 +1172,49 @@ L3 Module: l3coffins 2016/08/19 v6685 L3 Coffin code layer
 \l__coffin_display_coffin=\box39
 \l__coffin_display_coord_coffin=\box40
 \l__coffin_display_pole_coffin=\box41
-\l__coffin_display_offset_dim=\dimen166
-\l__coffin_display_x_dim=\dimen167
-\l__coffin_display_y_dim=\dimen168
+\l__coffin_display_offset_dim=\dimen167
+\l__coffin_display_x_dim=\dimen168
+\l__coffin_display_y_dim=\dimen169
 L3 Module: l3color 2016/06/13 v6596 L3 Experimental color support
 L3 Module: l3sys 2015/09/25 v6087 L3 Experimental system/runtime functions
 L3 Module: l3candidates 2016/08/19 v6688 L3 Experimental additions to l3kernel
-\l__box_top_dim=\dimen169
-\l__box_bottom_dim=\dimen170
-\l__box_left_dim=\dimen171
-\l__box_right_dim=\dimen172
-\l__box_top_new_dim=\dimen173
-\l__box_bottom_new_dim=\dimen174
-\l__box_left_new_dim=\dimen175
-\l__box_right_new_dim=\dimen176
+\l__box_top_dim=\dimen170
+\l__box_bottom_dim=\dimen171
+\l__box_left_dim=\dimen172
+\l__box_right_dim=\dimen173
+\l__box_top_new_dim=\dimen174
+\l__box_bottom_new_dim=\dimen175
+\l__box_left_new_dim=\dimen176
+\l__box_right_new_dim=\dimen177
 \l__box_internal_box=\box42
-\l__coffin_bounding_shift_dim=\dimen177
-\l__coffin_left_corner_dim=\dimen178
-\l__coffin_right_corner_dim=\dimen179
-\l__coffin_bottom_corner_dim=\dimen180
-\l__coffin_top_corner_dim=\dimen181
-\l__coffin_scaled_total_height_dim=\dimen182
-\l__coffin_scaled_width_dim=\dimen183
+\l__coffin_bounding_shift_dim=\dimen178
+\l__coffin_left_corner_dim=\dimen179
+\l__coffin_right_corner_dim=\dimen180
+\l__coffin_bottom_corner_dim=\dimen181
+\l__coffin_top_corner_dim=\dimen182
+\l__coffin_scaled_total_height_dim=\dimen183
+\l__coffin_scaled_width_dim=\dimen184
 L3 Module: l3luatex 2016/08/18 v6679 L3 Experimental LuaTeX-specific functions
 )
 (C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\l3kernel\l3pdfmode.def
 File: l3pdfmode.def 2016/08/18 v6679 L3 Experimental driver: PDF mode
-\l__driver_color_stack_int=\count182
+\l__driver_color_stack_int=\count186
 \l__driver_tmp_box=\box43
 ))
 (C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\l3packages\xparse\xpars
 e.sty
 Package: xparse 2016/11/21 v6760 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count183
-\l__xparse_m_args_int=\count184
-\l__xparse_mandatory_args_int=\count185
-\l__xparse_processor_int=\count186
-\l__xparse_v_nesting_int=\count187
+\l__xparse_current_arg_int=\count187
+\l__xparse_m_args_int=\count188
+\l__xparse_mandatory_args_int=\count189
+\l__xparse_processor_int=\count190
+\l__xparse_v_nesting_int=\count191
 )
 Package: siunitx 2017/01/01 v2.7a A comprehensive (SI) units package
  ("C:\develop\MiKTeX 2.9\tex\latex\tools\array.sty"
 Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
-\col@sep=\dimen184
-\extrarowheight=\dimen185
+\col@sep=\dimen185
+\extrarowheight=\dimen186
 \NC@list=\toks28
 \extratabsurround=\skip71
 \backup@length=\skip72
@@ -1202,39 +1224,39 @@ eys2e.sty
 Package: l3keys2e 2016/11/21 v6760 LaTeX2e option processing using LaTeX3 keys
 )
 \l__siunitx_tmp_box=\box44
-\l__siunitx_tmp_dim=\dimen186
-\l__siunitx_tmp_int=\count188
-\l__siunitx_number_mantissa_length_int=\count189
-\l__siunitx_number_uncert_length_int=\count190
-\l__siunitx_round_int=\count191
-\l__siunitx_process_decimal_int=\count192
-\l__siunitx_process_uncertainty_int=\count193
-\l__siunitx_process_fixed_int=\count194
-\l__siunitx_process_integer_min_int=\count195
-\l__siunitx_process_precision_int=\count196
-\l__siunitx_group_min_int=\count197
+\l__siunitx_tmp_dim=\dimen187
+\l__siunitx_tmp_int=\count192
+\l__siunitx_number_mantissa_length_int=\count193
+\l__siunitx_number_uncert_length_int=\count194
+\l__siunitx_round_int=\count195
+\l__siunitx_process_decimal_int=\count196
+\l__siunitx_process_uncertainty_int=\count197
+\l__siunitx_process_fixed_int=\count198
+\l__siunitx_process_integer_min_int=\count199
+\l__siunitx_process_precision_int=\count266
+\l__siunitx_group_min_int=\count267
 \l__siunitx_angle_marker_box=\box45
 \l__siunitx_angle_unit_box=\box46
-\l__siunitx_angle_marker_dim=\dimen187
-\l__siunitx_angle_unit_dim=\dimen188
-\l__siunitx_unit_int=\count198
-\l__siunitx_unit_denominator_int=\count199
-\l__siunitx_unit_numerator_int=\count266
-\l__siunitx_unit_prefix_int=\count267
-\l__siunitx_unit_prefix_base_int=\count268
-\l__siunitx_unit_prefix_gram_int=\count269
-\l__siunitx_number_product_int=\count270
+\l__siunitx_angle_marker_dim=\dimen188
+\l__siunitx_angle_unit_dim=\dimen189
+\l__siunitx_unit_int=\count268
+\l__siunitx_unit_denominator_int=\count269
+\l__siunitx_unit_numerator_int=\count270
+\l__siunitx_unit_prefix_int=\count271
+\l__siunitx_unit_prefix_base_int=\count272
+\l__siunitx_unit_prefix_gram_int=\count273
+\l__siunitx_number_product_int=\count274
 \c__siunitx_one_fill_skip=\skip73
 \l__siunitx_table_unit_align_skip=\skip74
-\l__siunitx_table_exponent_dim=\dimen189
-\l__siunitx_table_integer_dim=\dimen190
-\l__siunitx_table_mantissa_dim=\dimen191
-\l__siunitx_table_marker_dim=\dimen192
-\l__siunitx_table_result_dim=\dimen193
-\l__siunitx_table_uncert_dim=\dimen194
-\l__siunitx_table_fill_pre_dim=\dimen195
-\l__siunitx_table_fill_post_dim=\dimen196
-\l__siunitx_table_fill_mid_dim=\dimen197
+\l__siunitx_table_exponent_dim=\dimen190
+\l__siunitx_table_integer_dim=\dimen191
+\l__siunitx_table_mantissa_dim=\dimen192
+\l__siunitx_table_marker_dim=\dimen193
+\l__siunitx_table_result_dim=\dimen194
+\l__siunitx_table_uncert_dim=\dimen195
+\l__siunitx_table_fill_pre_dim=\dimen196
+\l__siunitx_table_fill_post_dim=\dimen197
+\l__siunitx_table_fill_mid_dim=\dimen198
 \l__siunitx_table_pre_box=\box47
 \l__siunitx_table_post_box=\box48
 \l__siunitx_table_mantissa_box=\box49
@@ -1375,10 +1397,9 @@ You meant to type ## instead of #, right?
 Or maybe a } was forgotten somewhere earlier, and things
 are all screwed up? I'm going to assume that you meant ##.
 
-) (thesis.aux (Dedication/dedication.aux) (Declaration/declaration.aux)
-(Acknowledgement/acknowledgement.aux) (Abstract/abstract.aux)
-(Chapter1/chapter1.aux) (Chapter2/chapter2.aux) (Chapter3/chapter3.aux)
-(Appendix1/appendix1.aux) (Appendix2/appendix2.aux))
+) (thesis.aux (Dedication/dedication.aux) (Chapter1/chapter1.aux)
+(Chapter2/chapter2.aux) (Chapter3/chapter3.aux) (Appendix1/appendix1.aux)
+(Appendix2/appendix2.aux))
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 108.
@@ -1396,8 +1417,7 @@ LaTeX Font Info:    ... okay on input line 108.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 108.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 108.
 
-
-("C:\develop\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
+ ("C:\develop\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 108.
@@ -1412,16 +1432,16 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 (C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count271
-\scratchdimen=\dimen198
+\scratchcounter=\count275
+\scratchdimen=\dimen199
 \scratchbox=\box51
-\nofMPsegments=\count272
-\nofMParguments=\count273
+\nofMPsegments=\count276
+\nofMParguments=\count277
 \everyMPshowfont=\toks29
-\MPscratchCnt=\count274
-\MPscratchDim=\dimen199
-\MPnumerator=\count275
-\makeMPintoPDFobject=\count276
+\MPscratchCnt=\count278
+\MPscratchDim=\dimen256
+\MPnumerator=\count279
+\makeMPintoPDFobject=\count280
 \everyMPtoPDFconversion=\toks30
 )
 LaTeX Info: Redefining \microtypecontext on input line 108.
@@ -1445,7 +1465,7 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\develop\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count277
+\c@section@level=\count281
 )
 LaTeX Info: Redefining \ref on input line 108.
 LaTeX Info: Redefining \pageref on input line 108.
@@ -1493,6 +1513,8 @@ LaTeX Info: Redefining \nameref on input line 108.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
+LaTeX Info: Redefining \it@ocap on input line 108.
+LaTeX Info: Redefining \it@ccap on input line 108.
 
 (C:\Users\riccardo\AppData\Roaming\MiKTeX\2.9\tex\latex\beamer\translator\dicts
 \translator-basic-dictionary\translator-basic-dictionary-English.dict
@@ -1502,7 +1524,7 @@ Dictionary: translator-basic-dictionary, Language: English
 ations.cfg
 File: siunitx-abbreviations.cfg 2017/01/01 v2.7a siunitx: Abbreviated units
 )
-\c__siunitx_mathsf_int=\count278
+\c__siunitx_mathsf_int=\count282
 LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 10
 8.
  ("C:\develop\MiKTeX 2.9\tex\latex\psnfss\ot1ztmcm.fd"
@@ -1553,7 +1575,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `cmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-\c__siunitx_mathtt_int=\count279
+\c__siunitx_mathtt_int=\count283
 Package microtype Info: Loading generic settings for font family
 (microtype)             `cmtt' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1593,12 +1615,12 @@ If you're in the wrong mode, you might be able to
 return to the right one by typing `I}' or `I$' or `I\par'.
 
 \PHD@crest=\box54
-<Figs/University_Crest.pdf, id=87, 597.23125pt x 845.1575pt>
+<Figs/University_Crest.pdf, id=75, 625.96065pt x 625.96065pt>
 File: Figs/University_Crest.pdf Graphic file (type pdf)
 
 <use Figs/University_Crest.pdf>
 Package pdftex.def Info: Figs/University_Crest.pdf used on input line 112.
-(pdftex.def)             Requested size: 87.49088pt x 123.80206pt.
+(pdftex.def)             Requested size: 218.73056pt x 218.72655pt.
 \PHD@collegecrest=\box55
 \PHD@author=\box56
 \PHD@supervisor=\box57
@@ -1618,74 +1640,59 @@ niversity_Crest.pdf>]
 (Dedication/dedication.tex [2
 
 
-]) [3]
-\openout2 = `Declaration/declaration.aux'.
-
- (Declaration/declaration.tex [4
-
-
-
-]) [5
-
-]
-\openout2 = `Acknowledgement/acknowledgement.aux'.
-
-
-(Acknowledgement/acknowledgement.tex [6
-
-
-
-]) [7
-
-]
-\openout2 = `Abstract/abstract.aux'.
-
- (Abstract/abstract.tex [8
-
-
-
-])
-[9
-
-] [10
+]) [3] [4
 
 
 ] (thesis.toc
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 2.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 4.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 22.
 )
 \tf@toc=\write6
 \openout6 = `thesis.toc'.
 
- [11
+ [5
 
-] [12
+] [6
 
 ] (thesis.lof)
 \tf@lof=\write7
 \openout7 = `thesis.lof'.
 
- [13] [14
+
+[7] [8
 
 ] (thesis.lot)
 \tf@lot=\write8
 \openout8 = `thesis.lot'.
 
- (thesis.nls [15] [16
 
-] [17]) [18]
+No file thesis.nls.
+[9] [10
+
+]
 \openout2 = `Chapter1/chapter1.aux'.
 
  (Chapter1/chapter1.tex
-Chapter 1.
+Capitolo 1.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 15.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 15.
-[1
 
+Package natbib Warning: Citation `Aup91' on page 1 undefined on input line 18.
+
+
+Package natbib Warning: Citation `AAB95' on page 1 undefined on input line 25.
+
+
+Package natbib Warning: Citation `Con90' on page 1 undefined on input line 25.
+
+
+Package natbib Warning: Citation `LM65' on page 1 undefined on input line 25.
+
+[1
 
 
 ] [2]) [3]
@@ -1696,8 +1703,8 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 
 
 ]
-Chapter 2.
-<Chapter2/Figs/Raster/minion.png, id=239, 636.6987pt x 582.4962pt>
+Capitolo 2.
+<Chapter2/Figs/Raster/minion.png, id=177, 636.6987pt x 582.4962pt>
 File: Chapter2/Figs/Raster/minion.png Graphic file (type png)
 
 <use Chapter2/Figs/Raster/minion.png>
@@ -1716,7 +1723,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
  [9
 
 ]
-<Chapter2/Figs/Raster/TomandJerry.png, id=277, 324.33366pt x 216.81pt>
+<Chapter2/Figs/Raster/TomandJerry.png, id=215, 324.33366pt x 216.81pt>
 File: Chapter2/Figs/Raster/TomandJerry.png Graphic file (type png)
 
 <use Chapter2/Figs/Raster/TomandJerry.png>
@@ -1724,7 +1731,7 @@ Package pdftex.def Info: Chapter2/Figs/Raster/TomandJerry.png used on input lin
 e 90.
 (pdftex.def)             Requested size: 131.23967pt x 87.73148pt.
 
-<Chapter2/Figs/Raster/WallE.png, id=278, 341.9605pt x 515.58476pt>
+<Chapter2/Figs/Raster/WallE.png, id=216, 341.9605pt x 515.58476pt>
 File: Chapter2/Figs/Raster/WallE.png Graphic file (type png)
 
 <use Chapter2/Figs/Raster/WallE.png>
@@ -1742,7 +1749,15 @@ Package pdftex.def Info: Chapter2/Figs/Raster/minion.png used on input line 100
 \openout2 = `Chapter3/chapter3.aux'.
 
  (Chapter3/chapter3.tex
-Chapter 3.
+Capitolo 3.
+
+Package natbib Warning: Citation `Rea85' on page 11 undefined on input line 13.
+
+
+
+Package natbib Warning: Citation `Ancey1996' on page 11 undefined on input line
+ 13.
+
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 15.
 [11
@@ -1753,21 +1768,20 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
 ]) [12] [13] [14
 
 
-] (thesis.bbl) [15
-
 ]
+No file thesis.bbl.
 \openout2 = `Appendix1/appendix1.aux'.
 
- (Appendix1/appendix1.tex [16
-
-
-]
-Appendix A.
+(Appendix1/appendix1.tex
+Appendice A.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24.88> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
-[17] [18]
+[15
+
+
+] [16]
 LaTeX Font Info:    Try loading font information for T1+cmtt on input line 71.
  ("C:\develop\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
@@ -1776,54 +1790,53 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [19]) [20]
+ [17]) [18]
 \openout2 = `Appendix2/appendix2.aux'.
 
 
 (Appendix2/appendix2.tex
-Appendix B.
-) [21
+Appendice B.
+) [19
 
 
 
-] [22
+] [20
 
 
-] (thesis.ind [23
+]
+No file thesis.ind.
 
+Package natbib Warning: There were undefined citations.
 
-])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 185.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 185.
- (thesis.aux (Dedication/dedication.aux)
-(Declaration/declaration.aux) (Acknowledgement/acknowledgement.aux)
-(Abstract/abstract.aux) (Chapter1/chapter1.aux) (Chapter2/chapter2.aux)
-(Chapter3/chapter3.aux) (Appendix1/appendix1.aux) (Appendix2/appendix2.aux))
+(thesis.aux (Dedication/dedication.aux) (Chapter1/chapter1.aux)
+(Chapter2/chapter2.aux) (Chapter3/chapter3.aux) (Appendix1/appendix1.aux)
+(Appendix2/appendix2.aux))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 185.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 185.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: A9CBDE066929134D344B6F276839174B;4093.
+(rerunfilecheck)             Checksum: B3C0A5DCA2F2D9E7352C1100CCF6F2C0;3838.
  ) 
 Here is how much of TeX's memory you used:
- 25935 strings out of 493333
- 455375 string characters out of 3141771
- 519771 words of memory out of 3000000
- 28703 multiletter control sequences out of 15000+200000
- 93230 words of font info for 265 fonts, out of 3000000 for 9000
+ 26281 strings out of 493333
+ 459693 string characters out of 3141771
+ 533189 words of memory out of 3000000
+ 29090 multiletter control sequences out of 15000+200000
+ 91542 words of font info for 260 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,15n,92p,10385b,942s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,15n,92p,10385b,964s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\riccardo\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi6
 00\ectt1200.pk>{C:/develop/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/develop/M
 iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/develop/MiKTeX 2.9/font
-s/type1/public/amsfonts/cm/cmmi10.pfb><C:/develop/MiKTeX 2.9/fonts/type1/public
-/amsfonts/cm/cmr10.pfb><C:/develop/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-sy10.pfb><C:/Users/riccardo/AppData/Roaming/MiKTeX/2.9/fonts/type1/urw/symbol/u
-syr.pfb><C:/develop/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/develop/MiK
-TeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/develop/MiKTeX 2.9/fonts/type1/urw
-/times/utmri8a.pfb>
-Output written on thesis.pdf (41 pages, 907583 bytes).
+s/type1/public/amsfonts/cm/cmr10.pfb><C:/develop/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmsy10.pfb><C:/Users/riccardo/AppData/Roaming/MiKTeX/2.9/fonts/type
+1/urw/symbol/usyr.pfb><C:/develop/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><
+C:/develop/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/develop/MiKTeX 2.9/f
+onts/type1/urw/times/utmri8a.pfb>
+Output written on thesis.pdf (30 pages, 515143 bytes).
 PDF statistics:
- 524 PDF objects out of 1000 (max. 8388607)
- 137 named destinations out of 1000 (max. 500000)
- 62141 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 434 PDF objects out of 1000 (max. 8388607)
+ 114 named destinations out of 1000 (max. 500000)
+ 60069 words of extra memory for PDF output out of 61914 (max. 10000000)
 
