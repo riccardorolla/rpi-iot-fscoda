@@ -28,7 +28,7 @@ pdflatex -interaction=nonstopmode "%FILENAME%.tex"
 makeindex "%FILENAME%.nlo" -s nomencl.ist -o "%FILENAME%".nls
 pdflatex -interaction=nonstopmode "%FILENAME%.tex"
 
-
+pause
 DEL "%FILENAME%.aux"
 DEL "%FILENAME%.bbl"
 DEL "%FILENAME%.blg"
