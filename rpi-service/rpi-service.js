@@ -26,8 +26,8 @@ try {
 	conf = fs.readFileSync(filename_conf);
 } catch (e) {
 	conf = '{"telegram_key":"224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM",'+
-			    '"vision_url":"https://api.projectoxford.ai/vision/v1.0/analyze",'+
-			    '"vision_key":"255ec2de41124b42a6ae6428f7f03b84",'+
+				'"vision_url":"https://api.projectoxford.ai/vision/v1.0/analyze",'+
+				'"vision_key":"255ec2de41124b42a6ae6428f7f03b84",'+
 				'"translate_url":"http://translate.googleapis.com/translate_a/single",'+
 				'"default_lang":"it",'+
 				'"port":8081,'+
@@ -44,7 +44,7 @@ var configuration = JSON.parse(conf);
 console.log(configuration);
 
 if (!fs.existsSync(configuration.temp_path)){
-    fs.mkdirSync(configuration.temp_path);
+	fs.mkdirSync(configuration.temp_path);
 }
 
 const execSync = childprocess.execSync;
@@ -72,12 +72,12 @@ bot.on('message', function (msg) {
   var newmsg={idmsg:uuid.v4(),txt:msg.text};
   retchat.msg.push(newmsg);
    
-    
+	
   console.log(retchat);
 });
 
 function whatdoyousee(img,callback,fcallback){
-     var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
+	 var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
 						{ 
 							headers:{
 								'Ocp-Apim-Subscription-Key': configuration.vision_key,
@@ -179,7 +179,7 @@ app.get('/telegram/:idchat',function (req, res) {
 app.get('/telegram/:idchat/msg', function (req, res) {
 	var idchat=req.params.idchat
    res.send(getchat(idchat).msg);
-     res.end();
+	 res.end();
 
 })
  
@@ -217,9 +217,9 @@ app.get('/telegram/:idchat/photo',function(req,res) {
 	var msg = req.query.text;
 	bot.sendPhoto(idchat, filename, {caption:msg})
 	res.send('send photo')
-     res.end();
+	 res.end();
 							  
-    });
+	});
  
 app.get('/telegram/broadcast/:text',function(req,res) {
   
@@ -260,20 +260,20 @@ app.get('/rpi/distance/',function(req,res) {
 app.get('/rpi/photo',function(req,res) {
 	 var filename = photo(req.query.width,req.query.height,req.query.quality);
 	 var img = fs.readFileSync(filename);
-     res.writeHead(200, {'Content-Type': 'image/jpeg' });
-     res.end(img, 'binary');
+	 res.writeHead(200, {'Content-Type': 'image/jpeg' });
+	 res.end(img, 'binary');
   
 							  
-    });
+	});
 app.get('/rpi/video',function(req,res) {
  
 	 var filename = video(req.query.width,req.query.height,req.query.time);
 	 var vid = fs.readFileSync(filename);
-     res.writeHead(200, {'Content-Type': 'video/mp4' });
-     res.end(vid, 'binary');
+	 res.writeHead(200, {'Content-Type': 'video/mp4' });
+	 res.end(vid, 'binary');
   
 							  
-    });
+	});
 */
 app.get('/rpi/photo',function(req,res) {
 	 var idphoto = photo(req.query.width,req.query.height,req.query.quality);
@@ -282,7 +282,7 @@ app.get('/rpi/photo',function(req,res) {
 	  
   
 							  
-    });
+	});
 app.get('/rpi/video',function(req,res) {
  
 	 var idvideo = video(req.query.width,req.query.height,req.query.time);
@@ -290,7 +290,7 @@ app.get('/rpi/video',function(req,res) {
 	 res.end();
   
 							  
-    });
+	});
 
 app.get('/translate',function(req,res) {
  
@@ -306,16 +306,16 @@ app.get('/translate',function(req,res) {
 												res.end();
 											}) 
 							  
-    });
+	});
 app.get('/whatdoyousee',function(req,res) {
-     var idphoto=req.query.idphoto
+	 var idphoto=req.query.idphoto
 	 var filename = configuration.temp_path+idphoto+'.jpg' //photo(req.query.width,req.query.height,req.query.quality);
 	 var img = fs.readFileSync(filename);
 	 var lang;
 	 lang = req.query.lang;
 	 if (lang===undefined) lang=configuration.default_lang;
-     var resvision = whatdoyousee(img,function(response) {
-								             console.log(response.getBody().toString('utf-8')); 
+	 var resvision = whatdoyousee(img,function(response) {
+											 console.log(response.getBody().toString('utf-8')); 
 									//	translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
 										//	function(strout) {
 										//		res.send(strout.toString());
@@ -329,7 +329,7 @@ app.get('/whatdoyousee',function(req,res) {
 									res.end();
 								});
 							  
-    });
+	});
 
 
 
