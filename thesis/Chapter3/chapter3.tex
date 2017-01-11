@@ -6,12 +6,32 @@
 \else
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
+\section{Implementazione Hardware}
+Dopo aver collegato la Camera al Raspberry come mostrato nella figura
+
+Connetto RaspberryPi alla breadboard con utilizzato un cavo flat 40 fili ed un T-Cobbler. 
+in modo   porte GPIO siano accessibili direttamente nella breadboard. Sfrutto i lati esterni della breadboard per poter sfruttare una linea di alimentazione 5v ed un'altra a 3.3v
+
+Quindi unisco i Pin 02 e il Pin06 alle linee esterne su lato della breadboard in modo da avere una linea a 5v e collego i pin 01 e 09 l’altro lato esterno per avere un’altra linea 3.3v
+Così come mostrato nel disegno
+
+Per collegare i motori delle ruote al sistema utilizzo il componente L298N come driver dei motori, l L298N è stato progettato per supportare un’unica fonte di alimentazione o per entrambi i motori e il microcontrollore. Per alimentare questo controller e i motori ho utilizzato 4 batterie AA in modo da non caricare troppo l’alimentazione del raspberry.
+Collego  4 pin GPIO del Rpi ai pin di ingresso 4 motore sul L298N. 
+•	IN1 e IN2 controllano la direzione del motore A e IN3 e IN4 controllano la direzione del motore B. 
+o	IN1 -> GPIO 27/13 fisico
+o	IN2 -> GPIO 22/15 fisico
+o	IN3 -> GPIO 5 / fisica 29
+o	IN4 -> GPIO 6/31 fisico
+le connessioni dovrebbero corrispondere a questo schema:
+
+L'HC-SR04 come descritto precendentemnte dispone di 4 pin - VCC, Trig, Echo, e GND.
+
+Collego VCC alla linea di distribuzione 5v sulla breadboard, collego il pin trig al Raspberry GPIO23/Pin Fisico 16. Collego il pin Echo, tra il GPIO24/pin fisico 18 metto una resistenanza 1k OHM, infine collego un’altra resistenza tra il Pin GND alla linea Ground della breastboard e collego la linea echo con la linea del sensore 2,2K ohtm, questo perché RPI vuole 3.3v su pin GPIO  mentre il sensore fornisce una tensione 5v.
+Al termine del collegament di questo sensore lo schema sarà:
+
+Utilizzo un PowerBank a 6000ma per l’alimentazione del raspberry, ed uso come Chassis il supporto mostrato dalla figura
 
 \section{Architettura Software}
- 
- 
-
-\section{Realizzazione hardware}
 
 \section{rpirover}
  
