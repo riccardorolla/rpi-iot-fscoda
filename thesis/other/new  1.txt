@@ -1,0 +1,29 @@
+Il Raspberry Pi è un calcolatore di  dimensioni molto ridotte ed a basso costo realizzato dalla RaspberryPi Fondantion,  
+esistono diversi versioni di questo piccolo computer  così come riportato dalla tabella.
+
+ 
+
+La scelta per il progetto oggetto di questa tesi è stata per la versione 3  perchè
+mette a disposizione una potenza di calcolo superiorie a qualunche altro modello di RPi,
+grazie SoC BCM2837 all'interno del quale c'è  un 1Gb memoria, una CPU un quad-core ARM Cortex A53 a 64 bit a 1.2 Ghz ed una GPU VideoCore IV a 400Mhz,
+inoltre la Rpi3 è dotata del chip BCM43438 che fornisce connessione Wifi b/g/n e Bluetooth eliminando la necessità di utilizzare 
+un adatattore Wifi USB come avveniva nelle versioni precedenti.
+L'antenna usata per le comunicazioni wireless si  trova sul bordo esterno della scheda, fuori dalla portata di possibili interferenze causate 
+da eventuali dispositivi e componenti aggiuntivi. L'integrazione delle comunicazioni wireless è una caratteristica importantante se si vuole 
+valutare l'aspetto di risparmio economico per una piattaforma IoT.
+
+La Rpi ha quattro porte USB e una porta Ethernet 10/100 che condividuno lo steso bus gestito dal chip LAN9514. 
+Questa soluzione può essere criticata 
+perchè non permette di sfruttare il GigaEthernet, ma ai fini del nostro progetto non è un difetto che penalizza.
+
+
+ Nel dispositivo non è presente nessun tipo di memoria di massa, ma è presente un lettore di memorie MicroSD.
+ L'avvio del sistema avviene dalla scheda MicroSD all'interno della quale c'è una partizione con sopra il firmware, kernel e la configurazione del sistema.
+ Questo calcolatore è stato progettato per funzionare su diversi sistemi operativi Linux, RiscOS e Windows Core Iot.
+ Nell'appendice A descrivo come installare la versione Linux Raspian, il sistama operativo scelto per questo progetto.
+ 
+ 
+ Tutte le versioni di questo computer hanno la possabilità di poter utilizzare GPIO  le GPIO sono delle porte che è possibile interagirgi
+ 
+
+ 
