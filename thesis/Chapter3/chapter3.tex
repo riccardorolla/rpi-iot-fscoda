@@ -30,12 +30,19 @@ Collego VCC alla linea di distribuzione 5v sulla breadboard, collego il pin trig
 Al termine del collegament di questo sensore lo schema sarà:
 
 Utilizzo un PowerBank a 6000ma per l’alimentazione del raspberry, ed uso come Chassis il supporto mostrato dalla figura
-
+\begin{landscape}
+	\begin{figure}[htbp!] 
+		\centering    
+		\includegraphics[width=1.2\textwidth]{rover-hwproject}
+		\caption[rover-hwproject]{rover-hwproject}
+		\label{fig:rover-hwproject}
+	\end{figure}
+\end{landscape}[]	
 \section{Architettura Software}
 
-\section{rpirover}
+\section{rpi-rover}
  \lstinputlisting[language={[Sharp]C}]{../rpi-rover/rpi-rover/Program.cs}
 \section{rpiservice}
-
-\section{fscrover}
-
+ \lstinputlisting[language={Javascript}]{../rpi-service/rpi-service.js}
+\section{fsc-rover}
+\lstinputlisting[language={FSharp}]{../fsc-rover/fsc-rover/Program.fs}
