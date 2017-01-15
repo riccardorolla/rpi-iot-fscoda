@@ -1,7 +1,7 @@
 %*******************************************************************************
 %****************************** Second Chapter *********************************
 %*******************************************************************************
-\nomenclature[z-ARM]{Arm}{}Advanced RISC Machine}
+\nomenclature[z-ARM]{ARM}{Advanced RISC Machine}
 \nomenclature[z-Rpi1]{Rpi}{Raspberry Pi  Modello B}
 \nomenclature[z-Rpi2]{Rpi2}{Raspberry Pi 2}
 \nomenclature[z-Rpi3]{Rpi3}{Raspberry Pi 3}
@@ -9,11 +9,12 @@
 \nomenclature[z-CL]{CL}{Common Language}
 \nomenclature[z-GPU]{GPU}{Graphics Processing unit}
 \nomenclature[z-CPU]{CPU}{Central Processing unit}
-\nomenclature[z-SOC]{SOC}{System-On-Chip}
+\nomenclature[z-SoC]{SoC}{System-On-Chip}
 \nomenclature[z-GPIO]{GPIO}{General Purpose Input/Output}
 \nomenclature[z-ML]{ML}{MetaLanguage, Functional Language}
 \nomenclature[z-NPM]{NPM}{Node.js Package Manager}
 \nomenclature[z-USB]{USB}{Universal Serial BUS}
+\nomenclature[z-IOT]{IoT}{Internet Of Things}
 \chapter{Preliminari}
 
 \ifpdf
@@ -24,12 +25,13 @@
 
 
 \section{Raspberry Pi}
-Il Raspberry Pi è un calcolatore di  dimensioni molto ridotte ed a basso costo realizzato dalla RaspberryPi Fondantion, esistono diversi versioni di questo piccolo computer  così come riportato dalla tabella.
+
+Il Raspberry Pi è un calcolatore  a basso costo  di dimensioni molto ridotte realizzato dalla RaspberryPi Fondantion, di questo piccolo computer esistono diverse versioni con configurazioni hardware differenti così come riportato dalla tabella \ref{tab:rpi_ver}.
 
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{rpi3}
-	\caption[RaspberryPi V3.0]{Raspberry Pi Version 3.0}
+	\caption[RaspberryPi 3]{Raspberry Pi 3}
 	\label{fig:rpi3}
 \end{figure}
 
@@ -61,88 +63,128 @@ Il Raspberry Pi è un calcolatore di  dimensioni molto ridotte ed a basso costo 
 		dimensione & \multicolumn{ 4}{c|}{85.60 mm × 56.5 mm } \\ \hline
 		Peso  & \multicolumn{ 4}{c|}{45g} \\ \hline
 	\end{tabular}
-	\label{}
+	\label{tab:rpi_ver}
 \end{table}
-
 \end{landscape}
 
+La scelta per il progetto oggetto di questa tesi è stata per Raspeberry 3, che indicherò da questo momento come Rpi3, perchè mette a disposizione una potenza di calcolo superiorie a qualunche altro modello di RPi.
 
+Questa versione è dotata di un  SoC BCM2837  dove all'interno del quale c'è:
+\begin{itemize}
+	\item CPU quad-core ARM Cortex A53 4 bit a 1.2 Ghz,
+	\item 1 GB SDRAM di memoria, e
+	\item GPU VideoCore IV a 400Mhz
+\end{itemize}
+inoltre  è dotato del chip BCM43438 che fornisce connettività Wifi b/g/n e Bluetooth eliminando la necessità di utilizzare  adatattori Wifi USB, e come nelle precedenti versioni sono presenti 17 pin GPIO, dove è possibile controllare dispostivi aggiuntivi, e l'interfaccia CSI, che consente di collegare una periferica di input video. 
 
+Il piccolo calcolatore dalle dimensioni di una carta di credito, come può essere visto in \figurename~\ref{fig:rpi3}, ha l'antenna usata per le comunicazioni wireless sul bordo esterno della scheda, fuori dalla portata di possibili interferenze causate  da eventuali dispositivi e componenti aggiuntivi. 
 
-La scelta per il progetto oggetto di questa tesi è stata per la versione 3  perchè mette a disposizione una potenza di calcolo superiorie a qualunche altro modello di RPi, grazie SoC BCM2837 all'interno del quale c'è  un 1Gb memoria, una CPU un quad-core ARM Cortex A53 a 64 bit a 1.2 Ghz ed una GPU VideoCore IV a 400Mhz, inoltre la Rpi3 è dotata del chip BCM43438 che fornisce connessione Wifi b/g/n e Bluetooth eliminando la necessità di utilizzare  un adatattore Wifi USB come avveniva nelle versioni precedenti.
-L'antenna usata per le comunicazioni wireless si  trova sul bordo esterno della scheda, fuori dalla portata di possibili interferenze causate  da eventuali dispositivi e componenti aggiuntivi. L'integrazione delle comunicazioni wireless è una caratteristica importante se si vuole valutare l'aspetto di risparmio economico per una piattaforma IoT.
+L'integrazione delle comunicazioni wireless insieme alla possibilità di collegare periferiche e componenti aggiuntivi lo rende interessante per essere una piattaforma si sviluppo di un sistema IoT.
 
-La Rpi ha quattro porte USB e una porta Ethernet 10/100 che condividono lo stesso bus gestito dal chip LAN9514. Questa soluzione può essere criticata  perchè non permette di sfruttare il 1Gbit sulla porta Ethernet, ma ai fini del nostro progetto non è un difetto che penalizza.
-
+Tra le altre caratteristiche interessanti di questo computer è  la presenza di  quattro porte USB e una porta Ethernet 10/100 che condividono lo stesso bus gestito dal chip LAN9514. 
+Questa soluzione può essere criticata  perchè non permette di sfruttare il 1 Gbit sulla porta Ethernet, ma ai fini del nostro progetto non è un difetto che penalizza la sua realizzazione.
 
 Nel dispositivo non è presente nessun tipo di memoria di massa, ma è presente un lettore di memorie MicroSD.
-L'avvio del sistema avviene dalla scheda MicroSD all'interno della quale c'è una partizione con sopra il firmware, kernel e la configurazione del sistema.
-Questo calcolatore è stato progettato per funzionare su diversi sistemi operativi Linux, RiscOS e Windows Core Iot.
-Nell'appendice A descrivo come installare la versione Linux Raspian, il sistema operativo scelto per questo progetto.
+L'avvio del sistema avviene dalla scheda MicroSD dove all'interno c'è una partizione con sopra il firmware, kernel e la configurazione del sistema.
+
+Questo calcolatore è stato progettato per funzionare con diversi sistemi operativi Linux, RiscOS e Windows Core Iot.
+
+Per questo progetto su Rpi3 installerò Linux Raspian, una distribuzione Linux pensata per Raspberry.
+
+
 
 \subsection{GPIO}
-Tutte le versioni di questo computer hanno la possabilità di poter utilizzare GPIO  le GPIO sono delle porte che è possibile interagirgi
+Un’interfaccia GPIO è un insieme di pin, in Rpi3 ne sono presenti 17, che comunicano quasi direttamente con i registri del processore e che sono facilmente programmabili per collegare periferiche e dispositivi.
+
+L’interfaccia GPIO è un’interfaccia digitale: può inviare e ricevere soltanto segnali digitali, ovvero alternanze di 0 volt e 3.3 volt, per questo motivo bisogna fare attenzione ad usare i pin GPIO della Raspberry Pi perchè  lavorano a 3.3 volt, e a non tollerano i 5 volt e quindi collegare qualcosa che immetta 5 volt su un pin GPIO equivale a danneggiare il processore.
+
+Per motivi di architettura, la numerazione GPIO utilizzata dalle librerie di accesso ai pin è differente rispetto alla numerazione dei pin, quindi è necessario fare riferimento alla \figurename~\ref{fig:gpio-map}
+per individuare il pin associato.
+
+ 
+
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{gpio-map}
 	\caption[Mappa GPIO]{La mappa delle Pin GPIO su Raspberry Pi}
 	\label{fig:gpio-map}
 \end{figure}
-Nell'appendice B descrivo un semplice progetto che utilizza le porte GPIO
+
 
 \subsection{Raspberry Camera}
-Questa camera si collega a Raspberry Pi tramite la porta CSI e consente di creare video HD e scattare fotografie digitali,ha integrato il sensore di immagine CMOS IMX219PQ Sony da 8 megapixel ad alta qualità ed elevata sensibilità, con funzioni di video imaging ad alta velocità e supporto delle modalità video 1080p30, 720p60 e VGA90
+Questa camera si collega a Raspberry Pi tramite la porta CSI, come mostrato nella \figurename~\ref{fig:camera} e consente di creare video HD e scattare fotografie digitali, ha integrato il sensore di immagine CMOS IMX219PQ Sony da 8 megapixel ad alta qualità ed elevata sensibilità, con funzioni di video imaging ad alta velocità e supporto delle modalità video 1080p30, 720p60 e VGA90.
+Esis
 \begin{figure}[htbp!] 
 	\centering    
-	\includegraphics[width=1.0\textwidth]{camera}
+	\includegraphics[width=1.0\textwidth]{cam_csi}
 	\caption[Raspberry Camera]{La Raspberry Camera}
 	\label{fig:camera}
 \end{figure}
-Nell'appendice B descrivo come utilizzare i comandi offerti da raspian per utilizzare la raspberry camera
+In Raspian sono presenti comandi che permettono di utilizzare la Raspberry Camera:
+\begin{itemize}
+	\item rasp-config è lo strumento di configurazione  Raspberry Pi che permette di abilitare l'interfaccia CSI per l'uso della Raspberry Camera,
+	\item raspstill è un comando che cattura delle fotografie con il modulo telecamera e lo salva su un file,
+	\item raspvid permette di registrare un video e salvarlo su un file.
+\end{itemize}
+Il primo comando rasp-config va lanciato soltanto la prima volta in fase di configurazione del sistema per abilitare la camera, mentre raspstill e raspvid verranno utilizzati nel progetto per acquisire immagini e filmati.
 
 \subsection{L298N Motor Controller}
 Si tratta di un modulo elettronico basato appunto sull’integrato L298, e sarà utilizzato per pilotare motori.
+
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{L298N}
 	\caption[L298N Motor Controller]{L298N Motor Controller}
 	\label{fig:L298N}
 \end{figure}
-Questo circuito è composto da due connettori laterali ai quali collegare i motori, e da connettori frontali dove collegare l’alimentazione e le connessioni logiche atte a pilotare i carichi.
+Così come mostrato dalla \figurename~\ref{fig:L298N}, questo circuito è composto da due connettori laterali ai quali collegare i motori, e da connettori frontali dove collegare l’alimentazione e le connessioni logiche atte a pilotare i carichi.
+
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{chassis}
 	\caption[Rover Chassis]{Rover Chassis con ruote, vano batteria}
 	\label{fig:chassis}
 \end{figure}
-Questo modulo sarà collegato nel progetto finale direttamente allo chassis dove saranno presenti i motori e il vano batteria
+Questo modulo sarà collegato nel progetto finale direttamente allo chassis, \figurename~\ref{fig:chassis}, dove saranno presenti i motori e il vano batteria.
 
 
 \subsection{HC-SR04}
-Il  sensore ad ultrasuoni hc-sr04 emette un impulso ad ultrasuoni e calcola il tempo impiegato dall’impulso per raggiungere il primo ostacolo di fronte a lui e tornare in dietro.
+Il  sensore ad ultrasuoni HC-SR04 emette un impulso ad ultrasuoni e calcola il tempo impiegato dall’impulso per raggiungere il primo ostacolo di fronte a lui e tornare in dietro.
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{hc-sr04}
 	\caption[HC-SR04]{Il sensore ad ultrasuoni hc-sr04}
 	\label{fig:hc-sr04}
 \end{figure}
-Il sensore dispone di 4 pin: Vcc (+5V), Trigger, Echo, GND. Si invia un impulso alto sul pin Trigger per almeno 10 microsecondi, a questo punto il sensore invierà il ping sonoro e aspetterà il ritorno delle onde riflesse, il sensore risponderà sul pin Echo con un impulso alto della durata corrispondente a quella di viaggio delle onde sonore, dopo 38 millisecondi si considera che non sia stato incontrato alcun ostacolo. Per sicurezza si aspettano in genere 50-60 millisec per far si che non vi siano interferenze con la misura successiva.
+Come si può vedere dalla \figurename~\ref{fig:hc-sr04} Il sensore dispone di 4 pin:
+\begin{itemize}
+ \item Vcc (+5V), 
+ \item Trigger, 
+ \item Echo, 
+ \item GND. 
+\end{itemize}
+Si invia un impulso alto sul pin Trigger per almeno 10 microsecondi, a questo punto il sensore invierà il ping sonoro e aspetterà il ritorno delle onde riflesse, il sensore risponderà sul pin Echo con un impulso alto della durata corrispondente a quella di viaggio delle onde sonore, dopo 38 millisecondi si considera che non sia stato incontrato alcun ostacolo.
 
+Per sicurezza si aspettano in genere 50-60 millisec per far si che non vi siano interferenze con la misura successiva.
 
 \subsection{BreadBoard}
 Una breadboard permette di riprodurre il comportamento di un circuito stampato e non richiede saltatura di componenti, è possibile semplicemente inserire i componenti nei fori predisposti sulla board.
+
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{breadboard}
 	\caption[Breadboard]{Breadboard}
 	\label{fig:breadboard}
 \end{figure}
-La breadboard che ho utilizzato è del tipo 830 fori in questo tipo di board ha due linee di punti laterali che corrono per tutta la lunghezza della breadboard e ogni punto di ogni singola linea è collegato tra di loro e solitamente queste linee vengo utilizzate per l’alimentazione. 
-Le linee di punti interne della breadboard invece sono collegati a gruppi di due . i gruppi sono divisi da una scanalatura e ognuno dei quali è composto da 5 punti collegati tra loro.
-Tutti i punti della breadboard che hanno una distanza di 2.54mm tra loro sono contrassegnati da un numero o da una lettera per facilitarne l'utilizzo.
 
-Per facilitare la costruzione e il testing utilizzero un cavo piatto a 40 pin che collego dal Rpi3 ad un  t-cobbler sopra la breadboard , in questo modo posso lavorare con i GPIO di Rpi3 direttamente sulla board di testing
- 
+La breadboard che ho utilizzato è del tipo 830 fori in questo tipo di board ha due linee di punti laterali che corrono per tutta la lunghezza della breadboard ed ogni punto di ogni singola linea è collegato tra di loro e solitamente queste linee vengo utilizzate per l’alimentazione. 
+
+Le linee di punti interne della breadboard invece sono collegati a gruppi di due . i gruppi sono divisi da una scanalatura e ognuno dei quali è composto da 5 punti collegati tra loro.
+
+Tutti i punti della breadboard  hanno una distanza di 2.54mm tra loro e sono contrassegnati da un numero o da una lettera per facilitarne l'uso.
+
+Per facilitare la costruzione e il testing utilizzero un cavo piatto a 40 e t-cobbler per collegare Rpi3 alla breadboard, come quelli della \figurename~\ref{fig:t-cobbler-40}  , in questo modo posso lavorare con tutti i GPIO direttamente sulla board di test.
+
 
 \begin{figure}[htbp!] 
 	\centering    
@@ -151,13 +193,15 @@ Per facilitare la costruzione e il testing utilizzero un cavo piatto a 40 pin ch
 	\label{fig:t-cobbler-40}
 \end{figure}
 
+
 \section{Mono}
 Mono è un progetto opensource coordinato da Xamarin, dal 2015 è diventata un'azienda sussidiaria di Microsoft, che ha lo scopo di realizzare  un insieme di strumenti compatibili con il Framework .NET di Microsoft ed aderenti allo standard Ecma anche per ambienti non Windows.
-Il progetto mono implementa sia macchine virtuali chiamata Common Language Runtime per l'esecuzione dei programmi .NET per diverse piattaforme che compilatori per diversi linguaggi di programmazione.
+
+Il progetto Mono implementa sia macchine virtuali chiamata Common Language Runtime per l'esecuzione dei programmi .NET per diverse piattaforme che compilatori per diversi linguaggi di programmazione.
 
 Tra le CLR implementate c'è anche quella per Linux per processori x64 ARM e tra i compilatori di linguaggi implemetanti da Mono c'è sia il compilatore per \texttt{C\#} che quello per \texttt{F\#} che verrano utilizzati in questo progetto.
 
-Nell'appendice C sarà  descritto come installare Mono e il compilatore \texttt{F\#} su Rpi3.
+Nell'appendice A sarà  descritto come installare Mono e il compilatore \texttt{F\#} su Rpi3.
 
 \section{\texttt{Raspberry\# IO}}
 Nel progetto utilizzerò Raspberry# IO, è una libreria che consente di utilizzare le funzionalità GPIO di raspberry Pi su ambiente .NET/Mono, questa libreria è utilizzabile su linguaggio F#.
@@ -167,7 +211,7 @@ Basso livello:
 
 Accesso ai PIN GPIO attraverso 3 modalità: 
 semplice (con uso di file), 
-attraverso memoria, e 
+attraverso memoria, e  
 completa (memoria attraverso "pseudo-interrupt"). Di default questa è modalità usata.
 	Indirizzamento con il numero pin o con il numero di connettore pin
 	Assegnamento dei Pin in base al modello e revisione del Raspberry Pi
@@ -210,15 +254,13 @@ Nel progetto utilizzero alcuni di questi pacchetti disponibili dal repository uf
 
 
 \subsection{Express.js}
-
+Express.js è un framework per Node.js utile per implementare web application ed per creare API REST per servizi. 
 \subsection{Telegram.js}
 L’idea del progetto è di poter interagire con il robot con un I messaggistica, la scelta è caduta su telegram perché consente in maniera semplice di realizzare bot e interagirci attraverso API REST con risultanti in JSON. Nel repository Npm è presente il pacchetto Telegram.js che consente in modo semplice di integrare un applicazione node con le funzionalità offerte da telegram.
 
 L'appendice E mostro come configurare Node.js per le funzionalità telegram
 
 \section{Microsoft Cognitive Services} 
-Cognitive Services (anche noto con il nome di Project Oxford) è un insieme di servizi esposti come API REST che permettono di aggiungere alle nostre applicazioni delle funzionalità “cognitive”, cioè funzionalità che abilitano le nostre applicazioni alla “comprensione” del mondo che le circonda.
-Cognitive Services sfrutta la potenza del cloud e, in particolar modo, Azure Machine Learning per fornire una pletora di servizi che possiamo dividere nelle seguenti categorie:
-•	Vision Service: sono quei servizi che permettono di analizzare immagini o video alla ricerca di informazioni. Fanno parte di questa categoria i servizi che ci consentono di individuare un volto o delle espressioni di un viso o le caratteristiche di un oggetto presente in un’immagine;
+Cognitive Services (anche noto con il nome di Project Oxford) è un insieme di servizi esposti come API REST che permettono di aggiungere alle nostre applicazioni delle funzionalità “cognitive”, cioè funzionalità che abilitano le nostre applicazioni alla “comprensione” del mondo che le circonda. Nel progetto utilizzero i servizi cognitive Service che sono nella categoria Vision Service  che permettono di analizzare immagini o video alla ricerca di informazioni. 
 
 
