@@ -37,7 +37,7 @@ Il Raspberry Pi è un calcolatore  a basso costo  di dimensioni molto ridotte re
 
 \begin{landscape}
 \begin{table}[htbp]
-	\caption{}
+	\caption{Comparazione modelli Raspberry Pi}
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		\multicolumn{1}{|c|}{\textbf{Modello}} & \textbf{Rpi} & \textbf{Rpi2} & \textbf{Rpi2 v1.2} & \textbf{Rpi3} \\ \hline
@@ -63,6 +63,7 @@ Il Raspberry Pi è un calcolatore  a basso costo  di dimensioni molto ridotte re
 		dimensione & \multicolumn{ 4}{c|}{85.60 mm × 56.5 mm } \\ \hline
 		Peso  & \multicolumn{ 4}{c|}{45g} \\ \hline
 	\end{tabular}
+	
 	\label{tab:rpi_ver}
 \end{table}
 \end{landscape}
@@ -94,13 +95,16 @@ Per questo progetto su Rpi3 installerò Linux Raspian, una distribuzione Linux p
 
 
 \subsection{GPIO}
-Un’interfaccia GPIO è un insieme di pin, in Rpi3 ne sono presenti 17, che comunicano quasi direttamente con i registri del processore e che sono facilmente programmabili per collegare periferiche e dispositivi.
+In Rpi3 sono presenti 54 linee GPIO di queste linee molto sono riservate ai diversi componenti presenti nella scheda  come il lettore di schede microSD, l'uscita audio, ingresso CSI,uscita DSI e i vari LED di stato.
 
-L’interfaccia GPIO è un’interfaccia digitale: può inviare e ricevere soltanto segnali digitali, ovvero alternanze di 0 volt e 3.3 volt, per questo motivo bisogna fare attenzione ad usare i pin GPIO della Raspberry Pi perchè  lavorano a 3.3 volt, e a non tollerano i 5 volt e quindi collegare qualcosa che immetta 5 volt su un pin GPIO equivale a danneggiare il processore.
+I GPIO che interessano di più sono quelli che si trovano nel pettine da 40 pin, visibile sulla scheda su due linee da 20, che forniscono il supporto per SPI, I2C, PWM e UART Seriale.
+La numerazione di questi pin avviene dall'alto in basso e da sinistra a destra e il primo P1 viene scritto sulla scheda per facilitarne l'individuzione.
+Inizialmente tutti i pin sono impostati a GPIO a parte i GPIO 14 e GPIO 15 che sono inizializzati per l'utilizzo di UART, ma via software anche questi possono essere riconfigurati a GPIO, in totale possono essere utilizzati 17 GPIO.
+Per motivi di architettura, la numerazione GPIO utilizzata dalle librerie di accesso ai pin è differente rispetto alla numerazione dei pin, quindi è necessario fare riferimento alla \figurename~\ref{fig:gpio-map} per individuare il pin associato, inoltre bisogna fare attenzione a lavorare con queste linee perchè richiedono 3.3 V e non tollerano i 5 volt e quindi collegare qualcosa che immetta 5 volt su un pin GPIO equivale a danneggiare il SoC.
 
-Per motivi di architettura, la numerazione GPIO utilizzata dalle librerie di accesso ai pin è differente rispetto alla numerazione dei pin, quindi è necessario fare riferimento alla \figurename~\ref{fig:gpio-map}
-per individuare il pin associato.
-
+Ogni GPIO supporta gli interrupt che possono essere delle seguenti tipologie:  high, low,  rise,  fall  e  change.   
+Non è presente nel kernel ufficiale di Linux la possibilità di utilizzare questi interrupt ma esiste una una patch che li abilita.
+Per poter sfruttare gli interrupt GPIO senza applicare le patch al kernel utilizzerò la distribuzione Raspbian che include il kernel con il supporto degli interrupt
 
 
 \begin{figure}[htbp!] 
@@ -246,28 +250,21 @@ Il progetto Mono implementa sia VES per l'esecuzione dei programmi .NET per dive
 Nell'appendice A sarà  descritto come installare Mono e il compilatore \texttt{F\#} su Rpi3.
 
 \section{\texttt{Raspberry\# IO}}
-Nel progetto utilizzerò Raspberry\# IO, è una libreria che consente di utilizzare le funzionalità GPIO di raspberry Pi su ambiente .NET/Mono, questa libreria è utilizzabile sia con il linguaggio C\# che con F\#.
+Nel progetto utilizzerò \texttt{Raspberry\# IO}, è una libreria che consente di utilizzare le funzionalità GPIO di raspberry Pi su ambiente .NET/Mono, questa libreria è utilizzabile sia con il linguaggio \texttt{C\#} che con \texttt{F\#}.
 Nello specifico utilizzerò il package Raspberry.IO.GeneralPurpose che consente di utilizzare i Pin GPIO.
 Questo package supporta le seguenti caratteristiche
 \begin{itemize}
-	\item Basso livello: 
-	Accesso ai PIN GPIO attraverso 3 modalità: 
-	\begin{itemize}
-		\item semplice (con uso di file), 
-		\item attraverso memoria, e  
-        \item completa (memoria attraverso "pseudo-interrupt"). Di default  è usata questa modalità.
-    \end{itemize}
-        Indirizzamento con il numero pin o con il numero di connettore pin
-	Assegnamento dei Pin in base al modello e revisione del Raspberry Pi
-	uso controllato delle risorse utilizzando un componente IDisposable e la capacità di utilizzare il rilevamento delle soglie , invece di polling
-	Supporto al di sotto del millisecondo per il polling dei pin di input
-\end{itemize}
-\begin{itemize}
-Alto livello:
-	Permette di personalizzare il nome dei Pin per consentire una maggiore leggibilità del codice
-	Facilità di Uso, configurazione dichiarativa  dei Pin. Possibilità di ripristinare la polarità dei Pin (0/1). Permette di utilizzxare un pin in input come uno switch button.  
-	Genera un evento quando lo status di un pin cambia , utlizzando il polling
-\end{itemize}
+   	
+   	\item Accesso ai PIN GPIO attraverso 3 modalità:semplice (con uso di file) attraverso memoria, e  completa (memoria attraverso "pseudo-interrupt"). Di default  è usata questa ultima.
+   	\item Indirizzamento con il numero Pin o con il numero di connettore pin
+	\item Assegnamento dei Pin in base al modello e revisione del Raspberry Pi
+	\item Uso controllato delle risorse utilizzando un componente IDisposable e la capacità di utilizzare il rilevamento delle soglie , invece di polling
+	\item Supporto al di sotto del millisecondo per il polling dei pin di input
+	
+	\item Permette di personalizzare il nome dei Pin per consentire una maggiore leggibilità del codice
+	\item Facilità di Uso, configurazione dichiarativa  dei Pin. Possibilità di ripristinare la polarità dei Pin (0/1). Permette di utilizzare un pin in input come uno switch button.  
+	\item Genera un evento quando lo status di un pin cambia , utlizzando il polling
+
 \end{itemize}
 \section{$ \texttt{ML}_{CoDa} $}
 $ \texttt{ML}_{CoDa} $ è un linguaggio di programmazione orientanto al contesto. Questo linguaggio consente con alcuni costrutti di adattare il programma al contesto in cui viene eseguito. Il prototipo del linguaggio $ \texttt{ML}_{CoDa}} $ che userò è un estensione del linguaggio funzionale F#, della famiglia dei linguaggi ML.
