@@ -101,7 +101,7 @@ L’interfaccia GPIO è un’interfaccia digitale: può inviare e ricevere solta
 Per motivi di architettura, la numerazione GPIO utilizzata dalle librerie di accesso ai pin è differente rispetto alla numerazione dei pin, quindi è necessario fare riferimento alla \figurename~\ref{fig:gpio-map}
 per individuare il pin associato.
 
- 
+
 
 \begin{figure}[htbp!] 
 	\centering    
@@ -122,9 +122,9 @@ Esis
 \end{figure}
 In Raspian sono presenti comandi che permettono di utilizzare la Raspberry Camera:
 \begin{itemize}
-	\item rasp-config è lo strumento di configurazione  Raspberry Pi che permette di abilitare l'interfaccia CSI per l'uso della Raspberry Camera,
-	\item raspstill è un comando che cattura delle fotografie con il modulo telecamera e lo salva su un file,
-	\item raspvid permette di registrare un video e salvarlo su un file.
+	\item \texttt{rasp-config} è lo strumento di configurazione  Raspberry Pi che permette di abilitare l'interfaccia CSI per l'uso della Raspberry Camera,
+	\item \texttt{raspstill} è un comando che cattura delle fotografie con il modulo telecamera e lo salva su un file,
+	\item \texttt{raspvid} permette di registrare un video e salvarlo su un file.
 \end{itemize}
 Il primo comando rasp-config va lanciato soltanto la prima volta in fase di configurazione del sistema per abilitare la camera, mentre raspstill e raspvid verranno utilizzati nel progetto per acquisire immagini e filmati.
 
@@ -137,7 +137,7 @@ Si tratta di un modulo elettronico basato appunto sull’integrato L298, e sarà
 	\caption[L298N Motor Controller]{L298N Motor Controller}
 	\label{fig:L298N}
 \end{figure}
-Così come mostrato dalla \figurename~\ref{fig:L298N}, questo circuito è composto da due connettori laterali ai quali collegare i motori, e da connettori frontali dove collegare l’alimentazione e le connessioni logiche atte a pilotare i carichi.
+Così come mostrato dalla \figurename~\ref{fig:L298N}, questo circuito è composto da due connettori laterali ai quali collegare i motori, e da connettori frontali dove collegare l’alimentazione e le connessioni logiche necessarie a controllare i carichi.
 
 \begin{figure}[htbp!] 
 	\centering    
@@ -149,23 +149,51 @@ Questo modulo sarà collegato nel progetto finale direttamente allo chassis, \fi
 
 
 \subsection{HC-SR04}
-Il  sensore ad ultrasuoni HC-SR04 emette un impulso ad ultrasuoni e calcola il tempo impiegato dall’impulso per raggiungere il primo ostacolo di fronte a lui e tornare in dietro.
+
+
+Il  sensore ad ultrasuoni HC-SR04 emette un impulso ad ultrasuoni e calcola il tempo impiegato dall’impulso per raggiungere il primo ostacolo di fronte a lui e tornare indietro.
+
+
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{hc-sr04}
 	\caption[HC-SR04]{Il sensore ad ultrasuoni hc-sr04}
 	\label{fig:hc-sr04}
 \end{figure}
-Come si può vedere dalla \figurename~\ref{fig:hc-sr04} Il sensore dispone di 4 pin:
+Come si può vedere dalla \figurename~\ref{fig:hc-sr04} Il sensore oltre essere composto dalle l'emittitore e dal recevitore dispone di 4 pin:
 \begin{itemize}
  \item Vcc (+5V), 
  \item Trigger, 
  \item Echo, 
  \item GND. 
 \end{itemize}
-Si invia un impulso alto sul pin Trigger per almeno 10 microsecondi, a questo punto il sensore invierà il ping sonoro e aspetterà il ritorno delle onde riflesse, il sensore risponderà sul pin Echo con un impulso alto della durata corrispondente a quella di viaggio delle onde sonore, dopo 38 millisecondi si considera che non sia stato incontrato alcun ostacolo.
 
-Per sicurezza si aspettano in genere 50-60 millisec per far si che non vi siano interferenze con la misura successiva.
+Il funzionamento del sensore avviene in questo modo:
+\begin{enumerate}
+ \item si invia un impulso alto sul pin Trigger,
+ \item se viene intercettato un ostacolo l’onda viene riflessa e torna indietro,
+ \item il pin Echo riceve il segnale ritornato
+\end{enumerate}
+
+Conoscendo velocità di propagazione $ v_{aria} $ del suono nell’aria e  il tempo $t$, che passa dall'invio del segnale al Trigger alla ricezione del segnale Echo, è possibile stabilire la distanza $d_{eo}$ fra il sensore e l’ostacolo  grazie all'equazione della velocità  \[v_{aria} = \dfrac{s}{t} \] dove $s$ è la somma della distanza tra emettitore-oggetto $d_{eo}$ ed della distanza oggetto-ricevitore $d_{or}$ 
+
+Considerando $d_{eo} = d_{or}$ avrò che $s=2 \cdot d_{eo}$ quindi la formula per otterere la distanza sarà 
+\[d_{eo} = \dfrac{v_{aria} \cdot t}{2} \]
+ 
+
+C'è da notare che nell’aria, la velocità del suono è di 331,45 m/s a $0 ^oC$ (pari a 1 193,04 km/h) e di 343,8 m/s (pari a 1 237,68 km/h) a  $20 ^oC$ (e in generale varia secondo la relazione $v_{aria} = 331,45 + 0,62 \cdot v_\delta$ con $v_\delta$ misurata in $^oC$) quindi per semplicità nel corso del progetto ipotizzerò una temperatura di circa $20 ^oC$ quindi una $v_{aria}$ di 343,4 m/s.
+
+quindi la formula sarà
+\[d_{eo} = \dfrac{343,8 \cdot t}{2}  \]
+ 
+Se il tempo risulta maggiore di 38 ms si considera che non sia stato incontranto nessun ostacolo e per sicurezza si aspettano 50 ms per far in modo che non siano interferenze con la misura successiva.
+
+
+%C'è da notare che 
+
+%Si invia un impulso alto sul pin Trigger per almeno 10 microsecondi, a questo punto il sensore invierà il ping sonoro e aspetterà il ritorno delle onde riflesse, il sensore risponderà sul pin Echo con un impulso alto della durata corrispondente a quella di viaggio delle onde sonore, dopo 38 millisecondi si considera che non sia stato incontrato alcun ostacolo.
+
+%Per sicurezza si aspettano in genere 50-60 millisec per far si che non vi siano interferenze con la misura successiva.
 
 \subsection{BreadBoard}
 Una breadboard permette di riprodurre il comportamento di un circuito stampato e non richiede saltatura di componenti, è possibile semplicemente inserire i componenti nei fori predisposti sulla board.
@@ -177,53 +205,70 @@ Una breadboard permette di riprodurre il comportamento di un circuito stampato e
 	\label{fig:breadboard}
 \end{figure}
 
-La breadboard che ho utilizzato è del tipo 830 fori in questo tipo di board ha due linee di punti laterali che corrono per tutta la lunghezza della breadboard ed ogni punto di ogni singola linea è collegato tra di loro e solitamente queste linee vengo utilizzate per l’alimentazione. 
+La breadboard che ho utilizzato ha 830 fori. Come è possibile vedere dalla \figurename~\ref{fig:breadboard}, questo tipo di board ha due linee di punti laterali che corrono per tutta la lunghezza della breadboard ed ogni punto di ogni singola linea è collegato tra loro e queste linee le utilizzerò per l’alimentazione. 
 
-Le linee di punti interne della breadboard invece sono collegati a gruppi di due . i gruppi sono divisi da una scanalatura e ognuno dei quali è composto da 5 punti collegati tra loro.
+Le linee di punti interne della breadboard invece sono collegati a gruppi di due, i gruppi sono divisi da una scanalatura e ognuno dei quali è composto da 5 punti collegati tra loro.
 
 Tutti i punti della breadboard  hanno una distanza di 2.54mm tra loro e sono contrassegnati da un numero o da una lettera per facilitarne l'uso.
 
-Per facilitare la costruzione e il testing utilizzero un cavo piatto a 40 e t-cobbler per collegare Rpi3 alla breadboard, come quelli della \figurename~\ref{fig:t-cobbler-40}  , in questo modo posso lavorare con tutti i GPIO direttamente sulla board di test.
+Per facilitare la costruzione e il testing utilizzero un cavo piatto a 40 pin ed un T-cobbler per collegare Rpi3 alla breadboard, in questo modo potrò lavorare con tutti i GPIO direttamente sulla board di test e per collegare i vari componenti userò jumper di vari colori e lunghezze, la \figurename~\ref{fig:t-cobbler-40} mostra questi oggetti. 
 
 
 \begin{figure}[htbp!] 
 	\centering    
 	\includegraphics[width=1.0\textwidth]{t-cobbler-40}
-	\caption[t-cobbler-40]{Cavo 40 Pin e T-Cobbler}
+	\caption[t-cobbler-40]{I jumper, Cavo 40 Pin e T-Cobbler}
 	\label{fig:t-cobbler-40}
 \end{figure}
 
 
 \section{Mono}
-Mono è un progetto opensource coordinato da Xamarin, dal 2015 è diventata un'azienda sussidiaria di Microsoft, che ha lo scopo di realizzare  un insieme di strumenti compatibili con il Framework .NET di Microsoft ed aderenti allo standard Ecma anche per ambienti non Windows.
+Mono è un progetto opensource coordinato da Xamarin, dal 2015 è diventata un'azienda sussidiaria di Microsoft, che ha lo scopo di realizzare  un insieme di strumenti compatibili con il Framework .NET di Microsoft ed aderenti allo standard  ECMA Common Language Infrastructure (CLI)  anche per ambienti non Windows.
 
-Il progetto Mono implementa sia macchine virtuali chiamata Common Language Runtime per l'esecuzione dei programmi .NET per diverse piattaforme che compilatori per diversi linguaggi di programmazione.
 
-Tra le CLR implementate c'è anche quella per Linux per processori x64 ARM e tra i compilatori di linguaggi implemetanti da Mono c'è sia il compilatore per \texttt{C\#} che quello per \texttt{F\#} che verrano utilizzati in questo progetto.
+La specifica CLI è divisa in quattro parti:
+\begin{itemize}
+\item Il Common Type System o CTS: un insieme di tipi di dato e di operazioni su di essi.
+\item I Metadata: le informazioni sulla struttura del programma. Esse sono indipendenti dal linguaggio di partenza per permettere a programmi scritti in linguaggi differenti di comunicare tra loro.
+\item La Common Language Specification o CLS.
+\item Il Virtual Execution System o VES: il sistema che esegue i programmi CLI.
+\end{itemize}
+\begin{figure}[htbp!] 
+	\centering    
+	\includegraphics[width=1.0\textwidth]{CIL}
+	\caption[CIL]{Common Language Infrastructure}
+	\label{fig:CIL}
+\end{figure}
+La compilazione di un programma ad alto livello come può essere C# o F# viene tradotto in istruzioni di tipo Common Intermediate Language (CIL), un linguaggio intermedio indipendente dalla piattaforma, successivamente
+come mostrato in \figurename~\ref{fig:CIL},  un VES specifico per la piattaforma traduce le istruzioni CIL in linguaggio macchina, un linguaggio direttamente comprensibile dal processore della piattaforma.
+Il progetto Mono implementa sia VES per l'esecuzione dei programmi .NET per diverse piattaforme che compilatori per diversi linguaggi di programmazione, tra le VES implementate c'è anche quella per Linux per processori x64 ARM e tra i compilatori di linguaggi implemetanti da Mono c'è sia il compilatore per \texttt{C\#} che quello per \texttt{F\#} che verrano utilizzati in questo progetto.
 
 Nell'appendice A sarà  descritto come installare Mono e il compilatore \texttt{F\#} su Rpi3.
 
 \section{\texttt{Raspberry\# IO}}
-Nel progetto utilizzerò Raspberry# IO, è una libreria che consente di utilizzare le funzionalità GPIO di raspberry Pi su ambiente .NET/Mono, questa libreria è utilizzabile su linguaggio F#.
+Nel progetto utilizzerò Raspberry\# IO, è una libreria che consente di utilizzare le funzionalità GPIO di raspberry Pi su ambiente .NET/Mono, questa libreria è utilizzabile sia con il linguaggio C\# che con F\#.
 Nello specifico utilizzerò il package Raspberry.IO.GeneralPurpose che consente di utilizzare i Pin GPIO.
 Questo package supporta le seguenti caratteristiche
-Basso livello:
-
-Accesso ai PIN GPIO attraverso 3 modalità: 
-semplice (con uso di file), 
-attraverso memoria, e  
-completa (memoria attraverso "pseudo-interrupt"). Di default questa è modalità usata.
-	Indirizzamento con il numero pin o con il numero di connettore pin
+\begin{itemize}
+	\item Basso livello: 
+	Accesso ai PIN GPIO attraverso 3 modalità: 
+	\begin{itemize}
+		\item semplice (con uso di file), 
+		\item attraverso memoria, e  
+        \item completa (memoria attraverso "pseudo-interrupt"). Di default  è usata questa modalità.
+    \end{itemize}
+        Indirizzamento con il numero pin o con il numero di connettore pin
 	Assegnamento dei Pin in base al modello e revisione del Raspberry Pi
 	uso controllato delle risorse utilizzando un componente IDisposable e la capacità di utilizzare il rilevamento delle soglie , invece di polling
 	Supporto al di sotto del millisecondo per il polling dei pin di input
-
+\end{itemize}
+\begin{itemize}
 Alto livello:
 	Permette di personalizzare il nome dei Pin per consentire una maggiore leggibilità del codice
 	Facilità di Uso, configurazione dichiarativa  dei Pin. Possibilità di ripristinare la polarità dei Pin (0/1). Permette di utilizzxare un pin in input come uno switch button.  
 	Genera un evento quando lo status di un pin cambia , utlizzando il polling
-
-
+\end{itemize}
+\end{itemize}
 \section{$ \texttt{ML}_{CoDa} $}
 $ \texttt{ML}_{CoDa} $ è un linguaggio di programmazione orientanto al contesto. Questo linguaggio consente con alcuni costrutti di adattare il programma al contesto in cui viene eseguito. Il prototipo del linguaggio $ \texttt{ML}_{CoDa}} $ che userò è un estensione del linguaggio funzionale F#, della famiglia dei linguaggi ML.
 
