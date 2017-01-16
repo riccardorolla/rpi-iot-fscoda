@@ -236,6 +236,7 @@ app.get('/telegram/broadcast/:text',function(req,res) {
 app.get('/telegram/:idchat/text',function(req,res) {
  var idchat = req.params['idchat'];
  var txt = req.query.text ;
+
  bot.sendMessage(idchat,txt);
  res.send('send msg');
  
