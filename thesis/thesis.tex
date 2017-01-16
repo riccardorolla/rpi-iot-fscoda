@@ -1,8 +1,14 @@
 % ******************************* PhD Thesis Template **************************
 % Please have a look at the README.md file for info on how to use the template
 
-\documentclass[a4paper,12pt,times,numbered,print,index]{Classes/PhDThesisPSnPDF}
-
+%\documentclass[a4paper,12pt,times,numbered,print,index]{Classes/PhDThesisPSnPDF}
+\documentclass[
+twoside,openright,titlepage,numbers=noenddot,headinclude,%1headlines,
+footinclude=true,cleardoublepage=empty,
+dottedtoc, % Make page numbers in the table of contents flushed right with dots leading to them
+BCOR=5mm,paper=a4,fontsize=11pt, % Binding correction, paper type and font size
+italian,english, % Languages, change this to your language(s)
+]{Classes/PhDThesisPSnPDF}
 % ******************************************************************************
 % ******************************* Class Options ********************************
 % *********************** See README for more details **************************
@@ -108,9 +114,9 @@
 \begin{document}
 
 \frontmatter
-
+%\frenchspacing % Reduces space after periods to make text more compact
 \maketitle
-
+\setlength{\parindent}{0pt}
 \include{Dedication/dedication}
 %\include{Declaration/declaration}
 %\include{Acknowledgement/acknowledgement}
@@ -132,9 +138,9 @@
 % ******************************** Main Matter *********************************
 \mainmatter
 
-\include{Chapter1/chapter1}
+%\include{Chapter1/chapter1}
 \include{Chapter2/chapter2}
-\include{Chapter3/chapter3}
+%\include{Chapter3/chapter3}
 %\include{Chapter4/chapter4}
 %\include{Chapter5/chapter5}
 %\include{Chapter6/chapter6}

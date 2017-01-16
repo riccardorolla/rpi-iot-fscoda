@@ -243,29 +243,121 @@ La specifica CLI è divisa in quattro parti:
 	\caption[CIL]{Common Language Infrastructure}
 	\label{fig:CIL}
 \end{figure}
+
 La compilazione di un programma ad alto livello come può essere C# o F# viene tradotto in istruzioni di tipo Common Intermediate Language (CIL), un linguaggio intermedio indipendente dalla piattaforma, successivamente
 come mostrato in \figurename~\ref{fig:CIL},  un VES specifico per la piattaforma traduce le istruzioni CIL in linguaggio macchina, un linguaggio direttamente comprensibile dal processore della piattaforma.
+
 Il progetto Mono implementa sia VES per l'esecuzione dei programmi .NET per diverse piattaforme che compilatori per diversi linguaggi di programmazione, tra le VES implementate c'è anche quella per Linux per processori x64 ARM e tra i compilatori di linguaggi implemetanti da Mono c'è sia il compilatore per \texttt{C\#} che quello per \texttt{F\#} che verrano utilizzati in questo progetto.
 
 Nell'appendice A sarà  descritto come installare Mono e il compilatore \texttt{F\#} su Rpi3.
 
-\section{\texttt{Raspberry\# IO}}
-Nel progetto utilizzerò \texttt{Raspberry\# IO}, è una libreria che consente di utilizzare le funzionalità GPIO di raspberry Pi su ambiente .NET/Mono, questa libreria è utilizzabile sia con il linguaggio \texttt{C\#} che con \texttt{F\#}.
-Nello specifico utilizzerò il package Raspberry.IO.GeneralPurpose che consente di utilizzare i Pin GPIO.
-Questo package supporta le seguenti caratteristiche
-\begin{itemize}
-   	
-   	\item Accesso ai PIN GPIO attraverso 3 modalità:semplice (con uso di file) attraverso memoria, e  completa (memoria attraverso "pseudo-interrupt"). Di default  è usata questa ultima.
-   	\item Indirizzamento con il numero Pin o con il numero di connettore pin
-	\item Assegnamento dei Pin in base al modello e revisione del Raspberry Pi
-	\item Uso controllato delle risorse utilizzando un componente IDisposable e la capacità di utilizzare il rilevamento delle soglie , invece di polling
-	\item Supporto al di sotto del millisecondo per il polling dei pin di input
-	
-	\item Permette di personalizzare il nome dei Pin per consentire una maggiore leggibilità del codice
-	\item Facilità di Uso, configurazione dichiarativa  dei Pin. Possibilità di ripristinare la polarità dei Pin (0/1). Permette di utilizzare un pin in input come uno switch button.  
-	\item Genera un evento quando lo status di un pin cambia , utlizzando il polling
+\section{\texttt{Raspberry\#}}
+Nel progetto utilizzerò due librerie rilasciate dalla comunity \texttt{Raspberry\#}  che consentono di utilizzare le funzionalità di Raspberry in ambiente .Net/Mono, quindi utilizzabili sia con il linguaggio \texttt{C\#} che con \texttt{F\#}.
 
+
+
+\begin{itemize}
+\item Raspberry.IO.GeneralPurpose  contiene classi che permettono di accedere all'hardware GPIO, il cui accesso richiede elevati privilegi di esecuzione e per ottenerli, i programmi che utilizzeranno queste funzionalità dovranno essere seguiti, sotto Raspian, usando il comando sudo.
+\item Raspberry.System offre delle funzionalità di utilità per la scheda Raspberry, come la rilevazione automatica della scheda e l'implementazione di timer ad alta risoluzione.
 \end{itemize}
+
+
+Per  accedere a basso livello all'hardware GPIO, utilizzeremo il namespace Raspberry.IO.GeneralPurpose ci fornisce tre driver di accesso all'intefaccia GPIO:
+\begin{itemize}
+\item \textbf{GpioConnectionDriver}: l'accesso ai pin GPIO avviene attraverso al loro indirizzo di memoria e  utilizza un meccanisco di pseudo-interreput per individuare il cambiamento di stato del pin,
+\item \textbf{MemoryGpioConnectionDriver}: l'accesso ai pin GPIO avviene attraverso il loro indirizzo di memoria,
+\item \textbf{FileGpioConnectionDriver}: Questa implementazione usa i file virtuali  per accedere ai pin GPIO.
+\end{itemize}
+
+Tutti questi oggetti sono implementanzioni dell'interfaccia \textbf{IGpioConnectionDriver}, che definisce i seguenti metodi:
+
+
+ %  \begin{itemize}
+ %  \item IGpioConnectionDriver:interfaccia e implementazioni che formiscono un accesso a basso livello all'hardware GPIO.
+ % rilascio di risorse correlate.
+  
+  % \item GpioConnection, GpioConnectionSettings, PinConfiguration and  le classi correllate forniscono un accesso gestito ai pin di input/output
+  %\itemLa classe PinsBehavior e le sue sottoclassi forniscono un modo per raggruppare più pin di output ed applicare un comportamento comune.%
+%	\end{itemize}
+
+%\paragraph{IGpioConnectionDriver}
+
+   % Il IGpioConnectionDriver definisce un'interfaccia per i driver di connessione GPIO. Un driver di connessione gestire l'accesso ai ingresso (lettura) e di uscita (scrittura) pin GPIO, così come l'uso e il 
+   
+   
+  %\paragraph{Methods}
+   
+   
+  %\textbf{Allocate}
+  
+  
+   \begin{lstlisting}[frame=none]
+   void Allocate(ProcessorPin pin, PinDirection direction);
+   \end{lstlisting}
+    
+   Alloca un pin: attiva il pin in base al numero di pin dato e la direzione.
+   Prende come parametri:
+   \begin{itemize}
+  	 \item pin: il pin, così come numerato sul processore
+  	 \item direction: la direzione del pin direction, può assumere valori PinDirection.Input o PinDirection.Output
+	\end{itemize}
+   
+
+
+	\begin{lstlisting}[frame=none]
+   void Release(ProcessorPin pin);
+ 	\end{lstlisting}
+   
+   Rilascia un pin; si smette di utilizzare il pin specificato nel parametro
+ 
+   
+ 
+      
+  \begin{lstlisting}[frame=none]
+   bool Read(ProcessorPin pin);
+  \end{lstlisting}
+  
+   Legge lo stato corrente del pin di input specificato come parametre. Il valore di ritorno è un booleano e rappresenta lo stato del pin. 
+  
+
+\begin{lstlisting}[frame=none]
+void Write(ProcessorPin pin, bool value);
+\end{lstlisting}
+Aggiorna lo stato del pin specificato con il valore dato. I suoi parametri:
+\begin{itemize}
+\item	pin: il pin
+\item	value: il nuovo valore booleano del pin
+\end{itemize}
+  
+ Nel namespace Raspberry.IO sono anche un estensione per considentire un astrazione di maggiore livello
+ inputProvides an interface for input, binary pins.
+ IInputBinaryPin il metodo 
+
+
+ \begin{lstlisting}[frame=none]
+  public static TimeSpan Time(this IInputBinaryPin pin, bool waitForUp = true, TimeSpan phase1Timeout = new TimeSpan(), TimeSpan phase2Timeout = new TimeSpan())
+ 
+ \end{lstlisting}
+  /// <summary>
+/// Waits for a pin to reach the specified state, then measures the time it remains in this state.
+/// </summary>
+/// <param name="pin">The measure pin.</param>
+/// <param name="waitForUp">if set to <c>true</c>, wait for the pin to be up.</param>
+/// <param name="phase1Timeout">The first phase timeout.</param>
+/// <param name="phase2Timeout">The second phase timeout.</param>
+/// <returns>
+/// The time the pin remains up, in milliseconds.
+/// </returns>
+  
+
+
+Questa ultima funzionalità è contenuta nel namespace Raspberry.Timers  
+attraverso il metodo statico
+Timer.Sleep(TimeSpam)
+
+The Raspberry.IO.GeneralPurpose.dll assembly provides access to the Raspberry Pi GPIO pins. 
+This project is available under a compiled, Nuget form: see Raspberry.IO.GeneralPurpose Nuget.
+
 \section{$ \texttt{ML}_{CoDa} $}
 $ \texttt{ML}_{CoDa} $ è un linguaggio di programmazione orientanto al contesto. Questo linguaggio consente con alcuni costrutti di adattare il programma al contesto in cui viene eseguito. Il prototipo del linguaggio $ \texttt{ML}_{CoDa}} $ che userò è un estensione del linguaggio funzionale F#, della famiglia dei linguaggi ML.
 
