@@ -174,9 +174,9 @@ Come si può vedere dalla \figurename~\ref{fig:hc-sr04} Il sensore oltre essere 
 
 Il funzionamento del sensore avviene in questo modo:
 \begin{enumerate}
- \item si invia un impulso alto sul pin Trigger,
- \item se viene intercettato un ostacolo l’onda viene riflessa e torna indietro,
- \item il pin Echo riceve il segnale ritornato
+ \item Si invia un impulso alto sul pin Trigger per almeno 10 microsec,
+ \item il sensore invia il ping sonoro e aspetta il ritorno delle onde riflesse,
+ \item il sensore risponderà sul pin Echo con un impulso alto della durata corrispondente a quella di viaggio delle onde sonore
 \end{enumerate}
 
 Conoscendo velocità di propagazione $ v_{aria} $ del suono nell’aria e  il tempo $t$, che passa dall'invio del segnale al Trigger alla ricezione del segnale Echo, è possibile stabilire la distanza $d_{eo}$ fra il sensore e l’ostacolo  grazie all'equazione della velocità  \[v_{aria} = \dfrac{s}{t} \] dove $s$ è la somma della distanza tra emettitore-oggetto $d_{eo}$ ed della distanza oggetto-ricevitore $d_{or}$ 
@@ -328,35 +328,36 @@ Aggiorna lo stato del pin specificato con il valore dato. I suoi parametri:
 \item	pin: il pin
 \item	value: il nuovo valore booleano del pin
 \end{itemize}
-  
- Nel namespace Raspberry.IO sono anche un estensione per considentire un astrazione di maggiore livello
- inputProvides an interface for input, binary pins.
- IInputBinaryPin il metodo 
-
-
- \begin{lstlisting}[frame=none]
-  public static TimeSpan Time(this IInputBinaryPin pin, bool waitForUp = true, TimeSpan phase1Timeout = new TimeSpan(), TimeSpan phase2Timeout = new TimeSpan())
- 
+ E' possibile anche utilizzare un maggiore livello di astrazione per poter interagire con l'hardware,
+ utilizzando le estensioni del driver che implementa la IGpioConnectionDriver possiamo usare i metodi
+   \begin{lstlisting}[frame=none]
+ public static GpioOutputBinaryPin Out(this IGpioConnectionDriver driver, ProcessorPin pin)
+ public static GpioInputBinaryPin In(this IGpioConnectionDriver driver, ProcessorPin pin, PinResistor resistor = PinResistor.None)
  \end{lstlisting}
-  /// <summary>
-/// Waits for a pin to reach the specified state, then measures the time it remains in this state.
-/// </summary>
-/// <param name="pin">The measure pin.</param>
-/// <param name="waitForUp">if set to <c>true</c>, wait for the pin to be up.</param>
-/// <param name="phase1Timeout">The first phase timeout.</param>
-/// <param name="phase2Timeout">The second phase timeout.</param>
-/// <returns>
-/// The time the pin remains up, in milliseconds.
-/// </returns>
+che consentono di ottenere oggetti, partendo dal ProcessorPin, che implementano rispettiva IOutputBinaryPin, IInputBinaryPin.
+
+Su quest'ultima interfaccia è presente una funzionalità che sarà molto utile per utilizzare il sensore HC-SR04:
+
+\begin{lstlisting}[frame=none]
+public static TimeSpan Time(this IInputBinaryPin pin, bool waitForUp = true, TimeSpan phase1Timeout = new TimeSpan(), TimeSpan phase2Timeout = new TimeSpan())
+
+\end{lstlisting}
+Questo metodo attende che un pin raggiunga un terminato stato, quindi misura il tempo che rimane in questo stato, i suoi parametri sono:
+\begin{itemize}
+	 \item pin: il pin da misurare,
+	 \item waitForUp: se è impostato a true, aspetta che il pin sia in High.
+	 \item il timeout della prima fase
+	 \item il timeout della seconda fase.
+\end{itemize}
+Il valore di ritorno è la durata dell'intervallo tra le due fasi, il tempo che il pin rimane in High.
   
-
-
-Questa ultima funzionalità è contenuta nel namespace Raspberry.Timers  
-attraverso il metodo statico
+Infine nel package Raspberry.System utilizzero il metodo statico
+\begin{lstlisting}[frame=none]
 Timer.Sleep(TimeSpam)
+\end{lstlisting}
+che implementa un timer ad alta risoluzione.
 
-The Raspberry.IO.GeneralPurpose.dll assembly provides access to the Raspberry Pi GPIO pins. 
-This project is available under a compiled, Nuget form: see Raspberry.IO.GeneralPurpose Nuget.
+
 
 \section{$ \texttt{ML}_{CoDa} $}
 $ \texttt{ML}_{CoDa} $ è un linguaggio di programmazione orientanto al contesto. Questo linguaggio consente con alcuni costrutti di adattare il programma al contesto in cui viene eseguito. Il prototipo del linguaggio $ \texttt{ML}_{CoDa}} $ che userò è un estensione del linguaggio funzionale F#, della famiglia dei linguaggi ML.
