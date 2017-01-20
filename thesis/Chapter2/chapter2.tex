@@ -349,7 +349,7 @@ Questo metodo attende che un pin raggiunga un terminato stato, quindi misura il 
 	 \item il timeout della prima fase
 	 \item il timeout della seconda fase.
 \end{itemize}
-Il valore di ritorno è la durata dell'intervallo tra le due fasi, il tempo che il pin rimane in High.
+Il valore di ritorno è la durata dell'intervallo tra le due fasi, quindi il tempo che il pin rimane in High.
   
 Infine nel package Raspberry.System utilizzero il metodo statico
 \begin{lstlisting}[frame=none]
@@ -357,28 +357,6 @@ Timer.Sleep(TimeSpam)
 \end{lstlisting}
 che implementa un timer ad alta risoluzione.
 
-
-
-\section{$ \texttt{ML}_{CoDa} $}
-$ \texttt{ML}_{CoDa} $ è un linguaggio di programmazione orientanto al contesto. Questo linguaggio consente con alcuni costrutti di adattare il programma al contesto in cui viene eseguito. Il prototipo del linguaggio $ \texttt{ML}_{CoDa}} $ che userò è un estensione del linguaggio funzionale F#, della famiglia dei linguaggi ML.
-
-
-Il contesto è l'ambiente dove le applicazioni vengono eseguite è un concetto fondamentale per il software adattivo. Il contesto può essere diviso in due parti: il contesto di sistema e il contesto applicativo.
-Il contesto di sistema è la parte indipendente l'applicazione ad esempio l'hardware su cui viene esecutivo l'applicativo e l'ambiente fisico con il software può interagire.
-il contesto applicativo è quello dipendente dall'applicazione come possono essere configurazioni utente.
-
-Entrambi le parti in $ \texttt{ML}_{CoDa} $ sono rappresentati e gestiti in maniera omogenea. Questo linguaggio offre due componenti: una dichiarativa e una funzionale.
-
-La componente dichiarativa  utilizza il DataLog per definire una base di conoscenza sulla quale i programmi adattivi possono interrogare il contesto e recuperare le informazioni che hanno bisogno.
-
-
-L'appendice F descrivo la catena di compilazione di programma adattivo di esempio che utilizza $ \texttt{ML}_{CoDa} $ in modo da mostrare quali strumenti software sono utilizzati per questo progetto.
-
-
- 
-Nell'appendice D descrivo come testare gli esempi di $ \texttt{ML}_{CoDa} $ su Mono installato su Rpi3
- 
-Nell'appendice E implemento il progetto button-led in $ \texttt{ML}_{CoDa} $
 
 \section{Node.js}
 
@@ -397,5 +375,81 @@ L'appendice E mostro come configurare Node.js per le funzionalità telegram
 
 \section{Microsoft Cognitive Services} 
 Cognitive Services (anche noto con il nome di Project Oxford) è un insieme di servizi esposti come API REST che permettono di aggiungere alle nostre applicazioni delle funzionalità “cognitive”, cioè funzionalità che abilitano le nostre applicazioni alla “comprensione” del mondo che le circonda. Nel progetto utilizzero i servizi cognitive Service che sono nella categoria Vision Service  che permettono di analizzare immagini o video alla ricerca di informazioni. 
+
+
+
+\section{$ \texttt{ML}_{CoDa} $}
+$ \texttt{ML}_{CoDa} $ è un linguaggio di programmazione orientanto al contesto. Questo linguaggio consente con alcuni costrutti di adattare il programma al contesto in cui viene eseguito. Il prototipo del linguaggio $ \texttt{ML}_{CoDa}} $ che userò è un estensione del linguaggio funzionale F#, della famiglia dei linguaggi ML.
+
+
+Il contesto è l'ambiente dove le applicazioni vengono eseguite è un concetto fondamentale per il software adattivo. Il contesto può essere diviso in due parti: il contesto di sistema e il contesto applicativo.
+Il contesto di sistema è la parte indipendente l'applicazione ad esempio l'hardware su cui viene esecutivo l'applicativo e l'ambiente fisico con il sistema può interagire.
+il contesto applicativo è quello dipendente dall'applicazione come possono essere configurazioni utente.
+
+Entrambi le parti in $ \texttt{ML}_{CoDa} $ sono rappresentati e gestiti in maniera omogenea. Questo linguaggio offre due componenti: una dichiarativa e una funzionale.
+
+La componente dichiarativa  utilizza il DataLog per definire una base di conoscenza sulla quale i programmi adattivi possono interrogare il contesto e recuperare le informazioni che hanno bisogno.
+Il datalog permette di definre regole che secondo la forma
+Ogni regola è composta da una testa (head o LHS) e 
+da un corpo (body o RHS)
+p :- p1, p2, ... pn
+•
+Ogni P rappresenta un predicato (chiamato 
+letterale), così composto:
+
+•nome
+•argomenti:
+•
+costanti
+•
+variabili
+•
+simbolo “don’t care” ( _ ) (non nella testa)
+• Le variabili del LHS devono apparire nel RHS
+negazione
+
+La componente funzionale  estende F# con alcune istruzioni che hanno lo scopo per poter interrogare e modificare con la base informativa definita in Prodata,
+retract <|
+tell <|
+
+ le istruzioni sono
+ 
+ Goal ctx?exam
+ 
+ let x = expression1 |- Goal [in] expression2
+ 
+ for _ in !-- Goal do expression
+ 
+ match ctx with | _ when !- Goal -> expression
+ 
+ per poter usare queste istruzioni è necessario marcare il codice con alcune annotazioni
+ 
+ The application programmer writes F# code, annotating the functions which use MLCoDa extensions with custom attributes and starting the MLCoDa runtime. 
+ Since the operations needed to adapt the application to contexts are transparently handled by our runtime support, the compiler fsharpc works as it is. 
+ Indeed, the MLCoDa-specific constructs are just-in-time replaced in a single step by their F# implementation when they are about to be run. A simple example follows.
+ Actually, the attribute CoDa.Code is an alias for the standard ReflectedDefinitionAttribute, that marks modules and members whose abstract syntax trees (AST) are used at runtime through reflection. 
+ Note that MLCoDa-specific operations are only allowed in methods marked with this attribute; 
+ otherwise an exception is raised when they are invoked The attribute CoDa.EntryPoint marks the principal function of the application (main above). 
+ 
+ 
+ When the MLCoDa runtime is initialised and started through the function run, it looks for the function f marked by CoDa.EntryPoint; then it transforms the code of the function replacing the MLCoDa-specific constructs with their F# object code;  
+ and finally runs the obtained object code. The translation is performed on the AST represented in the form of quotations. Hereafter, for readability, we will show the object code in F# syntax, rather than the quotation emitted by the JIT compiler.
+ [<CoDa.Code>]
+ 
+ [<CoDa.ContextInit>]
+ 
+ [<CoDa.Context("fsc-ctx")>]
+ 
+ [< CoDa.EntryPoint>]
+ 
+
+L'appendice F descrivo la catena di compilazione di programma adattivo di esempio che utilizza $ \texttt{ML}_{CoDa} $ in modo da mostrare quali strumenti software sono utilizzati per questo progetto.
+
+
+ 
+Nell'appendice D descrivo come testare gli esempi di $ \texttt{ML}_{CoDa} $ su Mono installato su Rpi3
+ 
+Nell'appendice E implemento il progetto button-led in $ \texttt{ML}_{CoDa} $
+
 
 
