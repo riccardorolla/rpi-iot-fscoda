@@ -1,4 +1,4 @@
-﻿[<CoDa.Code>]
+[<CoDa.Code>]
 module Fsc.App
  
 open System

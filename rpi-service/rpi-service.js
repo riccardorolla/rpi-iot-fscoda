@@ -1,16 +1,17 @@
 var TelegramBot = require('node-telegram-bot-api');
-var uuid = require('node-uuid');
-var express = require('express');
 var request = require('then-request');
 var fs = require('fs');
 var path = require('path');
 var qs = require('qs');
 var childprocess=require('child_process');
-var conf;
+var uuid = require('node-uuid');
+var express = require('express');
+var app = express();
 
 var filename_conf='rpi-service.json';
-
 var args = process.argv.slice(2);
+
+
  console.log('rpi-service args: ', args);
 
  
@@ -22,6 +23,8 @@ switch (args[0]) {
 		 filename_conf='rpi-service.json';
 		 break;
 }
+
+var conf;
 try {
 	conf = fs.readFileSync(filename_conf);
 } catch (e) {
@@ -47,17 +50,142 @@ if (!fs.existsSync(configuration.temp_path)){
 	fs.mkdirSync(configuration.temp_path);
 }
 
-const execSync = childprocess.execSync;
-const execAsync = childprocess.exec;
-var app = express();
-var lastmsg=[];
-var listchat=[];
-function getchat(idchat){
-		  return listchat.find(function(chat){
-						return chat.idchat==idchat;
-						});
-}
+/*  API  RPI Hardware
+*/
+
+
  
+const exec = childprocess.exec;
+
+
+
+
+app.get('/rpi/:command/:action',function(req,res) {
+	 exec(configuration.rover_cmd +" motor " + req.params.action,
+			(error,stdout,stderr)=> {
+				if (error) {
+   					res.send("{error:'"+ error + "'");	
+				}else{
+					res.send(stdout);
+				}
+			res.end();
+  });
+});
+
+app.get('/rpi/led/:numled/:command',function(req,res) {
+	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.command,
+			(error,stdout,stderr)=> {
+				if (error) {
+   					res.send("{error:'"+ error + "'");
+				}else{
+					res.send(stdout);
+				}
+			res.end();
+  });
+});
+app.get('/rpi/distance/',function(req,res) {
+     exec(configuration.rover_cmd +" uds",
+			(error,stdout,stderr)=> {
+				if (error) {
+   					res.send("{error:'"+ error + "'");
+				}else{
+					res.send(stdout);
+				}
+			res.end();
+  });
+});
+
+
+app.get('/rpi/photo',function(req,res) {
+	 var idphoto=uuid.v4(); 
+	 exec(photo_cmd(idphoto,req.query.width,req.query.height,req.query.quality),
+			(error,stdout,stderr)=> {
+				if (error) {
+ 				   res.send("{error:'"+ error + "'");
+				}else{
+					res.send(idphoto);
+				}
+			res.end();
+  });
+});
+
+app.get('/rpi/video',function(req,res) {
+	 var idvideo=uuid.v4(); 
+	 exec(video_cmd(idvideo,req.query.width,req.query.height,req.query.quality),
+			(error,stdout,stderr)=> {
+				if (error) {
+   						res.send("{error:'"+ error + "'");
+					res.end();
+				}else{
+					exec(vconv_cmd(idvideo),
+						(verror,vstdout,vstderr)=> {
+							if (verror) {
+  								 res.send("{error:'"+ error + "'");
+							}else{
+								res.send(idvideo);
+							}
+							res.end();
+ 			 			});
+				}
+			  });
+});
+
+
+function photo_cmd(idphoto,width,height,quality) {
+	 var filename = configuration.temp_path+idphoto+'.jpg'
+	 console.log('filename:'+filename + ',width:'+width+',height'+height+',quality:'+quality);
+	 var cmd = configuration.photo_cmd +' -o ' + filename;
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+		else cmd = cmd + ' -w 640'
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+		else cmd = cmd + ' -h 480'
+	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
+		else cmd = cmd + ' -q 90'
+
+	 console.log(cmd);
+	 
+	  
+	
+	 return cmd;
+}
+
+function video_cmd(idvideo,width,height,time) {
+	
+ 
+	
+	var filename = configuration.temp_path+idvideo+'.h264'
+	var filenameconv = configuration.temp_path+idvideo+'.mp4'
+	console.log('filename:'+filenameconv + ',width:'+width+',height'+height+',time:'+time);
+	var cmd = configuration.video_cmd + ' -o ' + filename;
+	 if (undefined != width)  cmd = cmd + ' -w ' + width 
+		else cmd = cmd + ' -w 640'
+	 if (undefined != height) cmd = cmd + ' -h ' + height 
+		else cmd = cmd + ' -h 480'
+	 if (undefined != time) cmd = cmd + ' -t ' + time;
+		else cmd = cmd + ' -t 5000'
+	console.log(cmd);
+
+ 
+	return cmd;
+	
+}
+
+function vconv_cmd(idvideo){
+	
+ 
+	
+	var filename = configuration.temp_path+idvideo+'.h264'
+	var filenameconv = configuration.temp_path+idvideo+'.mp4'
+
+	var  cmd = configuration.vconv_cmd + ' -r 30 -i '+ filename +' -vcodec copy '+ filenameconv;
+	console.log(cmd);
+ 
+	return cmd;
+	
+}
+
+// API e Feature Telegram
+
 var bot = new TelegramBot(configuration.telegram_key, {polling: true});
 bot.on('message', function (msg) {
   var retchat = getchat(msg.chat.id);
@@ -76,105 +204,28 @@ bot.on('message', function (msg) {
   console.log(retchat);
 });
 
-function whatdoyousee(img,callback,fcallback){
-	 var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
-						{ 
-							headers:{
-								'Ocp-Apim-Subscription-Key': configuration.vision_key,
-								'Content-type': ' application/octet-stream'
-								},
-							body:img
-
-						}).then(callback).catch(fcallback);
-	return response;
+var lastmsg=[];
+var listchat=[];
+function getchat(idchat){
+		  return listchat.find(function(chat){
+						return chat.idchat==idchat;
+						});
 }
-function translate(sourceText,sourceLang,targetLang,callback){
-	var qst = qs.stringify({
-		client : 'gtx',
-		sl : sourceLang,
-		tl : targetLang,
-		dt : 't',
-		q : sourceText
-	});
-	
-	request('GET',configuration.translate_url+'?'+qst,
-		{ 
-			headers : { 
-				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
-			}		
-
-		}).then(function(data){
-							  
-						 result=JSON.parse(JSON.stringify(data.getBody().toString().trim()));
-						 callback(result.split('"')[1])
-								 
-						 
-		 
-				}).catch(
-					function(err){
-						callback (err);
-					});
-};
-
-function photo(width,height,quality) {
-	 var idphoto=uuid.v4(); 
-	 var filename = configuration.temp_path+idphoto+'.jpg'
-	 console.log('filename:'+filename + ',width:'+width+',height'+height+',quality:'+quality);
-	 var cmd = configuration.photo_cmd +' -o ' + filename;
-	 if (undefined != width)  cmd = cmd + ' -w ' + width 
-		else cmd = cmd + ' -w 640'
-	 if (undefined != height) cmd = cmd + ' -h ' + height 
-		else cmd = cmd + ' -h 480'
-	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
-		else cmd = cmd + ' -q 90'
-
-	 console.log(cmd);
-	 
-	 code = execSync(cmd);
-	
-	 return idphoto;
-}
-
-function video(width,height,time) {
-	
-	var idvideo=uuid.v4();
-
-	
-	var filename = configuration.temp_path+idvideo+'.h264'
-	var filenameconv = configuration.temp_path+idvideo+'.mp4'
-	console.log('filename:'+filenameconv + ',width:'+width+',height'+height+',time:'+time);
-	var cmd = configuration.video_cmd + ' -o ' + filename;
-	 if (undefined != width)  cmd = cmd + ' -w ' + width 
-		else cmd = cmd + ' -w 640'
-	 if (undefined != height) cmd = cmd + ' -h ' + height 
-		else cmd = cmd + ' -h 480'
-	 if (undefined != time) cmd = cmd + ' -t ' + time;
-		else cmd = cmd + ' -t 5000'
-	console.log(cmd);
-	code = execSync(cmd);
-	var vconv_cmd = configuration.vconv_cmd + ' -r 30 -i '+ filename +' -vcodec copy '+ filenameconv;
-	console.log(vconv_cmd);
-	code2 = execSync(vconv_cmd);
  
-	return idvideo;
- 
-	
-}
-
 app.get('/telegram/listchat',function (req,res) {
 	var retchat=[];
 	for (var i=0; i<listchat.length;i++) {
 		retchat.push(listchat[i].idchat);
 	}
 	res.send(retchat);
-	
+	res.end();
 });
 app.get('/telegram/:idchat',function (req, res) {
 	var idchat=req.params.idchat
 	var chat= getchat(idchat);
 	if (req.query.lang!=undefined) chat.lang=req.query.lang;
-	 res.send(chat);
- 
+	res.send(chat);
+ 	res.end();
 })
 app.get('/telegram/:idchat/msg', function (req, res) {
 	var idchat=req.params.idchat
@@ -192,7 +243,7 @@ app.get('/telegram/:idchat/msg/pop',function(req,res) {
 app.get('/telegram/:idchat/msg/shift',function(req,res) {
 	var idchat=req.params.idchat
 	res.send(getchat(idchat).msg.shift());
-	  res.end();
+	res.end();
 })
 app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
@@ -229,7 +280,7 @@ app.get('/telegram/broadcast/:text',function(req,res) {
 	}
  
  res.send('send broadcast msg');
- 
+ res.end();
 });
 							
 
@@ -239,75 +290,25 @@ app.get('/telegram/:idchat/text',function(req,res) {
 
  bot.sendMessage(idchat,txt);
  res.send('send msg');
- 
+ res.end();
 });
 
-app.get('/rpi/motor/:command',function(req,res) {
-	code = execSync(configuration.rover_cmd +" motor "+ req.params.command);
-	res.send(code.toString());
-	res.end();
-});
-app.get('/rpi/led/:numled/:command',function(req,res) {
-	code = execSync(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.command);
-	res.send(code.toString());
-	res.end();
-	});
-app.get('/rpi/distance/',function(req,res) {
-	code = execSync(configuration.rover_cmd +" uds");
-	res.send(code.toString());
-	res.end();
-});
-/*
-app.get('/rpi/photo',function(req,res) {
-	 var filename = photo(req.query.width,req.query.height,req.query.quality);
-	 var img = fs.readFileSync(filename);
-	 res.writeHead(200, {'Content-Type': 'image/jpeg' });
-	 res.end(img, 'binary');
-  
-							  
-	});
-app.get('/rpi/video',function(req,res) {
- 
-	 var filename = video(req.query.width,req.query.height,req.query.time);
-	 var vid = fs.readFileSync(filename);
-	 res.writeHead(200, {'Content-Type': 'video/mp4' });
-	 res.end(vid, 'binary');
-  
-							  
-	});
-*/
-app.get('/rpi/photo',function(req,res) {
-	 var idphoto = photo(req.query.width,req.query.height,req.query.quality);
-	 res.send(idphoto);
-	 res.end();
-	  
-  
-							  
-	});
-app.get('/rpi/video',function(req,res) {
- 
-	 var idvideo = video(req.query.width,req.query.height,req.query.time);
-	 res.send(idvideo);
-	 res.end();
-  
-							  
-	});
 
-app.get('/translate',function(req,res) {
- 
-	 
- 
-	 var langsrc = req.query.src;
-	 var langdst = req.query.dst;
-	 var text = req.query.text;
-	 
- 
-	  translate(text,langsrc,langdst,function(strout) {
-												res.send(strout.toString());
-												res.end();
-											}) 
-							  
-	});
+
+// Proxy - Computer Vision
+function whatdoyousee(img,callback,fcallback){
+	 var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
+						{ 
+							headers:{
+								'Ocp-Apim-Subscription-Key': configuration.vision_key,
+								'Content-type': ' application/octet-stream'
+								},
+							body:img
+
+						}).then(callback).catch(fcallback);
+	return response;
+}	
+
 app.get('/whatdoyousee',function(req,res) {
 	 var idphoto=req.query.idphoto
 	 var filename = configuration.temp_path+idphoto+'.jpg' //photo(req.query.width,req.query.height,req.query.quality);
@@ -334,6 +335,29 @@ app.get('/whatdoyousee',function(req,res) {
 
 
 
+
+
+
+app.get('/translate',function(req,res) {
+ 
+	 
+ 
+	 var langsrc = req.query.src;
+	 var langdst = req.query.dst;
+	 var text = req.query.text;
+	 
+ 
+	  translate(text,langsrc,langdst,function(strout) {
+												res.send(strout.toString());
+												res.end();
+											}) 
+							  
+	});
+	
+
+
+
+
 var server = app.listen(configuration.port, function () {
 
   var host = server.address().address
@@ -342,3 +366,33 @@ var server = app.listen(configuration.port, function () {
   console.log("Example app listening at http://%s:%s", host, port)
 
 })
+
+
+
+function translate(sourceText,sourceLang,targetLang,callback){
+	var qst = qs.stringify({
+		client : 'gtx',
+		sl : sourceLang,
+		tl : targetLang,
+		dt : 't',
+		q : sourceText
+	});
+	
+	request('GET',configuration.translate_url+'?'+qst,
+		{ 
+			headers : { 
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
+			}		
+
+		}).then(function(data){
+							  
+						 result=JSON.parse(JSON.stringify(data.getBody().toString().trim()));
+						 callback(result.split('"')[1])
+								 
+						 
+		 
+				}).catch(
+					function(err){
+						callback (err);
+					});
+};
