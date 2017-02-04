@@ -23,6 +23,7 @@ namespace Rover
 
 			triggerPin = driver.Out(Utilities.getPin(pin[0]));
 			echoPin = driver.In(Utilities.getPin(pin[1]));
+			getDistance();
 
 		}
 		public void Close()
