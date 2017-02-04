@@ -25,7 +25,11 @@ namespace Rover
 			echoPin = driver.In(Utilities.getPin(pin[1]));
 
 		}
-
+		public void Close()
+		{
+			triggerPin.Dispose();
+			echoPin.Dispose();
+		}
 		public double getDistance() {
 
 			double dist = -1;

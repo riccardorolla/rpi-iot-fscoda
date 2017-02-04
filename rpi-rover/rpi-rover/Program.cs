@@ -59,6 +59,7 @@ namespace Rover {
 	case "uds":	
 	 UltrasonicDistanceSensor uds = new UltrasonicDistanceSensor(rover.uds);
 	 Console.Write(uds.getDistance());
+	 uds.Close();
 	 break;
 	 
 	}
