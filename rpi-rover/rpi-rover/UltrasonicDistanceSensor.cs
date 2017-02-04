@@ -23,7 +23,7 @@ namespace Rover
 
 			triggerPin = driver.Out(Utilities.getPin(pin[0]));
 			echoPin = driver.In(Utilities.getPin(pin[1]));
-			getDistance();
+		//	getDistance();
 
 		}
 		public void Close()
@@ -34,9 +34,9 @@ namespace Rover
 		public double getDistance() {
 
 			double dist = -1;
-			int i = 50;
-			while (dist < 0)
-				{
+		//	int i = 50;
+			//while (dist < 0)
+			//	{
 
 					try
 					{
@@ -52,13 +52,13 @@ namespace Rover
 					}
 					catch (TimeoutException )
 					{
-						i = i + 50;
-						Timeout = TimeSpan.FromMilliseconds(i);
-						dist = 0;
+					//	i = i + 50;
+					//	Timeout = TimeSpan.FromMilliseconds(i);
+					//	dist = 0;
 						//		Console.WriteLine("(Timeout): " + e.Message);
 					}
 
-				}
+				//}
 			return dist;
 			}
 
