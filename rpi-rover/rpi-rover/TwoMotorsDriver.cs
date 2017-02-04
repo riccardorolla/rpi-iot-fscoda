@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using System.Threading.Tasks;
  
@@ -42,41 +42,12 @@ namespace Rover
 			_leftMotor.MoveForward();
 			_rightMotor.MoveBackward();
 
-			//	System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
-
-
-			//	_leftMotor.Stop();
-			//	_rightMotor.Stop();
 		}
-        public async Task TurnRightAsync()
-        {
-            _leftMotor.MoveForward();
-            _rightMotor.MoveBackward();
-
-            await Task.Delay(TimeSpan.FromMilliseconds(250));
-
-            _leftMotor.Stop();
-            _rightMotor.Stop();
-        }
 		public void TurnLeft()
 		{
 			_leftMotor.MoveBackward();
 			_rightMotor.MoveForward();
 
-			//	System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
-
-			//	_leftMotor.Stop();
-			//	_rightMotor.Stop();
 		}
-        public async Task TurnLeftAsync()
-        {
-            _leftMotor.MoveBackward();
-            _rightMotor.MoveForward();
-
-            await Task.Delay(TimeSpan.FromMilliseconds(250));
-
-            _leftMotor.Stop();
-            _rightMotor.Stop();
-        }
     }
 }

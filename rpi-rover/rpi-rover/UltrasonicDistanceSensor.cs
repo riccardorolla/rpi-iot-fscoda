@@ -1,63 +1,54 @@
 ﻿using System;
-using System.Diagnostics;
  
-
+ 
+using Raspberry.Timers;
+using Raspberry.IO;
 using Raspberry.IO.GeneralPurpose;
-using Raspberry.IO.Components.Sensors.Distance.HcSr04;
-
  
 namespace Rover
 {
 	public class UltrasonicDistanceSensor {
-     
-		ProcessorPin _gpioPinTrig;
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-		ProcessorPin _gpioPinEcho;
 
-        private readonly Stopwatch _stopwatch;
- 
+		private IOutputBinaryPin triggerPin;
+		private IInputBinaryPin echoPin;
+		private TimeSpan triggerTime = TimeSpanUtility.FromMicroseconds(10);
+		private TimeSpan echoUpTimeout = TimeSpan.FromMilliseconds(500);
+		public static  TimeSpan Timeout = TimeSpan.FromMilliseconds(50);
+		private IGpioConnectionDriver driver =
+			GpioConnectionSettings.DefaultDriver;
+
+
 		public UltrasonicDistanceSensor(int[] pin)
 		{
-			_stopwatch = new Stopwatch();
 
-			_gpioPinTrig = Utilities.getPin(pin[0]);
-			_gpioPinEcho = Utilities.getPin(pin[1]);
-			 
+			triggerPin = driver.Out(Utilities.getPin(pin[0]));
+			echoPin = driver.In(Utilities.getPin(pin[1]));
+
 		}
-		public UltrasonicDistanceSensor(int trigGpioPin, int echoGpioPin)
-        {
- 
-            _stopwatch  = new Stopwatch();
-	
-			_gpioPinTrig = Utilities.getPin(trigGpioPin);
-			_gpioPinEcho = Utilities.getPin(echoGpioPin);
-			 
-        }
 
-		public double getCM() {
-			var driver = GpioConnectionSettings.DefaultDriver;
+		public double getDistance() {
+
 			double dist = -1;
 			int i = 50;
-			using (var connection = new HcSr04Connection(
-			  driver.Out(_gpioPinTrig),
-			  driver.In(_gpioPinEcho)))
-
-
-				while (dist < 0)
+			while (dist < 0)
 				{
 
 					try
 					{
-						var distance = connection.GetDistance().Centimeters;
+					triggerPin.Write(true);
+					Timer.Sleep(triggerTime);
+					triggerPin.Write(false);
 
-						//		Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:0.0}cm", distance).PadRight(16));
-						//		Console.CursorTop--;
-						dist = distance;
+					var upTime = echoPin.Time(true, echoUpTimeout, Timeout);
+					dist = ((upTime<TimeSpan.Zero)?
+					        (double.MinValue):(upTime.TotalMilliseconds * 348 / 1000) / 2.0);
+
+
 					}
 					catch (TimeoutException )
 					{
 						i = i + 50;
-						connection.Timeout = TimeSpan.FromMilliseconds(i);
+						Timeout = TimeSpan.FromMilliseconds(i);
 						dist = 0;
 						//		Console.WriteLine("(Timeout): " + e.Message);
 					}
