@@ -41,7 +41,7 @@ namespace Rover
 
 					var upTime = echoPin.Time(true, echoUpTimeout, Timeout);
 					dist = ((upTime<TimeSpan.Zero)?
-					        (double.MinValue):(upTime.TotalMilliseconds * 348 / 1000) / 2.0);
+					        (double.MinValue):(upTime.TotalMilliseconds * 348 ) / 2.0);
 
 
 					}
