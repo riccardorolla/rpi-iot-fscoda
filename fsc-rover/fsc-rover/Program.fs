@@ -24,8 +24,9 @@ let get_confidence obj value=
 
 let execute cmd = async {
           let result = match cmd with
-                          | "discovery" -> sprintf "%s"  (command cmd ["idphoto",get_out "get photo"])
-                          | "help" -> get_out "help"
+                          | Prefix "discovery" rest -> sprintf "%s"  (command cmd ["idphoto",get_out "get photo"])
+                          | Prefix "broadcast" rest -> sprintf "%s"  (command "telegram broadcast" ["text",sprintf "%s" ((rest).Trim())])
+                          | Prefix "help" rest -> get_out "help"
                           | _ ->  sprintf "%s" (command  cmd  []) 
           return cmd,result
           }
@@ -136,14 +137,8 @@ let main () =
      for r in listresult do
          match r with
           |cmd,res -> for _ in !-- result(cmd,ctx?out) do retract <| Fsc.Facts.result(cmd, ctx?out)   
-                     // match ctx with
-                     //    | _ when !- result(cmd,ctx?out) ->   retract <| Fsc.Facts.result(cmd, ctx?out)                                                         
-                     //    | _ -> printfn "_ ->  not result(%s,ctx?out)" cmd 
+
                       tell <| Fsc.Facts.result(cmd, res)
- // }) 
-    
- //while (not (get_found "exit")) do
-     
 
      discovery "obstacle" (try 
                             float(get_out "get distance")
@@ -161,15 +156,17 @@ let main () =
          let msg=get_message idchat
       
                      
-         if (msg.Length >0) then  let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
-                                  tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
+         if (msg.Length >0) then  
+          let param  =  msg  |> Seq.skip 1 |>  String.concat  " "  
+          tell<|Fsc.Facts.request(sprintf "%i" idchat,  get_command msg.[0],param ) 
                                   
      
      match ctx with
 
      | _ when !- (request(ctx?idchat,ctx?cmd,ctx?param),result(ctx?cmd,ctx?out)) -> do 
                                                  printfn "request(%s,%s,%s)" ctx?idchat ctx?cmd ctx?param
-                                                 let result=send_message ctx?idchat  ctx?cmd (get_response ctx?idchat) (caption (get_out "discovery"))
+                                                 let result=send_message ctx?idchat ctx?cmd (get_response ctx?idchat) 
+                                                                                            (caption (get_out "discovery"))
                                                  retract<|Fsc.Facts.request(ctx?idchat, ctx?cmd,ctx?param)     
      | _ ->  printfn "no request"
 

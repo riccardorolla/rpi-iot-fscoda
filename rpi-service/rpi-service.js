@@ -1,11 +1,14 @@
-var TelegramBot = require('node-telegram-bot-api');
-var request = require('then-request');
+var express = require('express');
 var fs = require('fs');
 var path = require('path');
-var qs = require('qs');
-var childprocess=require('child_process');
 var uuid = require('node-uuid');
-var express = require('express');
+var childprocess=require('child_process');
+var TelegramBot = require('node-telegram-bot-api');
+var request = require('then-request');
+
+
+
+
 var app = express();
 
 var filename_conf='rpi-service.json';
@@ -57,10 +60,7 @@ if (!fs.existsSync(configuration.temp_path)){
  
 const exec = childprocess.exec;
 
-
-
-
-app.get('/rpi/:command/:action',function(req,res) {
+app.get('/rpi/motor/:action',function(req,res) {
 	 exec(configuration.rover_cmd +" motor " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) {
@@ -72,8 +72,8 @@ app.get('/rpi/:command/:action',function(req,res) {
   });
 });
 
-app.get('/rpi/led/:numled/:command',function(req,res) {
-	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.command,
+app.get('/rpi/led/:numled/:action',function(req,res) {
+	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) {
    					res.send("{error:'"+ error + "'");
@@ -204,7 +204,6 @@ bot.on('message', function (msg) {
   console.log(retchat);
 });
 
-var lastmsg=[];
 var listchat=[];
 function getchat(idchat){
 		  return listchat.find(function(chat){
@@ -220,31 +219,45 @@ app.get('/telegram/listchat',function (req,res) {
 	res.send(retchat);
 	res.end();
 });
+app.get('/telegram/broadcast',function(req,res) {
+  
+ var txt = req.query.text ;
+	for (var i=0; i<listchat.length;i++) {
+		bot.sendMessage(listchat[i].idchat,txt);
+	}
+ 
+ res.send('send broadcast msg');
+ res.end();
+});
+
 app.get('/telegram/:idchat',function (req, res) {
 	var idchat=req.params.idchat
 	var chat= getchat(idchat);
-	if (req.query.lang!=undefined) chat.lang=req.query.lang;
-	res.send(chat);
+    res.send(chat);
+	
  	res.end();
 })
-app.get('/telegram/:idchat/msg', function (req, res) {
-	var idchat=req.params.idchat
-   res.send(getchat(idchat).msg);
-	 res.end();
-
-})
- 
-app.get('/telegram/:idchat/msg/pop',function(req,res) {
-	var idchat=req.params.idchat
-	res.send(getchat(idchat).msg.pop());
-	  res.end();
-})
-
-app.get('/telegram/:idchat/msg/shift',function(req,res) {
+app.get('/telegram/:idchat/next',function(req,res) {
 	var idchat=req.params.idchat
 	res.send(getchat(idchat).msg.shift());
 	res.end();
 })
+
+app.get('/telegram/:idchat/text',function (req, res) {
+	var idchat=req.params.idchat
+	 var msg = req.query.text ;
+	var chat= getchat(idchat);
+	if (undefined != msg)  { 
+				bot.sendMessage(idchat,msg)
+				res.send('send msg')
+		}
+	else { 	
+		res.send('no send msg');
+	}
+ 	res.end();
+})
+
+
 app.get('/telegram/:idchat/video',function(req,res) {
 	var idchat=req.params.idchat
 	var idvideo=req.query.idvideo
@@ -272,29 +285,6 @@ app.get('/telegram/:idchat/photo',function(req,res) {
 							  
 	});
  
-app.get('/telegram/broadcast/:text',function(req,res) {
-  
- var txt = req.params.text ;
-	for (var i=0; i<listchat.length;i++) {
-		bot.sendMessage(listchat[i].idchat,txt);
-	}
- 
- res.send('send broadcast msg');
- res.end();
-});
-							
-
-app.get('/telegram/:idchat/text',function(req,res) {
- var idchat = req.params['idchat'];
- var txt = req.query.text ;
-
- bot.sendMessage(idchat,txt);
- res.send('send msg');
- res.end();
-});
-
-
-
 // Proxy - Computer Vision
 function whatdoyousee(img,callback,fcallback){
 	 var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
@@ -311,19 +301,12 @@ function whatdoyousee(img,callback,fcallback){
 
 app.get('/whatdoyousee',function(req,res) {
 	 var idphoto=req.query.idphoto
-	 var filename = configuration.temp_path+idphoto+'.jpg' //photo(req.query.width,req.query.height,req.query.quality);
+	 var filename = configuration.temp_path+idphoto+'.jpg'  
 	 var img = fs.readFileSync(filename);
-	 var lang;
-	 lang = req.query.lang;
-	 if (lang===undefined) lang=configuration.default_lang;
+ 
 	 var resvision = whatdoyousee(img,function(response) {
-											 console.log(response.getBody().toString('utf-8')); 
-									//	translate(JSON.parse(response.getBody().toString('utf-8')).description.captions[0].text,'en',lang,
-										//	function(strout) {
-										//		res.send(strout.toString());
-										//		res.end();
-											//})
-											res.send(response.getBody().toString('utf-8'));
+											console.log(response.getBody().toString('utf-8')); 
+		 									res.send(response.getBody().toString('utf-8'));
 											res.end();
 											},
 								function (err) {
@@ -338,24 +321,6 @@ app.get('/whatdoyousee',function(req,res) {
 
 
 
-app.get('/translate',function(req,res) {
- 
-	 
- 
-	 var langsrc = req.query.src;
-	 var langdst = req.query.dst;
-	 var text = req.query.text;
-	 
- 
-	  translate(text,langsrc,langdst,function(strout) {
-												res.send(strout.toString());
-												res.end();
-											}) 
-							  
-	});
-	
-
-
 
 
 var server = app.listen(configuration.port, function () {
@@ -366,33 +331,3 @@ var server = app.listen(configuration.port, function () {
   console.log("Example app listening at http://%s:%s", host, port)
 
 })
-
-
-
-function translate(sourceText,sourceLang,targetLang,callback){
-	var qst = qs.stringify({
-		client : 'gtx',
-		sl : sourceLang,
-		tl : targetLang,
-		dt : 't',
-		q : sourceText
-	});
-	
-	request('GET',configuration.translate_url+'?'+qst,
-		{ 
-			headers : { 
-				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'
-			}		
-
-		}).then(function(data){
-							  
-						 result=JSON.parse(JSON.stringify(data.getBody().toString().trim()));
-						 callback(result.split('"')[1])
-								 
-						 
-		 
-				}).catch(
-					function(err){
-						callback (err);
-					});
-};

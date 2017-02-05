@@ -92,7 +92,8 @@ let cmdbuild (text : string)  =
    | Prefix "text" rest -> sprintf "telegram/%s/text" ((rest).Trim()) 
    | Prefix "list" rest -> sprintf "telegram/listchat"
    | Prefix "messages" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
-   | Prefix "pop" rest -> sprintf "telegram/%s/msg/shift" ((rest).Trim()) 
+   | Prefix "next" rest -> sprintf "telegram/%s/next" ((rest).Trim()) 
+   | Prefix "broadcast" rest -> sprintf "telegram/broadcast/%s" ((rest).Trim()) 
    | _ -> sprintf "nop"
  | Prefix "get" rest -> 
   match ((rest).Trim()) with
@@ -105,7 +106,6 @@ let cmdbuild (text : string)  =
  | Prefix "whatdoyousee" rest -> sprintf "whatdoyousee"
  | Prefix "discovery" rest -> sprintf "whatdoyousee"
  | Prefix "translate" rest -> sprintf "translate"
- | Prefix "broadcast" rest -> sprintf "telegram/broadcast/%s" ((rest).Trim()) 
  | _ -> sprintf "nop"
 
 
@@ -121,10 +121,6 @@ let command  cmd q =
      printfn "command %s -> %s" cmd resp
      resp
     
- 
-
-
-
 
 let get_messages idchat=
        try
@@ -134,7 +130,7 @@ let get_messages idchat=
    
 let get_message idchat =
        try
-        let msg=command (sprintf "telegram pop %i" idchat) []
+        let msg=command (sprintf "telegram next %i" idchat) []
         let out=JsonConvert.DeserializeObject<Message>(msg)
         out.txt.ToLower().Split ' '
     
