@@ -1,36 +1,29 @@
-var express = require('express');
-var fs = require('fs');
-var path = require('path');
-var uuid = require('node-uuid');
+//
+var express = require('express'); //per il servizio http
+var fs = require('fs');     //utilizzati per gestire i file
+var path = require('path'); //e i nome dei file e directory
+var uuid = require('node-uuid'); //
 var childprocess=require('child_process');
 var TelegramBot = require('node-telegram-bot-api');
 var request = require('then-request');
 
-
-
-
-var app = express();
-
+//Lettura del file di configurazione
 var filename_conf='rpi-service.json';
-var args = process.argv.slice(2);
-
-
- console.log('rpi-service args: ', args);
-
- 
-switch (args[0]) {
-	case "-dev" : 
+var args = process.argv.slice(2); //ottiene i parametri a console  passati a node
+console.log('rpi-service args: ', args);
+switch (args[0]) {//se è passato la il parametro "-dev" 
+	case "-dev" : //verrà  utilizzato la configurazione 'rpi-service-dev.json'
 		filename_conf='rpi-service-dev.json';
 		break
-	 default:
+	 default: //altrimenti 'rpi-service.json'
 		 filename_conf='rpi-service.json';
 		 break;
 }
 
 var conf;
-try {
+try { //legge il file di configurazione
 	conf = fs.readFileSync(filename_conf);
-} catch (e) {
+} catch (e) {  //se non presente lo crea con dei valori di default
 	conf = '{"telegram_key":"224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM",'+
 				'"vision_url":"https://api.projectoxford.ai/vision/v1.0/analyze",'+
 				'"vision_key":"255ec2de41124b42a6ae6428f7f03b84",'+
@@ -44,20 +37,61 @@ try {
 				'"temp_path":"/tmp/"}';
 	fs.writeFileSync(filename_conf, conf);
  
-}
+}//inserisce la configurazione in una struttura dati
 var configuration = JSON.parse(conf);
 
 console.log(configuration);
-
+//se non presente la directory temporanea usate per la cache dei video e immagini
+// viene creta
 if (!fs.existsSync(configuration.temp_path)){
 	fs.mkdirSync(configuration.temp_path);
 }
+
+//Lista Chat
+var listchat=[];
+//funzione che data un identificativo chat restiutisce la chat
+function getchat(idchat){
+		  return listchat.find(function(chat){
+						return chat.idchat==idchat;
+						});
+}
+//instanzio il Bot telegram appasando la key 
+var bot = new TelegramBot(configuration.telegram_key, {polling: true});
+bot.on('message', function (msg) { //al momento di ricezione di un messagio
+  var retchat = getchat(msg.chat.id); //ottengo la chat id  dalla Lista Chat
+  if (retchat===undefined) { //se non presente la creo
+				retchat= {
+					idchat:msg.chat.id,
+					lang:configuration.default_lang,
+					msg:[]
+				}; //la inserisco nella lista chat
+				listchat.push(retchat);
+  }  
+  var newmsg={idmsg:uuid.v4(),txt:msg.text};//assegno al messagio un uuid e
+  retchat.msg.push(newmsg);					//e lo metto nella chat
+  console.log(retchat);
+});
+
+
+//servizio HTTP
+var app = express();
+//avvio il servizio sulla porta definita nella configurazione
+var server = app.listen(configuration.port, function () {
+
+  var host = server.address().address
+  var port = server.address().port
+
+  console.log("rpi-service.js at http://%s:%s", host, port)
+
+})
+
+
 
 /*  API  RPI Hardware
 */
 
 
- 
+//funzione utilzzata per eseguire i comandi
 const exec = childprocess.exec;
 
 app.get('/rpi/motor/:action',function(req,res) {
@@ -186,30 +220,9 @@ function vconv_cmd(idvideo){
 
 // API e Feature Telegram
 
-var bot = new TelegramBot(configuration.telegram_key, {polling: true});
-bot.on('message', function (msg) {
-  var retchat = getchat(msg.chat.id);
-  if (retchat===undefined) {
-				retchat= {
-					idchat:msg.chat.id,
-					lang:configuration.default_lang,
-					msg:[]
-				};
-				listchat.push(retchat);
-  }  
-  var newmsg={idmsg:uuid.v4(),txt:msg.text};
-  retchat.msg.push(newmsg);
-   
-	
-  console.log(retchat);
-});
 
-var listchat=[];
-function getchat(idchat){
-		  return listchat.find(function(chat){
-						return chat.idchat==idchat;
-						});
-}
+
+
  
 app.get('/telegram/listchat',function (req,res) {
 	var retchat=[];
@@ -323,11 +336,3 @@ app.get('/whatdoyousee',function(req,res) {
 
 
 
-var server = app.listen(configuration.port, function () {
-
-  var host = server.address().address
-  var port = server.address().port
-
-  console.log("Example app listening at http://%s:%s", host, port)
-
-})

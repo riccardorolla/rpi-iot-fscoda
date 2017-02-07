@@ -43,7 +43,7 @@ let rule(x:string,y:bool,z:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.rule(x,y,z)
+    Fsc.FscContext.action(x,y,z)
 
 [<TypedPred>]
 [<Code>]
@@ -59,7 +59,7 @@ let user_command(x:string,y:string) =
     if true then
       failwith "Solved by JIT"
     else
-      Fsc.FscContext.user_command(x,y)
+      Fsc.FscContext.synopsis(x,y)
 
 [<TypedPred>]
 [<Code>]

@@ -27,6 +27,16 @@ public static IEnumerable<bool> result(object Cmd, object Out)
     }
 }
 
+public static IEnumerable<bool> synopsis(object Cmd, object Description)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("synopsis_"), new object[] { Cmd, Description }))
+        {
+            yield return false;
+        }
+    }
+}
+
 public static IEnumerable<bool> found(object Obj, object Status)
 {
     {
@@ -37,30 +47,20 @@ public static IEnumerable<bool> found(object Obj, object Status)
     }
 }
 
-public static IEnumerable<bool> rule(object Obj, object Status, object Cmd)
-{
-    {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("rule_"), new object[] { Obj, Status, Cmd }))
-        {
-            yield return false;
-        }
-    }
-}
-
-public static IEnumerable<bool> user_command(object Prompt, object Cmd)
-{
-    {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("user_command_"), new object[] { Prompt, Cmd }))
-        {
-            yield return false;
-        }
-    }
-}
-
 public static IEnumerable<bool> confidence(object Obj, object Min, object Max)
 {
     {
         foreach (bool l2 in YP.matchDynamic(Atom.a("confidence_"), new object[] { Obj, Min, Max }))
+        {
+            yield return false;
+        }
+    }
+}
+
+public static IEnumerable<bool> action(object Obj, object Status, object Cmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("action_"), new object[] { Obj, Status, Cmd }))
         {
             yield return false;
         }
@@ -88,7 +88,7 @@ public static IEnumerable<bool> next(object Obj, object Cmd)
         Variable Status = new Variable();
         foreach (bool l2 in found(Obj, Status))
         {
-            foreach (bool l3 in rule(Obj, Status, Cmd))
+            foreach (bool l3 in action(Obj, Status, Cmd))
             {
                 yield return false;
             }
