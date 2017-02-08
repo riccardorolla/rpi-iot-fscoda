@@ -33,12 +33,12 @@ let execute cmd = async {
 
 let get_command usercommand =  
             try
-             let cmd = ctx?cmd |- (user_command(sprintf "%s" usercommand,ctx?cmd))
+             let cmd = ctx?cmd |- (synopsis(sprintf "%s" usercommand,ctx?cmd))
              cmd
             with e-> "help"
-let get_usercommand cmd =
+let get_synopsiscmd cmd =
             try
-             let usercmd = ctx?prompt |- (user_command(ctx?prompt,sprintf "%s" cmd))
+             let usercmd = ctx?prompt |- (synopsis(ctx?prompt,sprintf "%s" cmd))
              usercmd
             with e-> "unknown"
 
@@ -55,9 +55,9 @@ let get_req idchat =
      with e-> "not found"
 
 
-let get_found obj  =
+let get_detected obj  =
     try
-        let s = ctx?status |- found(obj,ctx?status)
+        let s = ctx?status |- detected(obj,ctx?status)
         s
      with e-> false
 
@@ -77,9 +77,9 @@ let discovery obj value  =
            ->  ((value>=ctx?min) && (value<=ctx?max))
        | _ -> false
     match ctx with
-     | _ when !- found(obj,ctx?status) ->   retract <| Fsc.Facts.found(obj,ctx?status)
-                                            tell <| Fsc.Facts.found(obj,status) 
-     | _ ->  tell <| Fsc.Facts.found(obj,status)
+     | _ when !- detected(obj,ctx?status) ->   retract <| Fsc.Facts.detected(obj,ctx?status)
+                                               tell <| Fsc.Facts.detected(obj,status) 
+     | _ ->  tell <| Fsc.Facts.detected(obj,status)
  
 
 let reset obj =
@@ -89,7 +89,7 @@ let reset obj =
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Fsc.Facts.request("0","nop","")
- tell <| Fsc.Facts.found("exit",false)
+ tell <| Fsc.Facts.detected("exit",false)
  tell <| Fsc.Facts.confidence("obstacle",0.1,50.0)
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
  tell <| Fsc.Facts.confidence("exit",1.0,1.0)
@@ -112,11 +112,11 @@ let initFacts () =
  tell <| Fsc.Facts.synopsis("help","help")
 
  let mutable help="?"
- for _ in !--  user_command(ctx?prompt,ctx?cmd) do
+ for _ in !-- synopsis(ctx?prompt,ctx?cmd) do
        help <- sprintf "%s\n\t%s:%s" help ctx?prompt ctx?cmd
  
  tell <| Fsc.Facts.result("help",help)
- for _ in !-- rule(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
+ for _ in !-- action(ctx?obj,ctx?status,ctx?cmd) do  reset ctx?obj  
 
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
@@ -126,7 +126,7 @@ let main () =
  let mutable array_cmd =  [|"broadcast start";"get channels"|]
 
  //Async.Start( async{
- while (not (get_found "exit")) do
+ while (not (get_detected "exit")) do
 
      for _ in !-- request(ctx?idchat,ctx?cmd,ctx?param) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]
                                 
@@ -149,7 +149,7 @@ let main () =
      for tag in recognition.tags do 
          discovery tag.name tag.confidence 
 
-     for _ in !-- found(ctx?obj,ctx?status) do
+     for _ in !-- detected(ctx?obj,ctx?status) do
       printfn "found(%s,%b)" ctx?obj ctx?status
  
      for idchat in (get_out "get channels" |> get_list) do

@@ -1,4 +1,3 @@
-
 module Fsc.Types
 
 open CoDa
@@ -23,11 +22,11 @@ let request(m:string,s:string,p:string) =
   
 [<TypedPred>]
 [<Code>]
-let found(s:string,m:bool) =
+let detected(s:string,m:bool) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.found(s,m)
+    Fsc.FscContext.detected(s,m)
 
 [<TypedPred>]
 [<Code>]
@@ -39,7 +38,7 @@ let response(m:string,s:string) =
 
 [<TypedPred>]
 [<Code>]
-let rule(x:string,y:bool,z:string) =
+let action(x:string,y:bool,z:string) =
   if true then
     failwith "Solved by JIT"
   else
@@ -55,7 +54,7 @@ let next(x:string,y:string) =
 
 [<TypedPred>]
 [<Code>]
-let user_command(x:string,y:string) =
+let synopsis(x:string,y:string) =
     if true then
       failwith "Solved by JIT"
     else

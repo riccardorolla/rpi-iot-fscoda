@@ -3,13 +3,14 @@ request(IdChat,Cmd,Param) :- request_(IdChat,Cmd,Param).
 result(Cmd,Out) :- result_(Cmd,Out).
 synopsis(Cmd,Description) :- synopsis_(Cmd,Description).
 
-found(Obj,Status) :- found_(Obj,Status).
-confidence(Obj,Min,Max) :- confidence_(Obj,Min,Max).
+detected(Obj,Status) :- detected_(Obj,Status).
 action(Obj,Status,Cmd) :- action_(Obj,Status,Cmd).
+confidence(Obj,Min,Max) :- confidence_(Obj,Min,Max).
 
 
+% rules
 response(IdChat,Out) :- request(IdChat,Cmd,Param),result(Cmd,Out).
-next(Obj,Cmd) :- found(Obj,Status),action(Obj,Status,Cmd).
+next(Obj,Cmd) :- detected(Obj,Status),action(Obj,Status,Cmd).
  
  
 
