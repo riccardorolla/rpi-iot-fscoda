@@ -1,16 +1,28 @@
 % facts
-request(IdChat,Cmd,Param) :- request_(IdChat,Cmd,Param).
+
+usrcmd(UserCmd,Cmd) :- usrcmd_(UserCmd,Cmd).
+cmddesc(Cmd,Desc) :- cmddesc_(Cmd,Desc).
+
+request(Id,Cmd) :- request_(Id,Cmd).
 result(Cmd,Out) :- result_(Cmd,Out).
-synopsis(Cmd,Description) :- synopsis_(Cmd,Description).
 
-detected(Obj,Status) :- detected_(Obj,Status).
+
 action(Obj,Status,Cmd) :- action_(Obj,Status,Cmd).
+ 
 confidence(Obj,Min,Max) :- confidence_(Obj,Min,Max).
-
+recognition(Obj,Value):- recognition_(Obj,Value).
 
 % rules
-response(IdChat,Out) :- request(IdChat,Cmd,Param),result(Cmd,Out).
-next(Obj,Cmd) :- detected(Obj,Status),action(Obj,Status,Cmd).
+response(Id,Out) :- request(Id,Cmd),result(Cmd,Out).
+usrcmddesc(UserCmd,Desc) :- usrcmd(UserCmd,Cmd),cmddesc(Cmd,Desc).
+detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value>Min,Value<Max. 
+detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value=Min.
+detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value=Max.
+undetected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value<Min.
+undetected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value>Max.
+next(Cmd) :- detected(Obj),action(Obj,true,Cmd).
+next(Cmd) :- undetected(Obj),action(Obj,false,Cmd).
+
  
  
 

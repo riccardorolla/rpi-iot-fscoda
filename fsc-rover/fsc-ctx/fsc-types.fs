@@ -14,19 +14,12 @@ let result(s:string,t:string) =
 
 [<TypedPred>]
 [<Code>]
-let request(m:string,s:string,p:string) =
+let request(m:string,s:string) =
   if true then
     failwith "Solved by JIT"
   else
-    Fsc.FscContext.request(m,s,p)
+    Fsc.FscContext.request(m,s)
   
-[<TypedPred>]
-[<Code>]
-let detected(s:string,m:bool) =
-  if true then
-    failwith "Solved by JIT"
-  else
-    Fsc.FscContext.detected(s,m)
 
 [<TypedPred>]
 [<Code>]
@@ -38,7 +31,7 @@ let response(m:string,s:string) =
 
 [<TypedPred>]
 [<Code>]
-let action(x:string,y:bool,z:string) =
+let action(x:string,y:string,z:string) =
   if true then
     failwith "Solved by JIT"
   else
@@ -46,19 +39,27 @@ let action(x:string,y:bool,z:string) =
 
 [<TypedPred>]
 [<Code>]
-let next(x:string,y:string) =
+let next(x:string) =
    if true then
      failwith "Solved by JIT"
    else
-     Fsc.FscContext.next(x,y)
+     Fsc.FscContext.next(x)
 
 [<TypedPred>]
 [<Code>]
-let synopsis(x:string,y:string) =
+let usrcmd(x:string,y:string) =
     if true then
       failwith "Solved by JIT"
     else
-      Fsc.FscContext.synopsis(x,y)
+      Fsc.FscContext.usrcmd(x,y)
+[<TypedPred>]
+[<Code>]
+let usrcmddesc(x:string,y:string) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.usrcmddesc(x,y)
+
 
 [<TypedPred>]
 [<Code>]
@@ -67,5 +68,36 @@ let confidence(x:string,y:float,z:float) =
       failwith "Solved by JIT"
     else
       Fsc.FscContext.confidence(x,y,z)
- 
- 
+
+[<TypedPred>]
+[<Code>]
+let recognition(x:string,y:float) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.recognition(x,y)
+
+
+[<TypedPred>]
+[<Code>]
+let cmddesc(x:string,y:string) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.cmddesc(x,y)
+
+[<TypedPred>]
+[<Code>]
+let detected(x:string) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.detected(x)
+
+[<TypedPred>]
+[<Code>]
+let undetected(x:string) =
+    if true then
+      failwith "Solved by JIT"
+    else
+      Fsc.FscContext.detected(x)

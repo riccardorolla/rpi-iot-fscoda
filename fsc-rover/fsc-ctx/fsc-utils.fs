@@ -111,14 +111,14 @@ let cmdbuild (text : string)  =
 
  
 let command  cmd q =   
-    printfn "command %s" cmd
+   // printfn "command %s" cmd
     if (cmd="nop") then sprintf "OK"
     else
      let resp=try 
                Http.RequestString((urlbuild (cmdbuild(cmd))), q , headers = [ "Cache-Control","NoCache" ])
               with 
               | :? System.Net.WebException ->    "error"
-     printfn "command %s -> %s" cmd resp
+     printf "command %s -> %s" cmd resp
      resp
     
 
