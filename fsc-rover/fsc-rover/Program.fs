@@ -24,8 +24,16 @@ let get_out  syscmd =  try
                         c
                        with e-> "not found"
 
+let get_rsp idchat res = 
+    let risp =  match ctx with
+                 | _ when !- (request(idchat,ctx?usercmd),usrcmd(ctx?usercmd,ctx?syscmd),result(ctx?syscmd,res)) ->  
 
-let execute syscmd = async {
+                                                                    retract<|Fsc.Facts.request(idchat,ctx?usercmd)    
+                                                                    (idchat,ctx?syscmd)
+                 | _ ->  (idchat,"nop")
+    risp
+
+let execute syscmd  = async {
           let result = match syscmd with
                           | Prefix "discovery" rest -> sprintf "%s"  (command syscmd ["idphoto",get_out "get photo"])
                           | Prefix "broadcast" rest -> sprintf "%s"  (command "telegram broadcast" ["text",sprintf "%s" ((rest).Trim())])
@@ -34,25 +42,20 @@ let execute syscmd = async {
           return syscmd,result
           }
 
-let send_message idchat  cmd text cap=
-          printfn "send_message %i %s %s" idchat cmd text
-          match (cmd) with
-                   | Prefix "get photo" rest ->  command (sprintf "telegram photo %i" idchat)
-                                                    ["idphoto",text;
-                                                     "text",cap]
-                   | Prefix "get video" rest ->  command (sprintf "telegram video %i" idchat) 
-                                                    ["idvideo",text;
-                                                     "text",cap]
+let send idchat syscmd  =
+   async {
+      printfn "send_message %i %s " idchat syscmd 
+      let result = match (syscmd) with
+                   | Prefix "get photo" rest -> sprintf "%s"  (command (sprintf "telegram photo %i" idchat)
+                                                    ["idphoto",get_out syscmd;
+                                                     "text",caption (get_out "discovery")])
+                   | Prefix "get video" rest -> sprintf "%s" (command (sprintf "telegram video %i" idchat) 
+                                                    ["idvideo",get_out syscmd;
+                                                     "text",caption (get_out "discovery")])
                    | Prefix "nop" rest -> sprintf "%s" "nop"
-                   | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd  text]
-
-let sendresponse idchat res =
- match ctx with
-      | _ when !- (request(idchat,ctx?usercmd),usrcmd(ctx?usercmd,ctx?syscmd),result(ctx?syscmd,res)) -> do 
-                                             printfn "request(%i,%s)" idchat ctx?syscmd
-                                             let result = send_message idchat ctx?syscmd res (caption (get_out "discovery"))
-                                             retract<|Fsc.Facts.request(idchat,ctx?usercmd)     
-      | _ ->  printf ""
+                   | _   -> sprintf "%s" (command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" syscmd  (get_out syscmd)])
+     return syscmd,result;
+   }
 
 [<CoDa.ContextInit>]
 let initFacts () =
@@ -113,12 +116,14 @@ let main () =
  let mutable listresult=[||]
  let mutable array_cmd =  [|"broadcast start"|]
 
-
+ let mutable array_msg = [||]
  while (not (get_detected "exit")) do
 
                                 
      for _ in !-- next(ctx?syscmd) do array_cmd <-  array_cmd |> Array.append [|ctx?syscmd|] 
-
+     for idchat,msg in array_msg do printfn "%i %s" idchat msg
+    
+     listresult <- Async.Parallel [for idchat,syscmd in  Array.distinct array_msg -> send idchat syscmd] |> Async.RunSynchronously
      listresult <- Async.Parallel [for syscmd in  Array.distinct array_cmd  -> execute syscmd] |> Async.RunSynchronously
  
      for r in listresult do
@@ -137,12 +142,13 @@ let main () =
 
      for _ in !-- recognition(ctx?obj,ctx?value) do
       printfn "recognition:%s,\t%f,\t%b" ctx?obj ctx?value (get_detected ctx?obj)
-     
- 
+     array_cmd <-[||]
+     array_msg <-[||]
      for idchat in (get_out "get channels" |> get_list) do
       for _ in !-- response(idchat,ctx?res) do 
-          sendresponse idchat ctx?res
-
+          array_msg <- array_msg |> Array.append [|get_rsp idchat ctx?res|]
+      
+      
       for _ in !-- request(idchat,ctx?usercmd) do
        printfn "not response request:%i,\t%s" idchat ctx?usercmd
 
@@ -153,7 +159,10 @@ let main () =
                                                         tell <| Fsc.Facts.request(idchat,msg.[0])
            | _ -> tell <| Fsc.Facts.request(idchat,"help")
        msg<- get_message idchat  
-     array_cmd <-[||]
+     
+
+    
+    
      
 do if (conf.debug) then debug()
     else run()
