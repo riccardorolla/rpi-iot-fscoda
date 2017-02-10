@@ -8,19 +8,22 @@ open CoDa.Runtime
 open Fsc.Types
 open Fsc.Utils
 
+let discovery obj value  =
+    match ctx with
+     | _ when !- recognition(obj,ctx?value) ->   retract <| Fsc.Facts.recognition(obj,ctx?value)
+                                                 tell <| Fsc.Facts.recognition(obj,value) 
+     | _ -> tell <| Fsc.Facts.recognition(obj,value) 
+
+let get_detected obj  =
+    match ctx with
+     | _ when !- detected(obj) ->  true
+     | _ -> false
 
 let get_out  syscmd =  try 
                         let c = ctx?out |- (result(syscmd,ctx?out))
                         c
                        with e-> "not found"
 
-let get_confidence obj value= 
-                
-                           match ctx with
-                             | _ when !- confidence(obj,ctx?min,ctx?max)
-                                 ->  ((value>ctx?min) && (value<ctx?max))
-                             | _ -> false
-             
 
 let execute syscmd = async {
           let result = match syscmd with
@@ -31,43 +34,17 @@ let execute syscmd = async {
           return syscmd,result
           }
 
- 
-let get_command usercommand =  
-            try
-             let syscmd = ctx?syscmd |- (usrcmd(sprintf "%s" usercommand,ctx?syscmd))
-             syscmd
-            with e-> "help"
-let get_cmddesc syscmd =
-            try
-             let desccmd = ctx?description |- (cmddesc(sprintf "%s" syscmd,ctx?description))
-             desccmd
-            with e-> "unknown"
-
-let get_usrcmddesc usrcmd =
-    try
-     let desccmd = ctx?description |- (usrcmddesc(sprintf "%s" usrcmd,ctx?description))
-     desccmd
-    with e-> "unknown"
-
-let get_response idchat =
-    try
-     let out = ctx?out |- (response(idchat,ctx?out))
-     out
-    with e-> "error"
- 
-let get_req idchat =
-     try 
-         let req = ctx?syscmd |- (request(idchat,ctx?syscmd))
-         req
-     with e-> "not found"
-
-
-let get_detected obj  =
-    match ctx with
-     | _ when !- detected(obj) ->  true
-     | _ -> false
-
-
+let send_message idchat  cmd text cap=
+          printfn "send_message %i %s %s" idchat cmd text
+          match (cmd) with
+                   | Prefix "get photo" rest ->  command (sprintf "telegram photo %i" idchat)
+                                                    ["idphoto",text;
+                                                     "text",cap]
+                   | Prefix "get video" rest ->  command (sprintf "telegram video %i" idchat) 
+                                                    ["idvideo",text;
+                                                     "text",cap]
+                   | Prefix "nop" rest -> sprintf "%s" "nop"
+                   | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd  text]
 
 let sendresponse idchat res =
  match ctx with
@@ -76,21 +53,6 @@ let sendresponse idchat res =
                                              let result = send_message idchat ctx?syscmd res (caption (get_out "discovery"))
                                              retract<|Fsc.Facts.request(idchat,ctx?usercmd)     
       | _ ->  printf ""
-
-
- 
-
-let discovery obj value  =
-    match ctx with
-     | _ when !- recognition(obj,ctx?value) ->   retract <| Fsc.Facts.recognition(obj,ctx?value)
-                                                 tell <| Fsc.Facts.recognition(obj,value) 
-     | _ -> tell <| Fsc.Facts.recognition(obj,value) 
-
-      
-
-let reset obj =
-
-    discovery obj  (float(num.MinValue))
 
 [<CoDa.ContextInit>]
 let initFacts () =
@@ -142,7 +104,7 @@ let initFacts () =
        help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
  
  tell <| Fsc.Facts.result("help",help)
- for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do  reset ctx?obj  
+ for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do  discovery ctx?obj  (float(num.MinValue))  
 
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
@@ -154,7 +116,6 @@ let main () =
 
  while (not (get_detected "exit")) do
 
-    // for _ in !-- request(ctx?idchat,ctx?cmd) do array_cmd <- array_cmd |> Array.append [|ctx?cmd|]
                                 
      for _ in !-- next(ctx?syscmd) do array_cmd <-  array_cmd |> Array.append [|ctx?syscmd|] 
 
@@ -191,7 +152,6 @@ let main () =
            | _ when !- usrcmd(msg.[0],ctx?syscmd) ->    retract <| Fsc.Facts.request(idchat,msg.[0])
                                                         tell <| Fsc.Facts.request(idchat,msg.[0])
            | _ -> tell <| Fsc.Facts.request(idchat,"help")
-       //tell<|Fsc.Facts.request(idchat,  msg.[0] ) 
        msg<- get_message idchat  
      array_cmd <-[||]
      

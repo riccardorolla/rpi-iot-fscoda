@@ -67,7 +67,19 @@ let conf = JsonConvert.DeserializeObject<Configuration>(confjson)
 
 printfn "server:%s,port:%i" conf.server conf.port
 
+let get_list str =
+      try
+     
+       JsonConvert.DeserializeObject<List<int>>(str)
+      with e ->  [] 
+
 let urlbuild command =  sprintf "http://%s:%i/%s" conf.server conf.port command
+
+
+let imagerecognition str =
+  try
+   JsonConvert.DeserializeObject<ImageRecognition>(str)
+  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
 
 
 let (|Prefix|_|) (p:string) (s:string) =
@@ -75,6 +87,8 @@ let (|Prefix|_|) (p:string) (s:string) =
         Some(s.Substring(p.Length))
     else
         None
+
+
 
 let cmdbuild (text : string)  =
  match text with
@@ -120,32 +134,14 @@ let command  cmd q =
               | :? System.Net.WebException ->    "error"
      printf "command %s -> %s" cmd resp
      resp
-    
-
-let get_messages idchat=
-       try
-        let msgs = command (sprintf "telegram message %i" idchat)   []
-        JsonConvert.DeserializeObject<List<Message>>(msgs)
-       with e-> JsonConvert.DeserializeObject<List<Message>>("[]")
-   
 let get_message idchat =
-       try
-        let msg=command (sprintf "telegram next %i" idchat) []
-        let out=JsonConvert.DeserializeObject<Message>(msg)
-        out.txt.ToLower().Split ' '
-    
-       with e-> [||]
-let get_list str =
-      try
-     
-       JsonConvert.DeserializeObject<List<int>>(str)
-      with e ->  [] 
+           try
+            let msg=command (sprintf "telegram next %i" idchat) []
+            let out=JsonConvert.DeserializeObject<Message>(msg)
+            out.txt.ToLower().Split ' '
+        
+           with e-> [||]   
 
-
-let imagerecognition str =
-  try
-   JsonConvert.DeserializeObject<ImageRecognition>(str)
-  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
 
 let caption str =  
                 try
@@ -153,29 +149,3 @@ let caption str =
                  sprintf  "%s" imageinfo.description.captions.[0].text 
                 with e-> "no desc"             
           
-  
-let send_message idchat  cmd text cap=
-          printfn "send_message %i %s %s" idchat cmd text
-          match (cmd) with
-                   | Prefix "get photo" rest ->  command (sprintf "telegram photo %i" idchat)
-                                                    ["idphoto",text;
-                                                     "text",cap]
-                   | Prefix "get video" rest ->  command (sprintf "telegram video %i" idchat) 
-                                                    ["idvideo",text;
-                                                     "text",cap]
-                   | Prefix "nop" rest -> sprintf "%s" "nop"
-                   | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd  text]
-       
-let buildsnd idchat  cmd text cap=
-   printfn "send_message %i %s %s" idchat cmd text
-   let pippo = "pippo",[]
-   let result = match (cmd) with
-                   | Prefix "get photo" rest ->  (sprintf "telegram photo %i" idchat),
-                                                    ["idphoto",text;
-                                                     "text",cap] 
-                   | Prefix "get video" rest ->   (sprintf "telegram video %i" idchat),
-                                                    ["idvideo",text;
-                                                     "text",cap] 
-                   | Prefix "nop" rest -> (sprintf "%s" "nop"),[] 
-                   | _   ->  (sprintf "telegram text %i" idchat),[ "text", sprintf "%s -> %s" cmd  text] 
-   pippo
