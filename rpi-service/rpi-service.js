@@ -261,8 +261,10 @@ app.get('/telegram/:idchat/text',function (req, res) {
 	 var msg = req.query.text ;
 	var chat= getchat(idchat);
 	if (undefined != msg)  { 
-				bot.sendMessage(idchat,msg)
-				res.send('send msg')
+				bot.sendMessage(idchat,msg,{
+  parse_mode: "Markdown"
+});
+				res.send('send msg');
 		}
 	else { 	
 		res.send('no send msg');

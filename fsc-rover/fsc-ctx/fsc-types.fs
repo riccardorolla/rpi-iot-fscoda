@@ -14,7 +14,7 @@ let result(s:string,t:string) =
 
 [<TypedPred>]
 [<Code>]
-let request(m:string,s:string) =
+let request(m:int,s:string) =
   if true then
     failwith "Solved by JIT"
   else
@@ -23,7 +23,7 @@ let request(m:string,s:string) =
 
 [<TypedPred>]
 [<Code>]
-let response(m:string,s:string) =
+let response(m:int,s:string) =
   if true then
     failwith "Solved by JIT"
   else

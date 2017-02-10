@@ -1,28 +1,33 @@
 % facts
 
-usrcmd(UserCmd,Cmd) :- usrcmd_(UserCmd,Cmd).
-cmddesc(Cmd,Desc) :- cmddesc_(Cmd,Desc).
+usrcmd(UserCmd,SysCmd) :- usrcmd_(UserCmd,SysCmd).
+cmddesc(SysCmd,Desc) :- cmddesc_(SysCmd,Desc).
 
-request(Id,Cmd) :- request_(Id,Cmd).
-result(Cmd,Out) :- result_(Cmd,Out).
+request(Id,UserCmd) :- request_(Id,UserCmd).
+result(SysCmd,Out) :- result_(SysCmd,Out).
+
+recognition(Obj,Value):- recognition_(Obj,Value).
+
+confidence(Obj,Min,Max) :- confidence_(Obj,Min,Max).
 
 
 action(Obj,Status,Cmd) :- action_(Obj,Status,Cmd).
  
-confidence(Obj,Min,Max) :- confidence_(Obj,Min,Max).
-recognition(Obj,Value):- recognition_(Obj,Value).
+
 
 % rules
-response(Id,Out) :- request(Id,Cmd),result(Cmd,Out).
+response(Id,Out) :- request(Id,UserCmd),usrcmd(UserCmd,SysCmd),result(SysCmd,Out).
+
 usrcmddesc(UserCmd,Desc) :- usrcmd(UserCmd,Cmd),cmddesc(Cmd,Desc).
+
 detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value>Min,Value<Max. 
 detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value=Min.
 detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value=Max.
 undetected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value<Min.
 undetected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),Value>Max.
-next(Cmd) :- detected(Obj),action(Obj,true,Cmd).
-next(Cmd) :- undetected(Obj),action(Obj,false,Cmd).
-
+next(SysCmd) :- detected(Obj),action(Obj,true,SysCmd).
+next(SysCmd) :- undetected(Obj),action(Obj,false,SysCmd).
+next(SysCmd) :- request(Id,UserCmd),usrcmd(UserCmd,SysCmd).
  
  
 

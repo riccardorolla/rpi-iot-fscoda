@@ -7,60 +7,40 @@ public class FscContext {
 public class YPInnerClass { }
 public static Type getDeclaringClass() { return typeof(YPInnerClass).DeclaringType; }
 
-public static IEnumerable<bool> usrcmd(object UserCmd, object Cmd)
+public static IEnumerable<bool> usrcmd(object UserCmd, object SysCmd)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("usrcmd_"), new object[] { UserCmd, Cmd }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("usrcmd_"), new object[] { UserCmd, SysCmd }))
         {
             yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> cmddesc(object Cmd, object Desc)
+public static IEnumerable<bool> cmddesc(object SysCmd, object Desc)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("cmddesc_"), new object[] { Cmd, Desc }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("cmddesc_"), new object[] { SysCmd, Desc }))
         {
             yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> request(object Id, object Cmd)
+public static IEnumerable<bool> request(object Id, object UserCmd)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("request_"), new object[] { Id, Cmd }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("request_"), new object[] { Id, UserCmd }))
         {
             yield return false;
         }
     }
 }
 
-public static IEnumerable<bool> result(object Cmd, object Out)
+public static IEnumerable<bool> result(object SysCmd, object Out)
 {
     {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("result_"), new object[] { Cmd, Out }))
-        {
-            yield return false;
-        }
-    }
-}
-
-public static IEnumerable<bool> action(object Obj, object Status, object Cmd)
-{
-    {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("action_"), new object[] { Obj, Status, Cmd }))
-        {
-            yield return false;
-        }
-    }
-}
-
-public static IEnumerable<bool> confidence(object Obj, object Min, object Max)
-{
-    {
-        foreach (bool l2 in YP.matchDynamic(Atom.a("confidence_"), new object[] { Obj, Min, Max }))
+        foreach (bool l2 in YP.matchDynamic(Atom.a("result_"), new object[] { SysCmd, Out }))
         {
             yield return false;
         }
@@ -77,15 +57,39 @@ public static IEnumerable<bool> recognition(object Obj, object Value)
     }
 }
 
+public static IEnumerable<bool> confidence(object Obj, object Min, object Max)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("confidence_"), new object[] { Obj, Min, Max }))
+        {
+            yield return false;
+        }
+    }
+}
+
+public static IEnumerable<bool> action(object Obj, object Status, object Cmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("action_"), new object[] { Obj, Status, Cmd }))
+        {
+            yield return false;
+        }
+    }
+}
+
 public static IEnumerable<bool> response(object Id, object Out)
 {
     {
-        Variable Cmd = new Variable();
-        foreach (bool l2 in request(Id, Cmd))
+        Variable UserCmd = new Variable();
+        Variable SysCmd = new Variable();
+        foreach (bool l2 in request(Id, UserCmd))
         {
-            foreach (bool l3 in result(Cmd, Out))
+            foreach (bool l3 in usrcmd(UserCmd, SysCmd))
             {
-                yield return false;
+                foreach (bool l4 in result(SysCmd, Out))
+                {
+                    yield return false;
+                }
             }
         }
     }
@@ -191,13 +195,13 @@ public static IEnumerable<bool> undetected(object Obj)
     }
 }
 
-public static IEnumerable<bool> next(object Cmd)
+public static IEnumerable<bool> next(object SysCmd)
 {
     {
         Variable Obj = new Variable();
         foreach (bool l2 in detected(Obj))
         {
-            foreach (bool l3 in action(Obj, Atom.a("true"), Cmd))
+            foreach (bool l3 in action(Obj, Atom.a("true"), SysCmd))
             {
                 yield return false;
             }
@@ -207,7 +211,18 @@ public static IEnumerable<bool> next(object Cmd)
         Variable Obj = new Variable();
         foreach (bool l2 in undetected(Obj))
         {
-            foreach (bool l3 in action(Obj, Atom.a("false"), Cmd))
+            foreach (bool l3 in action(Obj, Atom.a("false"), SysCmd))
+            {
+                yield return false;
+            }
+        }
+    }
+    {
+        Variable Id = new Variable();
+        Variable UserCmd = new Variable();
+        foreach (bool l2 in request(Id, UserCmd))
+        {
+            foreach (bool l3 in usrcmd(UserCmd, SysCmd))
             {
                 yield return false;
             }

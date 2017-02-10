@@ -154,16 +154,28 @@ let caption str =
                 with e-> "no desc"             
           
   
-let send_message idchat   cmd text cap=
-          printfn "send_message %s %s %s" idchat cmd text
-          let snd= match (cmd) with
-                   | Prefix "get photo" rest ->  command (sprintf "telegram photo %s" idchat)
+let send_message idchat  cmd text cap=
+          printfn "send_message %i %s %s" idchat cmd text
+          match (cmd) with
+                   | Prefix "get photo" rest ->  command (sprintf "telegram photo %i" idchat)
                                                     ["idphoto",text;
                                                      "text",cap]
-                   | Prefix "get video" rest ->  command (sprintf "telegram video %s" idchat) 
+                   | Prefix "get video" rest ->  command (sprintf "telegram video %i" idchat) 
                                                     ["idvideo",text;
                                                      "text",cap]
                    | Prefix "nop" rest -> sprintf "%s" "nop"
-                   | _   -> command  (sprintf "telegram text %s" idchat) [ "text", sprintf "%s -> %s" cmd  text]
+                   | _   -> command  (sprintf "telegram text %i" idchat) [ "text", sprintf "%s -> %s" cmd  text]
        
-          snd
+let buildsnd idchat  cmd text cap=
+   printfn "send_message %i %s %s" idchat cmd text
+   let pippo = "pippo",[]
+   let result = match (cmd) with
+                   | Prefix "get photo" rest ->  (sprintf "telegram photo %i" idchat),
+                                                    ["idphoto",text;
+                                                     "text",cap] 
+                   | Prefix "get video" rest ->   (sprintf "telegram video %i" idchat),
+                                                    ["idvideo",text;
+                                                     "text",cap] 
+                   | Prefix "nop" rest -> (sprintf "%s" "nop"),[] 
+                   | _   ->  (sprintf "telegram text %i" idchat),[ "text", sprintf "%s -> %s" cmd  text] 
+   pippo
