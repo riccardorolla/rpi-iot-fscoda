@@ -32,6 +32,34 @@ let get_rsp idchat res =
                                                                     (idchat,ctx?syscmd)
                  | _ ->  (idchat,"nop")
     risp
+let get_cmdrsp idchat syscmd =
+    let result = match (syscmd) with
+                 | Prefix "get photo" rest ->  (sprintf "telegram photo %i" idchat,
+                                                  ["idphoto",get_out syscmd;
+                                                   "text",caption (get_out "discovery")])
+                 | Prefix "get video" rest ->  (sprintf "telegram video %i" idchat,
+                                                  ["idvideo",get_out syscmd;
+                                                   "text",caption (get_out "discovery")])
+                 | Prefix "nop" rest -> (sprintf "%s" "nop",[])
+                 | _   ->  (sprintf "telegram text %i" idchat, [ "text", sprintf "%s -> %s" syscmd  (get_out syscmd)])
+    result
+let get_cmd syscmd = 
+    let result = match syscmd with
+                    | Prefix "discovery" rest ->  (syscmd,["idphoto",get_out "get photo"])
+                    | Prefix "broadcast" rest ->  ("telegram broadcast",["text",sprintf "%s" ((rest).Trim())])
+                    | Prefix "help" rest -> (get_out "help",[])
+                    | _ ->  (syscmd,[]) 
+    result
+  
+let get_rsp2 idchat res = 
+    let risp =  match ctx with
+                 | _ when !- (request(idchat,ctx?usercmd),usrcmd(ctx?usercmd,ctx?syscmd),result(ctx?syscmd,res)) ->  
+
+                                                                    retract<|Fsc.Facts.request(idchat,ctx?usercmd)    
+
+                                                                    get_cmdrsp idchat ctx?syscmd 
+                 | _ ->  get_cmdrsp idchat "nop"
+    risp
 
 let execute syscmd  = async {
           let result = match syscmd with
@@ -41,7 +69,10 @@ let execute syscmd  = async {
                           | _ ->  sprintf "%s" (command  syscmd  []) 
           return syscmd,result
           }
-
+let execute2 syscmd param  = async {
+          let result =   sprintf "%s" (command  syscmd param) 
+          return syscmd,result
+          }
 let send idchat syscmd  =
    async {
       printfn "send_message %i %s " idchat syscmd 
@@ -114,17 +145,17 @@ let initFacts () =
 let main () =
  initFacts ()
  let mutable listresult=[||]
- let mutable array_cmd =  [|"broadcast start"|]
+ let mutable array_cmd =  [|(get_cmd "broadcast start") |]
 
  let mutable array_msg = [||]
  while (not (get_detected "exit")) do
 
                                 
-     for _ in !-- next(ctx?syscmd) do array_cmd <-  array_cmd |> Array.append [|ctx?syscmd|] 
+     for _ in !-- next(ctx?syscmd) do array_cmd <-  array_cmd |> Array.append [|get_cmd ctx?syscmd|] 
      for idchat,msg in array_msg do printfn "%i %s" idchat msg
     
-     listresult <- Async.Parallel [for idchat,syscmd in  Array.distinct array_msg -> send idchat syscmd] |> Async.RunSynchronously
-     listresult <- Async.Parallel [for syscmd in  Array.distinct array_cmd  -> execute syscmd] |> Async.RunSynchronously
+   //  listresult <- Async.Parallel [for idchat,syscmd in  Array.distinct array_msg -> send idchat syscmd] |> Async.RunSynchronously
+     listresult <- Async.Parallel [for syscmd,param in  Array.distinct array_cmd  -> execute2 syscmd param] |> Async.RunSynchronously
  
      for r in listresult do
          match r with
@@ -143,10 +174,10 @@ let main () =
      for _ in !-- recognition(ctx?obj,ctx?value) do
       printfn "recognition:%s,\t%f,\t%b" ctx?obj ctx?value (get_detected ctx?obj)
      array_cmd <-[||]
-     array_msg <-[||]
+   //  array_msg <-[||]
      for idchat in (get_out "get channels" |> get_list) do
       for _ in !-- response(idchat,ctx?res) do 
-          array_msg <- array_msg |> Array.append [|get_rsp idchat ctx?res|]
+          array_cmd <- array_cmd |> Array.append [|get_rsp2 idchat ctx?res|]
       
       
       for _ in !-- request(idchat,ctx?usercmd) do
