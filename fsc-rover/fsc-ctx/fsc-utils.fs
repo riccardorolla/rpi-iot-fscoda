@@ -88,55 +88,19 @@ let (|Prefix|_|) (p:string) (s:string) =
     else
         None
 
-
-
-let cmdbuild (text : string)  =
- match text with
- | Prefix "go" rest -> sprintf "rpi/motor/%s" ((rest).Trim())
- | Prefix "stop" rest -> sprintf "rpi/motor/stop"
- | Prefix "led" rest -> 
-   match ((rest).Trim()) with
-   | Prefix "on" rest -> sprintf "rpi/led/%s/on" ((rest).Trim()) 
-   | Prefix "off" rest -> sprintf "rpi/led/%s/off" ((rest).Trim()) 
-   | _ -> sprintf "nop"
- | Prefix "telegram" rest -> 
-   match ((rest).Trim()) with
-   | Prefix "photo" rest -> sprintf "telegram/%s/photo" ((rest).Trim()) 
-   | Prefix "video" rest -> sprintf "telegram/%s/video" ((rest).Trim()) 
-   | Prefix "text" rest -> sprintf "telegram/%s/text" ((rest).Trim()) 
-   | Prefix "list" rest -> sprintf "telegram/listchat"
-   | Prefix "messages" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
-   | Prefix "next" rest -> sprintf "telegram/%s/next" ((rest).Trim()) 
-   | Prefix "broadcast" rest -> sprintf "telegram/broadcast/%s" ((rest).Trim()) 
-   | _ -> sprintf "nop"
- | Prefix "get" rest -> 
-  match ((rest).Trim()) with
-   | Prefix "distance" rest -> sprintf "rpi/distance" 
-   | Prefix "photo" rest -> sprintf "rpi/photo" 
-   | Prefix "video" rest -> sprintf "rpi/video" 
-   | Prefix "messages" rest -> sprintf "telegram/%s/msg" ((rest).Trim()) 
-   | Prefix "channels" rest -> sprintf "telegram/listchat"
-   | _ -> sprintf "nop"
- | Prefix "whatdoyousee" rest -> sprintf "whatdoyousee"
- | Prefix "discovery" rest -> sprintf "whatdoyousee"
- | Prefix "translate" rest -> sprintf "translate"
- | _ -> sprintf "nop"
-
-
- 
 let command  cmd q =   
    // printfn "command %s" cmd
     if (cmd="nop") then sprintf "OK"
     else
      let resp=try 
-               Http.RequestString((urlbuild (cmdbuild(cmd))), q , headers = [ "Cache-Control","NoCache" ])
+               Http.RequestString((urlbuild  cmd ), q , headers = [ "Cache-Control","NoCache" ])
               with 
               | :? System.Net.WebException ->    "error"
      printf "command %s -> %s" cmd resp
      resp
 let get_message idchat =
            try
-            let msg=command (sprintf "telegram next %i" idchat) []
+            let msg=command (sprintf "telegram/%i/next" idchat) []
             let out=JsonConvert.DeserializeObject<Message>(msg)
             out.txt.ToLower().Split ' '
         
