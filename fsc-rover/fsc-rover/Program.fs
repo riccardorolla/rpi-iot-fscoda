@@ -9,67 +9,77 @@ open Fsc.Types
 open Fsc.Utils
 
 let get_usercmd syscmd =  
-            try
-             let usercmd = ctx?usercmd |- (usrcmd(ctx?usercmd,syscmd))
-             usercmd
-            with e-> syscmd
+ try
+  let usercmd = 
+   ctx?usercmd |- (usrcmd(ctx?usercmd,syscmd))
+  usercmd
+ with e-> syscmd
 
 let discovery obj value  =
-    match ctx with
-     | _ when !- recognition(obj,ctx?value) ->   retract <| Fsc.Facts.recognition(obj,ctx?value)
-                                                 tell <| Fsc.Facts.recognition(obj,value) 
-     | _ -> tell <| Fsc.Facts.recognition(obj,value) 
+ match ctx with
+ | _ when !- recognition(obj,ctx?value) -> 
+         retract <| Fsc.Facts.recognition(obj,ctx?value)
+         tell <| Fsc.Facts.recognition(obj,value) 
+ | _ ->  tell <| Fsc.Facts.recognition(obj,value) 
 
 let get_detected obj  =
-    match ctx with
-     | _ when !- detected(obj) ->  true
-     | _ -> false
+ match ctx with
+ | _ when !- detected(obj) ->  true
+ | _ -> false
 
-let get_out  syscmd =  try 
-                        let c = ctx?out |- (result(syscmd,ctx?out))
-                        c
-                       with e-> "not found"
+let get_out  syscmd =  
+ try 
+  let c = ctx?out |- (result(syscmd,ctx?out))
+  c
+ with e-> "not found"
 
 
 let get_cmdrsp idchat syscmd =
-    let result = match (syscmd) with
-                 | Prefix "rpi/photo" rest ->  (sprintf "telegram/%i/photo" idchat,
-                                                  ["idphoto",get_out syscmd;
-                                                   "text",caption (get_out "whatdoyousee")])
-                 | Prefix "rpi/video" rest ->  (sprintf "telegram/%i/video" idchat,
-                                                  ["idvideo",get_out syscmd;
-                                                   "text",caption (get_out "whatdoyousee")])
-                 | Prefix "nop" rest -> (sprintf "%s" "nop",[])
-                 | _   ->  (sprintf "telegram/%i/text" idchat, [ "text", sprintf "%s -> %s" (get_usercmd syscmd)  (get_out syscmd)])
-    result
+ match (syscmd) with
+ | "rpi/photo" ->(sprintf "telegram/%i/photo" idchat,
+                  ["idphoto",get_out syscmd;
+                  "text",caption (get_out "whatdoyousee")])
+ | "rpi/video" ->(sprintf "telegram/%i/video" idchat,
+                  ["idvideo",get_out syscmd;
+                   "text",caption (get_out "whatdoyousee")])
+ | _ ->          (sprintf "telegram/%i/text" idchat, 
+                  ["text", sprintf "%s -> %s" 
+                  (get_usercmd syscmd) (get_out syscmd)])
+   
 let get_cmd syscmd = 
-    let result = match syscmd with
-                    | Prefix "whatdoyousee" rest ->  (syscmd,["idphoto",get_out "rpi/photo"])
-                    | Prefix "broadcast" rest ->  ("telegram/broadcast",["text",sprintf "%s" ((rest).Trim())])
-                    | Prefix "help" rest -> (get_out "help",[])
-                    | _ ->  (syscmd,[]) 
-    result
+ match syscmd with
+ | "whatdoyousee"  -> (syscmd,["idphoto",get_out "rpi/photo"])
+ | "telegram/broadcast" ->  
+                      (syscmd,["text","start"])
+ | "help" ->          (get_out "help",[])
+ | _ ->               (syscmd,[]) 
+    
   
 let get_rsp idchat res = 
-    let risp =  match ctx with
-                 | _ when !- (request(idchat,ctx?usercmd),usrcmd(ctx?usercmd,ctx?syscmd),result(ctx?syscmd,res)) ->  
+ match ctx with
+ | _ when !- 
+     (request(idchat,ctx?usercmd),
+      usrcmd(ctx?usercmd,ctx?syscmd),
+      result(ctx?syscmd,res)) ->  
+         retract<|Fsc.Facts.request(idchat,ctx?usercmd)    
+         get_cmdrsp idchat ctx?syscmd 
+ | _ ->  
+     (sprintf "telegram/%i/text" idchat ,
+      ["text",
+       sprintf "not found command per this result:%s " res])  
+   
 
-                                                                    retract<|Fsc.Facts.request(idchat,ctx?usercmd)    
 
-                                                                    get_cmdrsp idchat ctx?syscmd 
-                 | _ ->  get_cmdrsp idchat "nop"
-    risp
-
-
-let execute syscmd param  = async {
-          let result =   sprintf "%s" (command  syscmd param) 
-          return syscmd,result
-          }
+let execute syscmd param  = 
+ async {
+  let result =   sprintf "%s" (command  syscmd param) 
+  return syscmd,result
+ }
 
 
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.request(0,"nop")
+ tell <| Fsc.Facts.request(0,"telegram/broadcast")
  tell <| Fsc.Facts.recognition("exit",0.0)
 
  tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
@@ -114,56 +124,67 @@ let initFacts () =
 
  let mutable help="?"
  for _ in !-- usrcmddesc(ctx?usrcmd,ctx?desc) do
-       help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
+  help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
  
  tell <| Fsc.Facts.result("help",help)
- for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do  discovery ctx?obj  (float(num.MinValue))  
+ for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do  
+  discovery ctx?obj  (float(num.MinValue))  
 
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
  initFacts ()
  let mutable listresult=[||]
- let mutable array_cmd =  [|("telegram/broadcast",["text","start"]) |]
+ let mutable array_cmd =  
+  [|"telegram/broadcast",
+    ["text","daemon fsc-rover start now"]|]
 
  while (not (get_detected "exit")) do
-
-                                
-     for _ in !-- next(ctx?syscmd) do array_cmd <-  array_cmd |> Array.append [|get_cmd ctx?syscmd|] 
+  for _ in !-- next(ctx?syscmd) do 
+   array_cmd <- array_cmd 
+             |> Array.append [|get_cmd ctx?syscmd|] 
    
-     listresult <- Async.Parallel [for syscmd,param in  Array.distinct array_cmd  -> execute syscmd param] |> Async.RunSynchronously
-     array_cmd <-[||] 
-     for r in listresult do
-         match r with
-          |syscmd,res -> for _ in !-- result(syscmd,ctx?out) do retract <| Fsc.Facts.result(syscmd, ctx?out)   
-                         tell <| Fsc.Facts.result(syscmd,res)
+  listresult <- Async.Parallel 
+     [for syscmd,param in  Array.distinct array_cmd  -> 
+      execute syscmd param] 
+      |> Async.RunSynchronously
+     
+  array_cmd <-[||] 
+  for r in listresult do        
+   match r with
+   |syscmd,res -> printfn "command:%s,\t%s" syscmd res
+                  for _ in !-- result(syscmd,ctx?out) do 
+                   retract <| Fsc.Facts.result(syscmd, ctx?out)   
+                  tell <| Fsc.Facts.result(syscmd,res)
                     
-     discovery "obstacle" (try 
-                            float(get_out "rpi/distance")
-                           with e-> 0.0) 
+  discovery "obstacle" (try 
+                         float(get_out "rpi/distance")
+                        with e-> 0.0) 
  
      
-     let infoimage = get_out "whatdoyousee" |> imagerecognition
-     for tag in infoimage.tags do 
+  let infoimage = get_out "whatdoyousee" |> imagerecognition
+  for tag in infoimage.tags do 
          discovery tag.name tag.confidence 
 
-     for _ in !-- recognition(ctx?obj,ctx?value) do
-      printfn "recognition:%s,\t%f,\t%b" ctx?obj ctx?value (get_detected ctx?obj)
+  for _ in !-- recognition(ctx?obj,ctx?value) do
+      printfn "recognition:%s,\t%f,\t%b" 
+       ctx?obj ctx?value (get_detected ctx?obj)
     
  
-     for idchat in (get_out "telegram/listchat" |> get_list) do
-      for _ in !-- response(idchat,ctx?res) do 
-          array_cmd <- array_cmd |> Array.append [|get_rsp idchat ctx?res|]
-      
-      
-      for _ in !-- request(idchat,ctx?usercmd) do
+  for idchat in (get_out "telegram/listchat" |> get_list) do
+   for _ in !-- response(idchat,ctx?res) do 
+          array_cmd <- array_cmd 
+           |> Array.append [|get_rsp idchat ctx?res|]
+
+   for _ in !-- request(idchat,ctx?usercmd) do
        printfn "not response request:%i,\t%s" idchat ctx?usercmd
 
-      let mutable msg=get_message idchat               
-      while (msg.Length >0) do  
+   let mutable msg=get_message idchat               
+   while (msg.Length >0) do  
        match ctx with
-           | _ when !- usrcmd(msg.[0],ctx?syscmd) ->    retract <| Fsc.Facts.request(idchat,msg.[0])
-                                                        tell <| Fsc.Facts.request(idchat,msg.[0])
+           | _ when !- usrcmd(msg.[0],ctx?syscmd) ->    
+                  retract <| Fsc.Facts.request(idchat,msg.[0])
+                  tell <| Fsc.Facts.request(idchat,msg.[0])
            | _ -> tell <| Fsc.Facts.request(idchat,"help")
        msg<- get_message idchat  
      

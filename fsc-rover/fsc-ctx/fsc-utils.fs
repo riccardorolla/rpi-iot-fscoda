@@ -49,67 +49,60 @@ and Meta =
     height:int;
     format:string
   }
+
+let imagerecognition str =
+  try
+   JsonConvert.DeserializeObject<ImageRecognition>(str)
+  with e -> JsonConvert.DeserializeObject<ImageRecognition>(
+             "{\"tags\":[],\"description\":"+
+             "{\"tags\":[],\"captions\":[]},"+
+              "requestId:\"\",metadata:"+
+              "{width:0,height:0,format:\"null\"}}")
+
 type num=int
 
-  
+let defaultconf =
+     "{\"server\":\"localhost\","+
+      "\"port\":8081,\"debug\":false}"
 let confjson =
  try  
   File.ReadAllText(@"fsc-rover.json")
  with
   | :? System.IO.FileNotFoundException  -> 
-        File.WriteAllText(@"fsc-rover.json","""{"server":"localhost","port":8081,"debug":false}""")
-        """{"server":"localhost","port":8081,"debug":false}"""
+        File.WriteAllText(@"fsc-rover.json",
+         defaultconf)
+        defaultconf
 
-
-
-
-let conf = JsonConvert.DeserializeObject<Configuration>(confjson)
+let conf = 
+ JsonConvert.DeserializeObject<Configuration>(confjson)
 
 printfn "server:%s,port:%i" conf.server conf.port
 
 let get_list str =
-      try
-     
-       JsonConvert.DeserializeObject<List<int>>(str)
-      with e ->  [] 
-
-let urlbuild command =  sprintf "http://%s:%i/%s" conf.server conf.port command
+ try
+  JsonConvert.DeserializeObject<List<int>>(str)
+ with e ->  [] 
 
 
-let imagerecognition str =
-  try
-   JsonConvert.DeserializeObject<ImageRecognition>(str)
-  with e ->    JsonConvert.DeserializeObject<ImageRecognition>("{\"tags\":[],\"description\":{\"tags\":[],\"captions\":[]},requestId:\"\",metadata:{width:0,height:0,format:\"null\"}}")
-
-
-let (|Prefix|_|) (p:string) (s:string) =
-    if s.StartsWith(p) then
-        Some(s.Substring(p.Length))
-    else
-        None
 
 let command  cmd q =   
-   // printfn "command %s" cmd
-    if (cmd="nop") then sprintf "OK"
-    else
-     let resp=try 
-               Http.RequestString((urlbuild  cmd ), q , headers = [ "Cache-Control","NoCache" ])
-              with 
-              | :? System.Net.WebException ->    "error"
-     printf "command %s -> %s" cmd resp
-     resp
+  try 
+    Http.RequestString(
+     (sprintf "http://%s:%i/%s" conf.server conf.port cmd), 
+     q , headers = [ "Cache-Control","NoCache" ])
+  with  | :? System.Net.WebException ->    "error"
+   
 let get_message idchat =
-           try
-            let msg=command (sprintf "telegram/%i/next" idchat) []
-            let out=JsonConvert.DeserializeObject<Message>(msg)
-            out.txt.ToLower().Split ' '
-        
-           with e-> [||]   
+ try
+  let msg=command (sprintf "telegram/%i/next" idchat) []
+  let out=JsonConvert.DeserializeObject<Message>(msg)
+  out.txt.ToLower().Split ' '
+ with e-> [||]   
 
 
 let caption str =  
-                try
-                 let imageinfo = str |> imagerecognition
-                 sprintf  "%s" imageinfo.description.captions.[0].text 
-                with e-> "no desc"             
+ try
+  let imageinfo = str |> imagerecognition
+  sprintf  "%s" imageinfo.description.captions.[0].text 
+ with e-> "no desc"             
           
