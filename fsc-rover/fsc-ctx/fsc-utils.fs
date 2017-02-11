@@ -5,50 +5,48 @@ open System.IO
 open FSharp.Data
 open Newtonsoft.Json
 
-type Configuration =
- {
+type Configuration ={
   server:string;
   port:int;
   debug:bool
  }
 
+let defaultconf =
+      "{\"server\":\"localhost\","+
+       "\"port\":8081,\"debug\":false}"
 
-type Message = 
-    {
-      idmsg:string; 
-      txt:string
-    }
+let confjson =
+  try  
+   File.ReadAllText(@"fsc-rover.json")
+  with
+   | :? System.IO.FileNotFoundException  -> 
+         File.WriteAllText(@"fsc-rover.json",
+          defaultconf)
+         defaultconf
 
- 
-type ImageRecognition =
-  { 
+let conf = 
+  JsonConvert.DeserializeObject<Configuration>(confjson)
+printfn "server:%s,port:%i" conf.server conf.port
+
+type ImageRecognition =  { 
     tags:List<Tag>;
-    description: Description ;
+    description: Description;
     requestId: string;
-    metadata: Meta
-    
-  }
-and Tag = 
-  {
+    metadata: Meta       } 
+and Tag = {
     name:string;
-    confidence:double
-  }
-and Description =
-  { 
+    confidence:double    } 
+and Description = { 
     tags:List<string>;
-    captions: List<Caption>
-  }
-and Caption =
-  { 
+    captions: List<Caption> }
+and Caption =  { 
     text:string;
-    confidence:double
-  }
-and Meta =
-  { 
+    confidence:double }
+and Meta = { 
     width:int;
     height:int;
     format:string
-  }
+}
 
 let imagerecognition str =
   try
@@ -59,29 +57,15 @@ let imagerecognition str =
               "requestId:\"\",metadata:"+
               "{width:0,height:0,format:\"null\"}}")
 
+
 type num=int
 
-let defaultconf =
-     "{\"server\":\"localhost\","+
-      "\"port\":8081,\"debug\":false}"
-let confjson =
- try  
-  File.ReadAllText(@"fsc-rover.json")
- with
-  | :? System.IO.FileNotFoundException  -> 
-        File.WriteAllText(@"fsc-rover.json",
-         defaultconf)
-        defaultconf
 
-let conf = 
- JsonConvert.DeserializeObject<Configuration>(confjson)
-
-printfn "server:%s,port:%i" conf.server conf.port
-
-let get_list str =
+let caption str =  
  try
-  JsonConvert.DeserializeObject<List<int>>(str)
- with e ->  [] 
+  let imageinfo = str |> imagerecognition
+  sprintf  "%s" imageinfo.description.captions.[0].text 
+ with e-> "no desc"   
 
 
 
@@ -91,7 +75,17 @@ let command  cmd q =
      (sprintf "http://%s:%i/%s" conf.server conf.port cmd), 
      q , headers = [ "Cache-Control","NoCache" ])
   with  | :? System.Net.WebException ->    "error"
-   
+
+let execute syscmd param  = 
+  async {
+   let result =   sprintf "%s" (command  syscmd param) 
+   return syscmd,result
+  }
+
+type Message = {
+      idmsg:string; 
+      txt:string
+      } 
 let get_message idchat =
  try
   let msg=command (sprintf "telegram/%i/next" idchat) []
@@ -99,10 +93,10 @@ let get_message idchat =
   out.txt.ToLower().Split ' '
  with e-> [||]   
 
-
-let caption str =  
+let get_list str =
  try
-  let imageinfo = str |> imagerecognition
-  sprintf  "%s" imageinfo.description.captions.[0].text 
- with e-> "no desc"             
+  JsonConvert.DeserializeObject<List<int>>(str)
+ with e ->  [] 
+
+          
           

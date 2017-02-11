@@ -70,11 +70,7 @@ let get_rsp idchat res =
    
 
 
-let execute syscmd param  = 
- async {
-  let result =   sprintf "%s" (command  syscmd param) 
-  return syscmd,result
- }
+
 
 
 [<CoDa.ContextInit>]
