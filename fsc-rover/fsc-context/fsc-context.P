@@ -11,31 +11,22 @@ action(Obj,Status,Cmd) :- action_(Obj,Status,Cmd).
 
 
 % rules
-response(Id,Out) :- request(Id,UserCmd),
-                    usrcmd(UserCmd,SysCmd),
+response(Id,Out) :- request(Id,UserCmd),usrcmd(UserCmd,SysCmd),
                     result(SysCmd,Out).
-usrcmddesc(UserCmd,Desc) :- usrcmd(UserCmd,Cmd),
-                            cmddesc(Cmd,Desc).
-detected(Obj) :- recognition(Obj,Value),
-                 confidence(Obj,Min,Max),
+usrcmddesc(UserCmd,Desc) :- usrcmd(UserCmd,Cmd),cmddesc(Cmd,Desc).
+detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),
                  Value>Min,Value<Max. 
-detected(Obj) :- recognition(Obj,Value),
-                 confidence(Obj,Min,Max),Value=Min.
-detected(Obj) :- recognition(Obj,Value),
-                 confidence(Obj,Min,Max),Value=Max.
-undetected(Obj) :- recognition(Obj,Value),
-                   confidence(Obj,Min,Max),
+detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),
+                 Value=Min.
+detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),
+                 Value=Max.
+undetected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),
                    Value<Min.
-undetected(Obj) :- recognition(Obj,Value),
-                   confidence(Obj,Min,Max),
+undetected(Obj) :- recognition(Obj,Value), confidence(Obj,Min,Max),
                    Value>Max.
-next(SysCmd) :- detected(Obj),
-                action(Obj,true,SysCmd).
-next(SysCmd) :- undetected(Obj),
-                action(Obj,false,SysCmd).
-next(SysCmd) :- request(Id,UserCmd),
-                usrcmd(UserCmd,SysCmd).
- 
+next(SysCmd) :- detected(Obj),action(Obj,true,SysCmd).
+next(SysCmd) :- undetected(Obj),action(Obj,false,SysCmd).
+next(SysCmd) :- request(Id,UserCmd),usrcmd(UserCmd,SysCmd).
  
 
 

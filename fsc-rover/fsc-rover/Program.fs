@@ -42,6 +42,12 @@ let get_cmdrsp idchat syscmd =
  | "rpi/video" ->(sprintf "telegram/%i/video" idchat,
                   ["idvideo",get_out syscmd;
                    "text",caption (get_out "whatdoyousee")])
+ | "whatdoyousee"-> let mutable result = "discovery->\n"
+                    for _ in !-- recognition(ctx?obj,ctx?value) do
+                     result <- sprintf "%s%s,\t%f,\t%b\n" 
+                      result ctx?obj ctx?value (get_detected ctx?obj)
+                    (sprintf "telegram/%i/text" idchat,
+                     ["text",result])
  | _ ->          (sprintf "telegram/%i/text" idchat, 
                   ["text", sprintf "%s -> %s" 
                   (get_usercmd syscmd) (get_out syscmd)])
@@ -94,7 +100,7 @@ let initFacts () =
  tell <| Fsc.Facts.cmddesc("rpi/led/0/on", "turn on led number 0")
  tell <| Fsc.Facts.cmddesc("rpi/led/0/off", "turn off led number 0")
  tell <| Fsc.Facts.cmddesc("help", "command help")
-
+ tell <| Fsc.Facts.cmddesc("whatdoyousee","recognition object in last snapshot" )
  tell <| Fsc.Facts.usrcmd("photo","rpi/photo")
  tell <| Fsc.Facts.usrcmd("video","rpi/video")  
  tell <| Fsc.Facts.usrcmd("distance","rpi/distance")
@@ -141,8 +147,7 @@ let main () =
              |> Array.append [|get_cmd ctx?syscmd|] 
    
   listresult <- Async.Parallel 
-     [for syscmd,param in  Array.distinct array_cmd  -> 
-      execute syscmd param] 
+     [for syscmd,param in  Array.distinct array_cmd  ->   execute syscmd param] 
       |> Async.RunSynchronously
      
   array_cmd <-[||] 
