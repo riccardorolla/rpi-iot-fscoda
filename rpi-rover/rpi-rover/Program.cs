@@ -26,7 +26,7 @@ namespace Rover {
 									if ((args[2]) == "on") led.on();
 									else led.off();
 									Console.Write("OK");
-									led.dispose();
+								//	led.dispose();
 								}
 							}
 						}
