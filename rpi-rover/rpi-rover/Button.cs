@@ -13,6 +13,7 @@ namespace Rover
 			gpio = GpioConnectionSettings.DefaultDriver;
 			buttonGpioPin = Utilities.getPin(pin);
 			gpio.Allocate(buttonGpioPin, PinDirection.Input);
+			gpio.SetPinResistor(buttonGpioPin, PinResistor.PullUp);
 		}
 
 		public int read()
