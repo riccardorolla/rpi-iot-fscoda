@@ -6,16 +6,16 @@ open FSharp.Data
 open Newtonsoft.Json
 
 type Configuration ={
-  server:string;
-  port:int;
+  http_server:string;
   debug:bool
  }
 
-let defaultconf =
-      "{\"server\":\"localhost\","+
-       "\"port\":8081,\"debug\":false}"
+
 
 let confjson =
+  let defaultconf =
+        "{\"http_server\":\"http://localhost:8081\","+
+         "\"debug\":false}"
   try  
    File.ReadAllText(@"fsc-rover.json")
   with
@@ -26,7 +26,7 @@ let confjson =
 
 let conf = 
   JsonConvert.DeserializeObject<Configuration>(confjson)
-printfn "server:%s,port:%i" conf.server conf.port
+printfn "Required rpi_service.js:%s " conf.http_server  
 
 type ImageRecognition =  { 
     tags:List<Tag>;
@@ -72,7 +72,7 @@ let caption str =
 let command  cmd q =   
   try 
     Http.RequestString(
-     (sprintf "http://%s:%i/%s" conf.server conf.port cmd), 
+     (sprintf "%s/%s" conf.http_server  cmd), 
      q , headers = [ "Cache-Control","NoCache" ])
   with  | :? System.Net.WebException ->    "error"
 

@@ -79,14 +79,6 @@ let get_rsp idchat res =
 
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.request(0,"telegram/broadcast")
- tell <| Fsc.Facts.recognition("exit",0.0)
-
- tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
- tell <| Fsc.Facts.confidence("person",0.9,1.0)
- tell <| Fsc.Facts.confidence("exit",1.0,1.0)
- tell <| Fsc.Facts.confidence("never",0.0,0.0)
-
  tell <| Fsc.Facts.objcmd("exit","rpi/button/0")
  tell <| Fsc.Facts.objcmd("obstacle","rpi/distance")
  tell <| Fsc.Facts.cmddesc("rpi/photo","snapshot a photo with camera")
@@ -115,23 +107,34 @@ let initFacts () =
  tell <| Fsc.Facts.usrcmd("discovery","whatdoyousee")
  tell <| Fsc.Facts.usrcmd("help","help")
 
- tell <| Fsc.Facts.action("never","true","whatdoyousee")
- tell <| Fsc.Facts.action("never","false","rpi/distance")
- tell <| Fsc.Facts.action("never","false","telegram/listchat")
- tell <| Fsc.Facts.action("never","true","rpi/photo")
- tell <| Fsc.Facts.action("indoor","true","rpi/led/0/on")
+
+ tell <| Fsc.Facts.recognition("exit",0.0)
+
+ tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
+ tell <| Fsc.Facts.confidence("person",0.9,1.0)
+ tell <| Fsc.Facts.confidence("exit",1.0,1.0)
+ tell <| Fsc.Facts.confidence("never",0.0,0.0)
+
+
+
+ tell <| Fsc.Facts.action("exit","true","whatdoyousee")
+ tell <| Fsc.Facts.action("exit","false","rpi/distance")
+ tell <| Fsc.Facts.action("exit","false","telegram/listchat")
+ tell <| Fsc.Facts.action("exit","true","rpi/photo")
  tell <| Fsc.Facts.action("person","false","rpi/led/0/off")
+ tell <| Fsc.Facts.action("person","true","rpi/led/0/on")
  tell <| Fsc.Facts.action("obstacle","true","rpi/motor/stop")
- tell <| Fsc.Facts.action("never","false","rpi/led/0/off")
- tell <| Fsc.Facts.action("never","false","rpi/button/0")
+ tell <| Fsc.Facts.action("exit","false","rpi/button/0")
 
  let mutable help="?"
  for _ in !-- usrcmddesc(ctx?usrcmd,ctx?desc) do
   help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
- 
  tell <| Fsc.Facts.result("help",help)
+
+ 
  for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do  
   discovery ctx?obj  (float(num.MinValue))  
+ tell <| Fsc.Facts.request(0,"")
 
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
