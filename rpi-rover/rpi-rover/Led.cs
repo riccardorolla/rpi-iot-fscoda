@@ -29,7 +29,7 @@ namespace Rover
 		}
 		public void dispose()
 		{
-			gpio.Release(ledGpioPin);
+			//gpio.Release(ledGpioPin);
 		}
 	}
 }
