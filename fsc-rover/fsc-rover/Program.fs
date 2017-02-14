@@ -86,6 +86,7 @@ let initFacts () =
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
  tell <| Fsc.Facts.confidence("exit",1.0,1.0)
  tell <| Fsc.Facts.confidence("never",0.0,0.0)
+
  tell <| Fsc.Facts.objcmd("exit","rpi/button/0")
  tell <| Fsc.Facts.objcmd("obstacle","rpi/distance")
  tell <| Fsc.Facts.cmddesc("rpi/photo","snapshot a photo with camera")
@@ -99,7 +100,8 @@ let initFacts () =
  tell <| Fsc.Facts.cmddesc("rpi/led/0/on", "turn on led number 0")
  tell <| Fsc.Facts.cmddesc("rpi/led/0/off", "turn off led number 0")
  tell <| Fsc.Facts.cmddesc("help", "command help")
- tell <| Fsc.Facts.cmddesc("whatdoyousee","recognition object in last snapshot" )
+ tell <| Fsc.Facts.cmddesc("whatdoyousee","recognition object in last snapshot")
+
  tell <| Fsc.Facts.usrcmd("photo","rpi/photo")
  tell <| Fsc.Facts.usrcmd("video","rpi/video")  
  tell <| Fsc.Facts.usrcmd("distance","rpi/distance")
