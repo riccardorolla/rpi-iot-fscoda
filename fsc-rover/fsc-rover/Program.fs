@@ -55,8 +55,6 @@ let get_cmdrsp idchat syscmd =
 let get_cmd syscmd = 
  match syscmd with
  | "whatdoyousee"  -> (syscmd,["idphoto",get_out "rpi/photo"])
- | "telegram/broadcast" ->  
-                      (syscmd,["text","start"])
  | "help" ->          (get_out "help",[])
  | _ ->               (syscmd,[]) 
     
@@ -88,7 +86,8 @@ let initFacts () =
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
  tell <| Fsc.Facts.confidence("exit",1.0,1.0)
  tell <| Fsc.Facts.confidence("never",0.0,0.0)
-
+ tell <| Fsc.Facts.objcmd("exit","rpi/button/0")
+ tell <| Fsc.Facts.objcmd("obstacle","rpi/distance")
  tell <| Fsc.Facts.cmddesc("rpi/photo","snapshot a photo with camera")
  tell <| Fsc.Facts.cmddesc("rpi/video","shoot a movie with camera")
  tell <| Fsc.Facts.cmddesc("rpi/distance","get the distance of the obstacle")
@@ -122,7 +121,7 @@ let initFacts () =
  tell <| Fsc.Facts.action("person","false","rpi/led/0/off")
  tell <| Fsc.Facts.action("obstacle","true","rpi/motor/stop")
  tell <| Fsc.Facts.action("never","false","rpi/led/0/off")
-
+ tell <| Fsc.Facts.action("never","false","rpi/button/0")
 
  let mutable help="?"
  for _ in !-- usrcmddesc(ctx?usrcmd,ctx?desc) do
@@ -157,12 +156,13 @@ let main () =
                   for _ in !-- result(syscmd,ctx?out) do 
                    retract <| Fsc.Facts.result(syscmd, ctx?out)   
                   tell <| Fsc.Facts.result(syscmd,res)
-                    
-  discovery "obstacle" (try 
-                         float(get_out "rpi/distance")
+
+  for _ in !-- objcmd(ctx?obj,ctx?syscmd) do           
+   discovery ctx?obj (try 
+                         float(get_out ctx?syscmd)
                         with e-> 0.0) 
  
-     
+  
   let infoimage = get_out "whatdoyousee" |> imagerecognition
   for tag in infoimage.tags do 
          discovery tag.name tag.confidence 

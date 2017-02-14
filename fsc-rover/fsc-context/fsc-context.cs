@@ -27,6 +27,16 @@ public static IEnumerable<bool> cmddesc(object SysCmd, object Desc)
     }
 }
 
+public static IEnumerable<bool> objcmd(object Obj, object SysCmd)
+{
+    {
+        foreach (bool l2 in YP.matchDynamic(Atom.a("objcmd_"), new object[] { Obj, SysCmd }))
+        {
+            yield return false;
+        }
+    }
+}
+
 public static IEnumerable<bool> request(object Id, object UserCmd)
 {
     {

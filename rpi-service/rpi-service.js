@@ -105,6 +105,17 @@ app.get('/rpi/motor/:action',function(req,res) {
 			res.end();
   });
 });
+app.get('/rpi/button/:numbutton',function(req,res) {
+	 exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
+			(error,stdout,stderr)=> {
+				if (error) {
+   					res.send("{error:'"+ error + "'");
+				}else{
+					res.send(stdout);
+				}
+			res.end();
+  });
+});
 
 app.get('/rpi/led/:numled/:action',function(req,res) {
 	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,

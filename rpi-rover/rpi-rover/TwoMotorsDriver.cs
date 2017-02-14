@@ -49,5 +49,10 @@ namespace Rover
 			_rightMotor.MoveForward();
 
 		}
+		public void dispose()
+		{
+			_leftMotor.dispose();
+			_rightMotor.dispose();
+		}
     }
 }

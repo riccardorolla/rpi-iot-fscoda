@@ -60,6 +60,7 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Led.cs" />
+    <Compile Include="Button.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

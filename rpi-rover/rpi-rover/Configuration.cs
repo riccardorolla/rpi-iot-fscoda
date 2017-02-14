@@ -7,6 +7,7 @@ namespace Rover
 	{
 		public int[] motor;
 		public int[] led;
+		public int[] button;
 		public int[] uds;
 		public float timestep;
 		public Configuration()
@@ -35,7 +36,7 @@ namespace Rover
 			}
 			catch (FileNotFoundException)
 			{
-				json = "{\"motor\":[13,15,29,31],\"led\":[11],\"uds\":[16,18],\"timestep\":1.0}";
+				json = "{\"motor\":[13,15,29,31],\"button\":[22],\"led\":[11],\"uds\":[16,18],\"timestep\":1.0}";
 				Configuration.Write(json);
 			}
 

@@ -27,5 +27,9 @@ namespace Rover
 			Console.WriteLine("led " + name + " is off.");
 		 
 		}
+		public void dispose()
+		{
+			gpio.Release(ledGpioPin);
+		}
 	}
 }

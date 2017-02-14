@@ -45,5 +45,10 @@ namespace Rover
 			gpio.Write (_motorGpioPinB, false);
 		 
         }
+		public void dispose()
+		{
+			gpio.Release(_motorGpioPinA);
+			gpio.Release(_motorGpioPinB);
+		}
     }
 }

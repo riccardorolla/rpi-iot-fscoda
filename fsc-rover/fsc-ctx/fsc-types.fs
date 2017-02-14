@@ -11,6 +11,13 @@ let result(s:string,t:string) =
   else
     Fsc.FscContext.result(s,t)
 
+[<TypedPred>]
+[<Code>]
+let objcmd(s:string,t:string) =
+  if true then
+    failwith "Solved by JIT"
+  else
+    Fsc.FscContext.objcmd(s,t)
 
 [<TypedPred>]
 [<Code>]

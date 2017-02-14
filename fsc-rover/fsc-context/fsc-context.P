@@ -2,6 +2,7 @@
 
 usrcmd(UserCmd,SysCmd) :- usrcmd_(UserCmd,SysCmd).
 cmddesc(SysCmd,Desc) :- cmddesc_(SysCmd,Desc).
+objcmd(Obj,SysCmd) :- objcmd_(Obj,SysCmd).
 request(Id,UserCmd) :- request_(Id,UserCmd).
 result(SysCmd,Out) :- result_(SysCmd,Out).
 recognition(Obj,Value):- recognition_(Obj,Value).
@@ -14,6 +15,7 @@ action(Obj,Status,Cmd) :- action_(Obj,Status,Cmd).
 response(Id,Out) :- request(Id,UserCmd),usrcmd(UserCmd,SysCmd),
                     result(SysCmd,Out).
 usrcmddesc(UserCmd,Desc) :- usrcmd(UserCmd,Cmd),cmddesc(Cmd,Desc).
+
 detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),
                  Value>Min,Value<Max. 
 detected(Obj) :- recognition(Obj,Value),confidence(Obj,Min,Max),
