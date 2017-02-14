@@ -34,30 +34,31 @@ namespace Rover
 		public double getDistance() {
 
 			double dist = -1;
-		//	int i = 50;
+			//	int i = 50;
 			//while (dist < 0)
 			//	{
-
-					try
-					{
+			do
+			{
+				try
+				{
 					triggerPin.Write(true);
 					Timer.Sleep(triggerTime);
 					triggerPin.Write(false);
 
 					var upTime = echoPin.Time(true, echoUpTimeout, Timeout);
-					dist = ((upTime<TimeSpan.Zero)?
-					        (double.MinValue):((upTime.TotalMilliseconds)/1000.0 * 343.8*100 ) / 2.0);
+					dist = ((upTime < TimeSpan.Zero) ?
+							(double.MinValue) : ((upTime.TotalMilliseconds) / 1000.0 * 343.8 * 100) / 2.0);
 
 
-					}
-					catch (TimeoutException )
-					{
+				}
+				catch (TimeoutException)
+				{
 					//	i = i + 50;
 					//	Timeout = TimeSpan.FromMilliseconds(i);
 					//	dist = 0;
-						//		Console.WriteLine("(Timeout): " + e.Message);
-					}
-
+					//		Console.WriteLine("(Timeout): " + e.Message);
+				}
+			} while (dist < 0);
 				//}
 			return dist;
 			}
