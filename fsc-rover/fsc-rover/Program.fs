@@ -108,7 +108,7 @@ let initFacts () =
  tell <| Fsc.Facts.usrcmd("help","help")
 
 
- tell <| Fsc.Facts.recognition("exit",0.0)
+
 
  tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
@@ -121,11 +121,12 @@ let initFacts () =
  tell <| Fsc.Facts.action("exit","false","rpi/distance")
  tell <| Fsc.Facts.action("exit","false","telegram/listchat")
  tell <| Fsc.Facts.action("exit","true","rpi/photo")
+ tell <| Fsc.Facts.action("exit","false","rpi/button/0")
  tell <| Fsc.Facts.action("person","false","rpi/led/0/off")
  tell <| Fsc.Facts.action("person","true","rpi/led/0/on")
  tell <| Fsc.Facts.action("obstacle","true","rpi/motor/stop")
- tell <| Fsc.Facts.action("exit","false","rpi/button/0")
 
+ tell <| Fsc.Facts.recognition("exit",0.0)
  let mutable help="?"
  for _ in !-- usrcmddesc(ctx?usrcmd,ctx?desc) do
   help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
