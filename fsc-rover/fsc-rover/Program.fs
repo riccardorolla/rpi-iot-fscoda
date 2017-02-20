@@ -91,6 +91,8 @@ let initFacts () =
  tell <| Fsc.Facts.cmddesc("rpi/motor/stop","stop the rover")
  tell <| Fsc.Facts.cmddesc("rpi/led/0/on", "turn on led number 0")
  tell <| Fsc.Facts.cmddesc("rpi/led/0/off", "turn off led number 0")
+ tell <| Fsc.Facts.cmddesc("rpi/led/1/on", "turn on led number 1")
+ tell <| Fsc.Facts.cmddesc("rpi/led/1/off", "turn off led number 0")
  tell <| Fsc.Facts.cmddesc("help", "command help")
  tell <| Fsc.Facts.cmddesc("whatdoyousee","recognition object in last snapshot")
 
@@ -99,8 +101,8 @@ let initFacts () =
  tell <| Fsc.Facts.usrcmd("distance","rpi/distance")
  tell <| Fsc.Facts.usrcmd("left","rpi/motor/left")
  tell <| Fsc.Facts.usrcmd("right","rpi/motor/right")
- tell <| Fsc.Facts.usrcmd("lon","rpi/led/0/on")
- tell <| Fsc.Facts.usrcmd("loff","rpi/led/0/off")
+ tell <| Fsc.Facts.usrcmd("lon","rpi/led/1/on")
+ tell <| Fsc.Facts.usrcmd("loff","rpi/led/1/off")
  tell <| Fsc.Facts.usrcmd("forward","rpi/motor/forward")
  tell <| Fsc.Facts.usrcmd("backward","rpi/motor/backward")
  tell <| Fsc.Facts.usrcmd("stop","rpi/motor/stop")
@@ -162,7 +164,8 @@ let main () =
                   for _ in !-- result(syscmd,ctx?out) do 
                    retract <| Fsc.Facts.result(syscmd, ctx?out)   
                   tell <| Fsc.Facts.result(syscmd,res)
-
+  for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
+      discovery ctx?obj  0.0
   for _ in !-- objcmd(ctx?obj,ctx?syscmd) do           
    discovery ctx?obj (try 
                          float(get_out ctx?syscmd)
