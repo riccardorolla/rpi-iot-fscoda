@@ -150,8 +150,7 @@ let main () =
 
  while (not (get_detected "exit")) do
   for _ in !-- next(ctx?syscmd) do 
-   array_cmd <- array_cmd 
-             |> Array.append [|get_cmd ctx?syscmd|] 
+   array_cmd <- array_cmd  |> Array.append [|get_cmd ctx?syscmd|] 
    
   listresult <- Async.Parallel 
      [for syscmd,param in  Array.distinct array_cmd  ->   execute syscmd param] 
@@ -164,8 +163,10 @@ let main () =
                   for _ in !-- result(syscmd,ctx?out) do 
                    retract <| Fsc.Facts.result(syscmd, ctx?out)   
                   tell <| Fsc.Facts.result(syscmd,res)
+  
   for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
       discovery ctx?obj  0.0
+
   for _ in !-- objcmd(ctx?obj,ctx?syscmd) do           
    discovery ctx?obj (try 
                          float(get_out ctx?syscmd)
