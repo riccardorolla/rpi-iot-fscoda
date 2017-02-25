@@ -36,25 +36,25 @@ let get_out  syscmd =
 
 let get_cmdrsp idchat syscmd =
  match (syscmd) with
- | "rpi/photo" ->(sprintf "telegram/%i/photo" idchat,
-                  ["idphoto",get_out syscmd;
-                  "text",caption (get_out "whatdoyousee")])
- | "rpi/video" ->(sprintf "telegram/%i/video" idchat,
-                  ["idvideo",get_out syscmd;
-                   "text",caption (get_out "whatdoyousee")])
- | "whatdoyousee"-> let mutable result = "discovery->\n"
-                    for _ in !-- recognition(ctx?obj,ctx?value) do
-                     result <- sprintf "%s%s,\t%f,\t%b\n" 
-                      result ctx?obj ctx?value (get_detected ctx?obj)
-                    (sprintf "telegram/%i/text" idchat,
-                     ["text",result])
- | _ ->          (sprintf "telegram/%i/text" idchat, 
+ | "/rpi/photo" ->(sprintf "/telegram/%i/photo" idchat,
+                   ["idphoto",get_out syscmd;
+                  "text",caption (get_out "/whatdoyousee")])
+ | "/rpi/video" ->(sprintf "/telegram/%i/video" idchat,
+                   ["idvideo",get_out syscmd;
+                   "text",caption (get_out "/whatdoyousee")])
+ | "/whatdoyousee"-> let mutable result = "discovery->\n"
+                     for _ in !-- recognition(ctx?obj,ctx?value) do
+                      result <- sprintf "%s%s,\t%f,\t%b\n" 
+                       result ctx?obj ctx?value (get_detected ctx?obj)
+                     (sprintf "/telegram/%i/text" idchat,
+                      ["text",result])
+ | _ ->          (sprintf "/telegram/%i/text" idchat, 
                   ["text", sprintf "%s -> %s" 
                   (get_usercmd syscmd) (get_out syscmd)])
    
 let get_cmd syscmd = 
  match syscmd with
- | "whatdoyousee"  -> (syscmd,["idphoto",get_out "rpi/photo"])
+ | "/whatdoyousee"  -> (syscmd,["idphoto",get_out "/rpi/photo"])
  | "help" ->          (get_out "help",[])
  | _ ->               (syscmd,[]) 
     
@@ -68,7 +68,7 @@ let get_rsp idchat res =
          retract<|Fsc.Facts.request(idchat,ctx?usercmd)    
          get_cmdrsp idchat ctx?syscmd 
  | _ ->  
-     (sprintf "telegram/%i/text" idchat ,
+     (sprintf "/telegram/%i/text" idchat ,
       ["text",
        sprintf "not found command per this result:%s " res])  
    
@@ -79,34 +79,34 @@ let get_rsp idchat res =
 
 [<CoDa.ContextInit>]
 let initFacts () =
- tell <| Fsc.Facts.objcmd("exit","rpi/button/0")
- tell <| Fsc.Facts.objcmd("obstacle","rpi/distance")
- tell <| Fsc.Facts.cmddesc("rpi/photo","snapshot a photo with camera")
- tell <| Fsc.Facts.cmddesc("rpi/video","shoot a movie with camera")
- tell <| Fsc.Facts.cmddesc("rpi/distance","get the distance of the obstacle")
- tell <| Fsc.Facts.cmddesc("rpi/motor/left","rover turn left")
- tell <| Fsc.Facts.cmddesc("rpi/motor/right","rover turn right")
- tell <| Fsc.Facts.cmddesc("rpi/motor/forward","rover move forward")
- tell <| Fsc.Facts.cmddesc("rpi/motor/backward","rover move backward")
- tell <| Fsc.Facts.cmddesc("rpi/motor/stop","stop the rover")
- tell <| Fsc.Facts.cmddesc("rpi/led/0/on", "turn on led number 0")
- tell <| Fsc.Facts.cmddesc("rpi/led/0/off", "turn off led number 0")
- tell <| Fsc.Facts.cmddesc("rpi/led/1/on", "turn on led number 1")
- tell <| Fsc.Facts.cmddesc("rpi/led/1/off", "turn off led number 0")
+ tell <| Fsc.Facts.objcmd("exit","/rpi/button/0")
+ tell <| Fsc.Facts.objcmd("obstacle","/rpi/distance")
+ tell <| Fsc.Facts.cmddesc("/rpi/photo","snapshot a photo with camera")
+ tell <| Fsc.Facts.cmddesc("/rpi/video","shoot a movie with camera")
+ tell <| Fsc.Facts.cmddesc("/rpi/distance","get the distance of the obstacle")
+ tell <| Fsc.Facts.cmddesc("/rpi/motor/left","rover turn left")
+ tell <| Fsc.Facts.cmddesc("/rpi/motor/right","rover turn right")
+ tell <| Fsc.Facts.cmddesc("/rpi/motor/forward","rover move forward")
+ tell <| Fsc.Facts.cmddesc("/rpi/motor/backward","rover move backward")
+ tell <| Fsc.Facts.cmddesc("/rpi/motor/stop","stop the rover")
+ tell <| Fsc.Facts.cmddesc("/rpi/led/0/on", "turn on led number 0")
+ tell <| Fsc.Facts.cmddesc("/rpi/led/0/off", "turn off led number 0")
+ tell <| Fsc.Facts.cmddesc("/rpi/led/1/on", "turn on led number 1")
+ tell <| Fsc.Facts.cmddesc("/rpi/led/1/off", "turn off led number 0")
  tell <| Fsc.Facts.cmddesc("help", "command help")
- tell <| Fsc.Facts.cmddesc("whatdoyousee","recognition object in last snapshot")
+ tell <| Fsc.Facts.cmddesc("/whatdoyousee","recognition objects in last snapshot")
 
- tell <| Fsc.Facts.usrcmd("photo","rpi/photo")
- tell <| Fsc.Facts.usrcmd("video","rpi/video")  
- tell <| Fsc.Facts.usrcmd("distance","rpi/distance")
- tell <| Fsc.Facts.usrcmd("left","rpi/motor/left")
- tell <| Fsc.Facts.usrcmd("right","rpi/motor/right")
- tell <| Fsc.Facts.usrcmd("lon","rpi/led/1/on")
- tell <| Fsc.Facts.usrcmd("loff","rpi/led/1/off")
- tell <| Fsc.Facts.usrcmd("forward","rpi/motor/forward")
- tell <| Fsc.Facts.usrcmd("backward","rpi/motor/backward")
- tell <| Fsc.Facts.usrcmd("stop","rpi/motor/stop")
- tell <| Fsc.Facts.usrcmd("discovery","whatdoyousee")
+ tell <| Fsc.Facts.usrcmd("photo","/rpi/photo")
+ tell <| Fsc.Facts.usrcmd("video","/rpi/video")  
+ tell <| Fsc.Facts.usrcmd("distance","/rpi/distance")
+ tell <| Fsc.Facts.usrcmd("left","/rpi/motor/left")
+ tell <| Fsc.Facts.usrcmd("right","/rpi/motor/right")
+ tell <| Fsc.Facts.usrcmd("lon","/rpi/led/1/on")
+ tell <| Fsc.Facts.usrcmd("loff","/rpi/led/1/off")
+ tell <| Fsc.Facts.usrcmd("forward","/rpi/motor/forward")
+ tell <| Fsc.Facts.usrcmd("backward","/rpi/motor/backward")
+ tell <| Fsc.Facts.usrcmd("stop","/rpi/motor/stop")
+ tell <| Fsc.Facts.usrcmd("discovery","/whatdoyousee")
  tell <| Fsc.Facts.usrcmd("help","help")
 
 
@@ -119,14 +119,14 @@ let initFacts () =
 
 
 
- tell <| Fsc.Facts.action("exit","true","whatdoyousee")
- tell <| Fsc.Facts.action("exit","false","rpi/distance")
- tell <| Fsc.Facts.action("exit","false","telegram/listchat")
- tell <| Fsc.Facts.action("exit","true","rpi/photo")
- tell <| Fsc.Facts.action("exit","false","rpi/button/0")
- tell <| Fsc.Facts.action("person","false","rpi/led/0/off")
- tell <| Fsc.Facts.action("person","true","rpi/led/0/on")
- tell <| Fsc.Facts.action("obstacle","true","rpi/motor/stop")
+ tell <| Fsc.Facts.action("exit","true","/whatdoyousee")
+ tell <| Fsc.Facts.action("exit","false","/rpi/distance")
+ tell <| Fsc.Facts.action("exit","false","/telegram/listchat")
+ tell <| Fsc.Facts.action("exit","true","/rpi/photo")
+ tell <| Fsc.Facts.action("exit","false","/rpi/button/0")
+ tell <| Fsc.Facts.action("person","false","/rpi/led/0/off")
+ tell <| Fsc.Facts.action("person","true","/rpi/led/0/on")
+ tell <| Fsc.Facts.action("obstacle","true","/rpi/motor/stop")
 
  tell <| Fsc.Facts.recognition("exit",0.0)
  let mutable help="?"
@@ -134,9 +134,10 @@ let initFacts () =
   help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
  tell <| Fsc.Facts.result("help",help)
 
- 
- for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do  
-  discovery ctx?obj  (float(num.MinValue))  
+ for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
+    discovery ctx?obj  (float(num.MinValue))  
+
+ //tell this fact because 'for _ !-- request(...) do ...' crash if request facts is empty into context
  tell <| Fsc.Facts.request(0,"")
 
 [<CoDa.Context("fsc-ctx")>]
@@ -145,7 +146,7 @@ let main () =
  initFacts ()
  let mutable listresult=[||]
  let mutable array_cmd =  
-  [|"telegram/broadcast",
+  [|"/telegram/broadcast",
     ["text","daemon fsc-rover start now"]|]
 
  while (not (get_detected "exit")) do
@@ -164,8 +165,11 @@ let main () =
                    retract <| Fsc.Facts.result(syscmd, ctx?out)   
                   tell <| Fsc.Facts.result(syscmd,res)
   
+  // 
+  // for _ in !-- recognition(ctx?obj,ctx?value) do
+  //    discovery ctx?obj  0.0
   for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
-      discovery ctx?obj  0.0
+     discovery ctx?obj  (float(num.MinValue))  
 
   for _ in !-- objcmd(ctx?obj,ctx?syscmd) do           
    discovery ctx?obj (try 
@@ -173,7 +177,7 @@ let main () =
                         with e-> 0.0) 
  
   
-  let infoimage = get_out "whatdoyousee" |> imagerecognition
+  let infoimage = get_out "/whatdoyousee" |> imagerecognition
   for tag in infoimage.tags do 
          discovery tag.name tag.confidence 
 
@@ -182,7 +186,7 @@ let main () =
        ctx?obj ctx?value (get_detected ctx?obj)
     
  
-  for idchat in (get_out "telegram/listchat" |> get_list) do
+  for idchat in (get_out "/telegram/listchat" |> get_list) do
    for _ in !-- response(idchat,ctx?res) do 
           array_cmd <- array_cmd 
            |> Array.append [|get_rsp idchat ctx?res|]

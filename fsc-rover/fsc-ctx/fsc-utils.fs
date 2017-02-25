@@ -72,7 +72,7 @@ let caption str =
 let command  cmd q =   
   try 
     Http.RequestString(
-     (sprintf "%s/%s" conf.http_server  cmd), 
+     (sprintf "%s%s" conf.http_server  cmd), 
      q , headers = [ "Cache-Control","NoCache" ])
   with  | :? System.Net.WebException ->    "error"
 
@@ -88,7 +88,7 @@ type Message = {
       } 
 let get_message idchat =
  try
-  let msg=command (sprintf "telegram/%i/next" idchat) []
+  let msg=command (sprintf "/telegram/%i/next" idchat) []
   let out=JsonConvert.DeserializeObject<Message>(msg)
   out.txt.ToLower().Split ' '
  with e-> [||]   
