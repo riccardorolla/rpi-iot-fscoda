@@ -1,4 +1,4 @@
-﻿module Fsc.Utils
+module Fsc.Utils
 
 open System
 open System.IO
@@ -9,8 +9,6 @@ type Configuration ={
   http_server:string;
   debug:bool
  }
-
-
 
 let confjson =
   let defaultconf =
@@ -59,7 +57,6 @@ let imagerecognition str =
 
 
 type num=int
-
 
 let caption str =  
  try

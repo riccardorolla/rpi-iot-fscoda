@@ -73,10 +73,8 @@ let get_rsp idchat res =
        sprintf "not found command per this result:%s " res])  
    
 
-
-
-
-
+   
+   
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Fsc.Facts.objcmd("exit","/rpi/button/0")
@@ -109,15 +107,15 @@ let initFacts () =
  tell <| Fsc.Facts.usrcmd("discovery","/whatdoyousee")
  tell <| Fsc.Facts.usrcmd("help","help")
 
-
-
-
+ let mutable help="?"
+ for _ in !-- usrcmddesc(ctx?usrcmd,ctx?desc) do
+  help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
+ tell <| Fsc.Facts.result("help",help)
+ 
  tell <| Fsc.Facts.confidence("obstacle",0.0,50.0)
  tell <| Fsc.Facts.confidence("person",0.9,1.0)
  tell <| Fsc.Facts.confidence("exit",1.0,1.0)
  tell <| Fsc.Facts.confidence("never",0.0,0.0)
-
-
 
  tell <| Fsc.Facts.action("exit","true","/whatdoyousee")
  tell <| Fsc.Facts.action("exit","false","/rpi/distance")
@@ -129,10 +127,7 @@ let initFacts () =
  tell <| Fsc.Facts.action("obstacle","true","/rpi/motor/stop")
 
  tell <| Fsc.Facts.recognition("exit",0.0)
- let mutable help="?"
- for _ in !-- usrcmddesc(ctx?usrcmd,ctx?desc) do
-  help <- sprintf "%s\n\t*%s*\t%s" help ctx?usrcmd ctx?desc
- tell <| Fsc.Facts.result("help",help)
+
 
  for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
     discovery ctx?obj  (float(num.MinValue))  
@@ -165,9 +160,6 @@ let main () =
                    retract <| Fsc.Facts.result(syscmd, ctx?out)   
                   tell <| Fsc.Facts.result(syscmd,res)
   
-  // 
-  // for _ in !-- recognition(ctx?obj,ctx?value) do
-  //    discovery ctx?obj  0.0
   for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
      discovery ctx?obj  (float(num.MinValue))  
 
@@ -185,7 +177,6 @@ let main () =
       printfn "recognition:%s,\t%f,\t%b" 
        ctx?obj ctx?value (get_detected ctx?obj)
     
- 
   for idchat in (get_out "/telegram/listchat" |> get_list) do
    for _ in !-- response(idchat,ctx?res) do 
           array_cmd <- array_cmd 
