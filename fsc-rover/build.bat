@@ -1,4 +1,4 @@
 cd /D "%~dp0"
 ..\tools\nuget restore
-set PATH=%ProgramFiles%\MSBuild\14.0\Bin;%ProgramFiles(x86)%\MSBuild\14.0\Bin;%PATH%
+set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin;%PATH%
 msbuild /p:Configuration=Release
