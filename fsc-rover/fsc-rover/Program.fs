@@ -147,7 +147,10 @@ let main () =
  while (not (get_detected "exit")) do
   for _ in !-- next(ctx?syscmd) do 
    array_cmd <- array_cmd  |> Array.append [|get_cmd ctx?syscmd|] 
-   
+  array_cmd <- array_cmd  |> Array.filter (fun syscmd -> match syscmd with 
+                                                           |"help",[] -> false
+                                                           |_ -> true
+                                            ) 
   listresult <- Async.Parallel 
      [for syscmd,param in  Array.distinct array_cmd  ->   execute syscmd param] 
       |> Async.RunSynchronously
