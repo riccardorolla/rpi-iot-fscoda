@@ -19,7 +19,7 @@ try { //legge il file di configurazione
 	conf = fs.readFileSync(filename_conf);
 } catch (e) {  //se non presente lo crea con dei valori di default
 	conf = '{"telegram_key":"224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM",'+
-		'"vision_url":"https://api.projectoxford.ai/vision/v1.0/analyze",'+
+		'"vision_endpoint":"westcentralus.api.cognitive.microsoft.com",'+
 		'"vision_key":"255ec2de41124b42a6ae6428f7f03b84",'+
 		'"default_lang":"it",'+
 		'"port":8081,'+
@@ -44,6 +44,19 @@ var express = require('express'); //per il servizio http
 var uuid = require('node-uuid'); //per generare UUID
 
 var TelegramBot = require('node-telegram-bot-api'); //semplifica uso telegram
+
+ const cognitiveServices = require('cognitive-services');
+ const parameters = {
+   "visualFeatures":"Description,Tags"
+}
+  const headers = {
+                'Content-type': 'application/octet-stream'
+            };
+const VisionClient = new cognitiveServices.computerVision({
+    apiKey: configuration.vision_key,
+    endpoint: configuration.vision_endpoint
+})
+
 //Lista Chat
 var listchat=[];
 
@@ -272,35 +285,24 @@ app.get('/telegram/:idchat/photo',function(req,res) {
 });
 	
 
-// Proxy - Computer Vision
-var request = require('then-request');
-function whatdoyousee(img,callback,fcallback){
-	 var response = request('POST',configuration.vision_url+'?visualFeatures=Description,Tags',
-						{ 
-							headers:{
-								'Ocp-Apim-Subscription-Key': configuration.vision_key,
-								'Content-type': ' application/octet-stream'
-								},
-							body:img
-
-						}).then(callback).catch(fcallback);
-	return response;
-}	
+ 
 
 app.get('/whatdoyousee',function(req,res) {
 	 var idphoto=req.query.idphoto
+
 	 var filename = configuration.temp_path+idphoto+'.jpg'  
-	 var img = fs.readFileSync(filename);
+	 var body = fs.readFileSync(filename);
  
-	 var resvision = whatdoyousee(img,
-		function(response) {
-			console.log(response.getBody().toString('utf-8')); 
-		 	res.send(response.getBody().toString('utf-8'));
+		VisionClient.analyzeImage({
+			parameters,
+			headers,
+			body
+		}).then(response => {
+			console.log(response);
+			res.send(response);
 			res.end();
-			},
-		function (err) {
-			res.send(err);
-			res.end();
-		});						  
+		});
+ 
+	
 });
 

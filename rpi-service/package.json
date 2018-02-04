@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cognitive-services": "^0.6.2",
     "express": "^4.14.0",
     "fs": "0.0.2",
     "node-telegram-bot-api": "^0.23.3",
