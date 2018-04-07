@@ -37,3 +37,11 @@ let gpio_direction(m:obj, e:obj) =
   else
     Rpi.RpiContext.gpio_direction(m, e)
 
+
+[<TypedPred>]
+[<Code>]
+let button(m:obj) =
+  if true then
+    failwith "Solved by JIT"
+  else
+    Rpi.RpiContext.button(m)
