@@ -1,11 +1,8 @@
-﻿
-[<CoDa.Code>]
+﻿[<CoDa.Code>]
 module Rpi.Test
 open Raspberry.IO.GeneralPurpose;
 open CoDa.Runtime
 open Rpi.Types
-
-open System.Threading
 open System
 
 let get_gpio_resistor pin = 
@@ -30,25 +27,24 @@ let get_gpio_digital pin =
           false
 
 let pin1 = ConnectorPin.P1Pin11.ToProcessor()
-let pin2 = ConnectorPin.P1Pin12.ToProcessor()
+let pin2 = ConnectorPin.P1Pin40.ToProcessor()
 
 
 let driver = GpioConnectionSettings.DefaultDriver
 
 let get_value (pin:ProcessorPin) = driver.Read(pin)
-let timeNow = System.DateTime.Now.ToLongTimeString()
-
 
 let updateGPIO ()=
                 for _ in !-- gpio_direction(ctx?pin,PinDirection.Input) do
-                        retract <| Rpi.Facts.gpio_digital(ctx?pin, get_gpio_digital ctx?pin)                    
+                        printfn "value button %b" (get_value(ctx?pin))
+                        retract <| Rpi.Facts.gpio_digital(ctx?pin, not (get_value(ctx?pin)))                    
                         tell <| Rpi.Facts.gpio_digital(ctx?pin,get_value(ctx?pin))
 
                 for _ in !-- gpio_direction(ctx?pin,PinDirection.Output) do
-                        driver.Write(ctx?pin, (get_gpio_digital ctx?pin))
-                        printfn "led change time:%s" timeNow
-                        retract<| Rpi.Facts.gpio_digital(ctx?pin,get_gpio_digital ctx?pin)
-
+                        printfn "value led %b" (get_gpio_digital ctx?pin)
+                        driver.Write(ctx?pin, (get_gpio_digital ctx?pin))                
+                        tell<| Rpi.Facts.gpio_digital(ctx?pin,get_gpio_digital ctx?pin)
+                        retract <| Rpi.Facts.gpio_digital(ctx?pin,not (get_gpio_digital ctx?pin))
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Rpi.Facts.gpio_device("led",pin1)
@@ -74,9 +70,11 @@ let main () =
                 updateGPIO ()
                 match ctx with
                  | _ when !- (button(ctx?status), gpio_device("led",ctx?pin)) ->  
-                                tell <| Rpi.Facts.gpio_digital(ctx?pin,get_gpio_digital ctx?status)
+                                printfn "set led %b" (ctx?status)
+                                retract <| Rpi.Facts.gpio_digital(ctx?pin,not (ctx?status))
+                                tell <| Rpi.Facts.gpio_digital(ctx?pin,ctx?status)
                  | _ -> printfn "no op"
-                printfn "time:%s" timeNow
+                printfn "time:%s %d" (System.DateTime.Now.ToLongTimeString()) (System.DateTime.Now.Millisecond)
  
 do
   run ()
