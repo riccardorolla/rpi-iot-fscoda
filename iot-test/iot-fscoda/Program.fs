@@ -1,4 +1,4 @@
-﻿[<CoDa.Code>]
+[<CoDa.Code>]
 module Rpi.Test
 open Raspberry.IO.GeneralPurpose;
 open CoDa.Runtime
@@ -12,13 +12,13 @@ let get_gpio_resistor pin =
     with e->
          PinResistor.None
 
-
 let get_gpio_direction pin = 
     try 
         let dr = ctx?direction |- (gpio_direction(pin,ctx?direction))
         dr
     with e->
           PinDirection.Output
+
 let get_gpio_digital pin = 
     try 
         let dg = ctx?status |- (gpio_digital(pin,ctx?status))
@@ -28,10 +28,7 @@ let get_gpio_digital pin =
 
 let pin1 = ConnectorPin.P1Pin11.ToProcessor()
 let pin2 = ConnectorPin.P1Pin40.ToProcessor()
-
-
 let driver = GpioConnectionSettings.DefaultDriver
-
 let get_value (pin:ProcessorPin) = driver.Read(pin)
 
 let updateGPIO ()=
@@ -60,7 +57,6 @@ let initFacts () =
  for _ in !-- gpio_resistor(ctx?pin,ctx?resistor) do
          driver.SetPinResistor(ctx?pin, ctx?resistor)
 
-                 
 [<CoDa.Context("rpi-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
@@ -74,7 +70,6 @@ let main () =
                                 retract <| Rpi.Facts.gpio_digital(ctx?pin,not (ctx?status))
                                 tell <| Rpi.Facts.gpio_digital(ctx?pin,ctx?status)
                  | _ -> printfn "no op"
-                printfn "time:%s %d" (System.DateTime.Now.ToLongTimeString()) (System.DateTime.Now.Millisecond)
- 
+                printfn "time:%s %d" (System.DateTime.Now.ToLongTimeString()) (System.DateTime.Now.Millisecond) 
 do
   run ()

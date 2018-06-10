@@ -35,10 +35,6 @@
     <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="coda, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\fscoda.iot.1.0.1.0\lib\coda.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +44,9 @@
     </Reference>
     <Reference Include="Unquote">
       <HintPath>..\packages\Unquote.3.1.2\lib\net45\Unquote.dll</HintPath>
+    </Reference>
+    <Reference Include="coda">
+      <HintPath>..\packages\fscoda.iot.1.0.2\lib\coda.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
