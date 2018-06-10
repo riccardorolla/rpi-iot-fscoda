@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>fscoda.iot</id>
-        <version>1.0.1.0</version>
+        <version>1.0.2.0</version>
         <title>FS Coda for Iot</title>
         <authors>riccardo rolla</authors>
         <owners>riccardo rolla</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Description</description>
-        <copyright>Copyright ©  2016</copyright>
+        <copyright>Copyright ©  2018</copyright>
     </metadata>
     <files>
         <file src="bin\coda.dll" target="lib\" />
