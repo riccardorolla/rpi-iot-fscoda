@@ -145,16 +145,18 @@ let main () =
     ["text","daemon fsc-rover start now"]|]
 
  while (not (get_detected "exit")) do
+  printfn "step1"
   for _ in !-- next(ctx?syscmd) do 
    array_cmd <- array_cmd  |> Array.append [|get_cmd ctx?syscmd|] 
   array_cmd <- array_cmd  |> Array.filter (fun syscmd -> match syscmd with 
                                                            |"help",[] -> false
                                                            |_ -> true
                                             ) 
+  printfn "step2"
   listresult <- Async.Parallel 
      [for syscmd,param in  Array.distinct array_cmd  ->   execute syscmd param] 
       |> Async.RunSynchronously
-     
+  printfn "step3"  
   array_cmd <-[||] 
   for r in listresult do        
    match r with
@@ -162,29 +164,29 @@ let main () =
                   for _ in !-- result(syscmd,ctx?out) do 
                    retract <| Fsc.Facts.result(syscmd, ctx?out)   
                   tell <| Fsc.Facts.result(syscmd,res)
-  
+  printfn "step4"
   for _ in !-- action(ctx?obj,ctx?status,ctx?syscmd) do
      discovery ctx?obj  (float(num.MinValue))  
-
+  printfn "step5"
   for _ in !-- objcmd(ctx?obj,ctx?syscmd) do           
    discovery ctx?obj (try 
                          float(get_out ctx?syscmd)
                         with e-> 0.0) 
  
-  
+  printfn "step6"
   let infoimage = get_out "/whatdoyousee" |> imagerecognition
   for tag in infoimage.tags do 
          discovery tag.name tag.confidence 
-
+  printfn "step7"
   for _ in !-- recognition(ctx?obj,ctx?value) do
       printfn "recognition:%s,\t%f,\t%b" 
        ctx?obj ctx?value (get_detected ctx?obj)
-    
+  printfn "step8"
   for idchat in (get_out "/telegram/listchat" |> get_list) do
    for _ in !-- response(idchat,ctx?res) do 
           array_cmd <- array_cmd 
            |> Array.append [|get_rsp idchat ctx?res|]
-
+   
    for _ in !-- request(idchat,ctx?usercmd) do
        printfn "not response request:%i,\t%s" idchat ctx?usercmd
 
