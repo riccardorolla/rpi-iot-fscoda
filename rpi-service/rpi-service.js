@@ -134,16 +134,27 @@ app.get('/rpi/led/:numled/:action',function(req,res) {
 			res.end();
   });
 });
+var run_distance=false;
+var distance=0;
 app.get('/rpi/distance/',function(req,res) {
+	if (!run_distance) {
+	 run_distance=true;
      exec(configuration.rover_cmd +" uds",
 			(error,stdout,stderr)=> {
 				if (error) {
    					res.send("error:'"+ error + "'");
 				}else{
+					distance=stdout;
 					res.send(stdout);
 				}
 			res.end();
-  });
+			run_distance=false;
+			
+		});
+	} else {
+			res.send(distance);
+			res.end();
+	}
 });
 
 //  API  RPI Photo
