@@ -189,6 +189,7 @@ let main () =
 
    let mutable msg=get_message idchat               
    while (msg.Length >0) do  
+       printfn "msg:%s" msg.[0]
        match ctx with
            | _ when !- usrcmd(msg.[0],ctx?syscmd) ->    
                   retract <| Fsc.Facts.request(idchat,msg.[0])
