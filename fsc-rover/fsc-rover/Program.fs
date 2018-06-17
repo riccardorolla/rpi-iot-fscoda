@@ -134,6 +134,7 @@ let initFacts () =
  //tell this fact because 'for _ !-- request(...) do ...' crash if request facts is empty into context
  tell <| Fsc.Facts.request(0,"")
 
+
 [<CoDa.Context("fsc-ctx")>]
 [<CoDa.EntryPoint>]
 let main () =
@@ -175,6 +176,7 @@ let main () =
   let infoimage = get_out "/whatdoyousee" |> imagerecognition
   for tag in infoimage.tags do 
          discovery tag.name tag.confidence 
+
   for _ in !-- recognition(ctx?obj,ctx?value) do
       printfn "recognition:%s,\t%f,\t%b" 
        ctx?obj ctx?value (get_detected ctx?obj)

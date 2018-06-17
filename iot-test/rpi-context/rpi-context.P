@@ -1,4 +1,3 @@
-% facts
 gpio_direction(Pin,Direction) :- gpio_direction_(Pin,Direction).
 gpio_resistor(Pin,Resistor) :- gpio_resistor_(Pin,Resistor).
 gpio_digital(Pin,Status) :- gpio_digital_(Pin,Status).

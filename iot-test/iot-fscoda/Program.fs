@@ -31,17 +31,19 @@ let pin2 = ConnectorPin.P1Pin40.ToProcessor()
 let driver = GpioConnectionSettings.DefaultDriver
 let get_value (pin:ProcessorPin) = driver.Read(pin)
 
-let updateGPIO ()=
+let updateGPIO  = async {
+         while (true) do
                 for _ in !-- gpio_direction(ctx?pin,PinDirection.Input) do
-                        printfn "value button %b" (get_value(ctx?pin))
                         retract <| Rpi.Facts.gpio_digital(ctx?pin, not (get_value(ctx?pin)))                    
                         tell <| Rpi.Facts.gpio_digital(ctx?pin,get_value(ctx?pin))
 
                 for _ in !-- gpio_direction(ctx?pin,PinDirection.Output) do
-                        printfn "value led %b" (get_gpio_digital ctx?pin)
                         driver.Write(ctx?pin, (get_gpio_digital ctx?pin))                
                         tell<| Rpi.Facts.gpio_digital(ctx?pin,get_gpio_digital ctx?pin)
                         retract <| Rpi.Facts.gpio_digital(ctx?pin,not (get_gpio_digital ctx?pin))
+                        }
+
+
 [<CoDa.ContextInit>]
 let initFacts () =
  tell <| Rpi.Facts.gpio_device("led",pin1)
@@ -61,12 +63,10 @@ let initFacts () =
 [<CoDa.EntryPoint>]
 let main () =
   initFacts ()
-
+  Async.Start(updateGPIO)
   while (true) do
-                updateGPIO ()
                 match ctx with
                  | _ when !- (button(ctx?status), gpio_device("led",ctx?pin)) ->  
-                                printfn "set led %b" (ctx?status)
                                 retract <| Rpi.Facts.gpio_digital(ctx?pin,not (ctx?status))
                                 tell <| Rpi.Facts.gpio_digital(ctx?pin,ctx?status)
                  | _ -> printfn "no op"

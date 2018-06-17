@@ -45,17 +45,6 @@ var uuid = require('node-uuid'); //per generare UUID
 
 var TelegramBot = require('node-telegram-bot-api'); //semplifica uso telegram
 
- const cognitiveServices = require('cognitive-services');
- const parameters = {
-   "visualFeatures":"Description,Tags"
-}
-  const headers = {
-                'Content-type': 'application/octet-stream'
-            };
-const VisionClient = new cognitiveServices.computerVision({
-    apiKey: configuration.vision_key,
-    endpoint: configuration.vision_endpoint
-})
 
 //Lista Chat
 var listchat=[];
@@ -95,44 +84,33 @@ var server = app.listen(configuration.port, function () {
 
 })
 
-
 //  API  RPI Hardware
 var childprocess=require('child_process'); //per avviare processi esterni
 //funzione utilzzata per eseguire i comandi
 const exec = childprocess.exec;
-
 app.get('/rpi/motor/:action',function(req,res) {
 	 exec(configuration.rover_cmd +" motor " + req.params.action,
 			(error,stdout,stderr)=> {
-				if (error) {
-   					res.send("error:'"+ error + "'");	
-				}else{
-					res.send(stdout);
-				}
+				if (error) { res.send("error:'"+ error + "'");}
+				else{ res.send(stdout);}
 			res.end();
-  });
+	});
 });
 app.get('/rpi/button/:numbutton',function(req,res) {
 	 exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
 			(error,stdout,stderr)=> {
-				if (error) {
-   					res.send("error:'"+ error + "'");
-				}else{
-					res.send(stdout);
-				}
+				if (error) { res.send("error:'"+ error + "'");}
+				else{  res.send(stdout);}
 			res.end();
-  });
+	}); 
 });
 app.get('/rpi/led/:numled/:action',function(req,res) {
 	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
-				if (error) {
-   					res.send("error:'"+ error + "'");
-				}else{
-					res.send(stdout);
-				}
+				if (error) { res.send("error:'"+ error + "'");}
+				else{ res.send(stdout);}
 			res.end();
-  });
+	});
 });
 var run_distance=false;
 var distance=0;
@@ -141,15 +119,13 @@ app.get('/rpi/distance/',function(req,res) {
 	 run_distance=true;
      exec(configuration.rover_cmd +" uds",
 			(error,stdout,stderr)=> {
-				if (error) {
-   					res.send("error:'"+ error + "'");
+				if (error) { res.send("error:'"+ error + "'");
 				}else{
 					distance=stdout;
 					res.send(stdout);
 				}
 			res.end();
-			run_distance=false;
-			
+			run_distance=false;	
 		});
 	} else {
 			res.send(distance);
@@ -181,7 +157,6 @@ function photo_cmd(idphoto,width,height,quality) {
 	 if (undefined != quality) cmd = cmd + ' -q ' + quality;
 		else cmd = cmd + ' -q 90'
 	 console.log(cmd);
-	 
 	 return cmd;
 }
 
@@ -296,7 +271,17 @@ app.get('/telegram/:idchat/photo',function(req,res) {
 });
 	
 
- 
+const cognitiveServices = require('cognitive-services');
+const parameters = {
+   "visualFeatures":"Description,Tags"
+}
+const headers = {
+                'Content-type': 'application/octet-stream'
+            };
+const VisionClient = new cognitiveServices.computerVision({
+    apiKey: configuration.vision_key,
+    endpoint: configuration.vision_endpoint
+})
 
 app.get('/whatdoyousee',function(req,res) {
 	 var idphoto=req.query.idphoto

@@ -1,5 +1,5 @@
 {"telegram_key":"224831807:AAGNkaCtG-yML_yqw-ZEnU_fvTugyM3D5cM",
 "vision_endpoint":"westcentralus.api.cognitive.microsoft.com",
-"vision_key":"751245ca62bb403aaeaab26f4ed1cbf4",
+"vision_key":"d10808d16c594fd09a5519e5b03b4e7d",
 "translate_url":"http://translate.googleapis.com/translate_a/single","default_lang":"it","port":8081,"rover_cmd":"../rpi-rover/bin/rpi-rover.exe","photo_cmd":"raspistill",
 "video_cmd":"raspivid","vconv_cmd":"avconv","temp_path":"/tmp/"}
