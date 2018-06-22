@@ -96,21 +96,27 @@ app.get('/rpi/motor/:action',function(req,res) {
 			res.end();
 	});
 });
+var buttonout="0"
 app.get('/rpi/button/:numbutton',function(req,res) {
 	 exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
 			(error,stdout,stderr)=> {
-				if (error) { res.send("error:'"+ error + "'");}
-				else{  res.send(stdout);}
-			res.end();
+				if (error) { buttonout="0"}
+				else{  buttonout=stdout}
+			 
 	}); 
+	 res.send(buttonout);
+	 res.end();
 });
+var ledout="OK"
 app.get('/rpi/led/:numled/:action',function(req,res) {
 	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
-				if (error) { res.send("error:'"+ error + "'");}
-				else{ res.send(stdout);}
-			res.end();
+				if (error) { ledout="error:'"+ error + "'";}
+				else{ ledout=stdout}
+			
 	});
+	res.send(ledout);
+	res.end();
 });
 var run_distance=false;
 var distance=0;
