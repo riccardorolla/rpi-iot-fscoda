@@ -88,33 +88,53 @@ var server = app.listen(configuration.port, function () {
 var childprocess=require('child_process'); //per avviare processi esterni
 //funzione utilzzata per eseguire i comandi
 const exec = childprocess.exec;
+var motorout="OK"
+var run_motor=false;
 app.get('/rpi/motor/:action',function(req,res) {
+			if (!run_motor) {
+			run_motor=true;
 	 exec(configuration.rover_cmd +" motor " + req.params.action,
 			(error,stdout,stderr)=> {
-				if (error) { res.send("error:'"+ error + "'");}
-				else{ res.send(stdout);}
-			res.end();
+				if (error) { motorout="error:'"+ error + "'";}
+				else{  motorout=stdout;
+				run_motor=false;
+				}
+			 
 	});
+	
+			}
+			res.send(motorout);
+			res.end;
 });
 var buttonout="0"
+var run_button=false;
 app.get('/rpi/button/:numbutton',function(req,res) {
+		if (!run_button) {
+			run_button=true;
 	 exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
 			(error,stdout,stderr)=> {
 				if (error) { buttonout="0"}
 				else{  buttonout=stdout}
-			 
-	}); 
+				run_button=false;
+		}); 
+		
+		}
 	 res.send(buttonout);
 	 res.end();
 });
 var ledout="OK"
+var run_led=false;
 app.get('/rpi/led/:numled/:action',function(req,res) {
+	if (!run_led) {
+		run_led=true;
 	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) { ledout="error:'"+ error + "'";}
 				else{ ledout=stdout}
-			
+				run_led=false;
+			}		
 	});
+	
 	res.send(ledout);
 	res.end();
 });
