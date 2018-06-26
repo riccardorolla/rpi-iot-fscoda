@@ -134,7 +134,7 @@ app.get('/rpi/led/:numled/:action',function(req,res) {
 				run_led=false;
 			}		
 	});
-	
+}
 	res.send(ledout);
 	res.end();
 });

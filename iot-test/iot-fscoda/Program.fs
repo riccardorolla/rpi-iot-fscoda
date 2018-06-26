@@ -31,8 +31,7 @@ let pin2 = ConnectorPin.P1Pin40.ToProcessor()
 let driver = GpioConnectionSettings.DefaultDriver
 let get_value (pin:ProcessorPin) = driver.Read(pin)
 
-let updateGPIO  = async {
-         while (true) do
+let updateGPIO  ()  = 
                 for _ in !-- gpio_direction(ctx?pin,PinDirection.Input) do
                         retract <| Rpi.Facts.gpio_digital(ctx?pin, not (get_value(ctx?pin)))                    
                         tell <| Rpi.Facts.gpio_digital(ctx?pin,get_value(ctx?pin))
@@ -41,7 +40,7 @@ let updateGPIO  = async {
                         driver.Write(ctx?pin, (get_gpio_digital ctx?pin))                
                         tell<| Rpi.Facts.gpio_digital(ctx?pin,get_gpio_digital ctx?pin)
                         retract <| Rpi.Facts.gpio_digital(ctx?pin,not (get_gpio_digital ctx?pin))
-                        }
+           
 
 
 [<CoDa.ContextInit>]
@@ -63,8 +62,9 @@ let initFacts () =
 [<CoDa.EntryPoint>]
 let main () =
   initFacts ()
-  Async.Start(updateGPIO)
+  
   while (true) do
+				updateGPIO ()
                 match ctx with
                  | _ when !- (button(ctx?status), gpio_device("led",ctx?pin)) ->  
                                 retract <| Rpi.Facts.gpio_digital(ctx?pin,not (ctx?status))
