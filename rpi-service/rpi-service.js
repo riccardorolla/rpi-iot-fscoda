@@ -133,7 +133,7 @@ app.get('/rpi/led/:numled/:action',function(req,res) {
 				else{ ledout=stdout}
 				run_led=false;
 			}		
-	});
+	);
 }
 	res.send(ledout);
 	res.end();
