@@ -7,7 +7,7 @@ Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fsc-ctx", "fsc-ctx\fsc-ctx.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fsc-context", "fsc-context\fsc-context.csproj", "{5D52FBFD-D2A7-4E3F-BD39-EF7A4B75D314}"
 EndProject
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fsc-iot", "fsc-iot\fsc-iot.fsproj", "{2275ABE4-578B-4012-9899-F1828FBFECCB}"
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fsc-rover", "fsc-rover\fsc-rover.fsproj", "{2275ABE4-578B-4012-9899-F1828FBFECCB}"
 EndProject
 Global
 	GlobalSection(Performance) = preSolution
