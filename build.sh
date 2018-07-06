@@ -1,12 +1,6 @@
 #!/bin/sh
-pushd rpi-rover
-sh ./build.sh
-popd
-pushd  rpi-service
-sh ./build.sh
-popd
-pushd fsc-rover
-sh ./build.sh
-popd
-
+. ./rpi-rover/build.sh
+. ./rpi-service/build.sh
+. ./fsc-rover/build.sh
+ 
 
