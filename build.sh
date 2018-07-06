@@ -1,12 +1,12 @@
 #!/bin/sh
-cd rpi-rover
+pushd rpi-rover
 sh ./build.sh
-cd ..
-cd rpi-service
+popd
+pushd  rpi-service
 sh ./build.sh
-cd ..
-cd fsc-rover
+popd
+pushd fsc-rover
 sh ./build.sh
-cd ..
+popd
 
 
