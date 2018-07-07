@@ -28,7 +28,7 @@ namespace Rover {
                     Timer.Sleep(triggerTime);
                     triggerPin.Write(false);
                     var upTime = echoPin.Time(true, echoUpTimeout, Timeout);
-                    dist = ((upTime < TimeSpan.Zero) ? (double.MinValue) : ((upTime.TotalMilliseconds) / 1000 * 343.8 * 100) / 2.0);
+                    dist = ((upTime < TimeSpan.Zero) ? (double.MinValue) : ((upTime.TotalMilliseconds) / 1000.0 * 343.8 * 100) / 2.0);
                 }
                 catch (TimeoutException) { }
             } while (dist < 0);
