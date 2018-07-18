@@ -77,8 +77,8 @@ var app = express();
 //avvio il servizio sulla porta definita nella configurazione
 var server = app.listen(configuration.port, function () {
 
-  var host = server.address().address
-  var port = server.address().port
+  var host = server.address().address;
+  var port = server.address().port;
 
   console.log("rpi-service.js at http://%s:%s", host, port)
 
@@ -89,72 +89,71 @@ var childprocess=require('child_process'); //per avviare processi esterni
 //funzione utilzzata per eseguire i comandi
 const exec = childprocess.exec;
 var motorout="OK"
-var run_motor=false;
+var motorsem = require('semaphore')(1);
 app.get('/rpi/motor/:action',function(req,res) {
-			if (!run_motor) {
-			run_motor=true;
-	 exec(configuration.rover_cmd +" motor " + req.params.action,
-			(error,stdout,stderr)=> {
-				if (error) { motorout="error:'"+ error + "'";}
-				else{  motorout=stdout;
-				run_motor=false;
-				}
 			 
-	});
+	res.send(motorout);
+	res.end;
+	motorsem.take(function () {
+		exec(configuration.rover_cmd +" motor " + req.params.action,
+			(error,stdout,stderr)=> {
+				if (error) { 	motorout="error:'"+ error + "'";}
+				else{  motorout=stdout;	 }
+				motorsem.leave();
+			 });
+		});
 	
-			}
-			res.send(motorout);
-			res.end;
+
 });
 var buttonout="0"
-var run_button=false;
+var buttomsem=require('semaphore')(1);
 app.get('/rpi/button/:numbutton',function(req,res) {
-		if (!run_button) {
-			run_button=true;
-	 exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
+	res.send(buttonout);
+	res.end();
+	buttomsem.take(function	() {
+		exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
 			(error,stdout,stderr)=> {
 				if (error) { buttonout="0"}
 				else{  buttonout=stdout}
-				run_button=false;
+				buttomsem.leave();
 		}); 
 		
-		}
-	 res.send(buttonout);
-	 res.end();
+	});
+
 });
 var ledout="OK"
-var run_led=false;
+var ledsem=require('semaphore')(1);
 app.get('/rpi/led/:numled/:action',function(req,res) {
-	if (!run_led) {
-		run_led=true;
+	res.send(ledout);
+	res.end();
+	ledsem.take(function	() {
 	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) { ledout="error:'"+ error + "'";}
-				else{ ledout=stdout}
-				run_led=false;
-			}		
-	);
-}
-	res.send(ledout);
-	res.end();
+				else{ ledout="OK";}
+				ledsem.leave();
+			});
+	});
+
 });
-var run_distance=false;
-var distance="0";
+ 
+var distance="0.0";
+var udssem=require('semaphore')(1);
 app.get('/rpi/distance/',function(req,res) {
-	if (!run_distance) {
-	 run_distance=true;
+	res.send(distance.replace(',','.'));
+	res.end();
+	udssem.take(function	() {
      exec(configuration.rover_cmd +" uds",
 			(error,stdout,stderr)=> {
 				if (error) { 
-					distance="0";
+					distance="0.0";
 				}else{
 					distance=stdout;
 				}
-				run_distance=false;	
+				udssem.leave();
 		});
-	}
-	res.send(distance);
-	res.end();
+	});
+
 });
 
 //  API  RPI Photo
