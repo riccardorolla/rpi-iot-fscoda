@@ -92,8 +92,7 @@ var motorout="OK"
 var motorrun = false;
 app.get('/rpi/motor/:action',function(req,res) {
 			 
-	res.send(motorout);
-	res.end;
+	
 	if (!motorrun) {
 		motorun=true;
 		exec(configuration.rover_cmd +" motor " + req.params.action,
@@ -101,6 +100,8 @@ app.get('/rpi/motor/:action',function(req,res) {
 				if (error) { 	motorout="error:'"+ error + "'";}
 				else{  motorout=stdout;	 }
 				motorrun=false;
+				res.send(motorout);
+				res.end;
 			 });
 		} 
 	
