@@ -89,60 +89,65 @@ var childprocess=require('child_process'); //per avviare processi esterni
 //funzione utilzzata per eseguire i comandi
 const exec = childprocess.exec;
 var motorout="OK"
-var motorsem = require('semaphore')(1);
+var motorrun = false;
 app.get('/rpi/motor/:action',function(req,res) {
 			 
 	res.send(motorout);
 	res.end;
-	motorsem.take(function () {
+	if (!motorrun) {
+		motorun=true;
 		exec(configuration.rover_cmd +" motor " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) { 	motorout="error:'"+ error + "'";}
 				else{  motorout=stdout;	 }
-				motorsem.leave();
+				motorrun=false;
 			 });
-		});
+		} 
 	
 
 });
 var buttonout="0"
-var buttomsem=require('semaphore')(1);
+var buttonrun=false;
 app.get('/rpi/button/:numbutton',function(req,res) {
 	res.send(buttonout);
 	res.end();
-	buttomsem.take(function	() {
+	if (!buttonrun)  {
+		buttonrun=true;
 		exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
 			(error,stdout,stderr)=> {
 				if (error) { buttonout="0"}
 				else{  buttonout=stdout}
-				buttomsem.leave();
+				buttomrun=false;
 		}); 
 		
 	});
 
 });
-var ledout="OK"
-var ledsem =[require('semaphore')(1),require('semaphore')(1)];
+var ledout=["OK","OK"]
+var runled=[false,false]
 app.get('/rpi/led/:numled/:action',function(req,res) {
-	res.send(ledout);
+	n = req.params.numled;
+	res.send(ledout[n]);
 	res.end();
-	ledsem[req.params.numled].take(function	() {
-	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
-			(error,stdout,stderr)=> {
-				if (error) { ledout="error:'"+ error + "'";}
-				else{ ledout="OK";}
-				ledsem[req.params.numled].leave();
-			});
-	});
+	if (!runled[n]) {
+			runled[n]=true;
 
+    exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
+			(error,stdout,stderr)=> {
+				if (error) { ledout[n]="error:'"+ error + "'";}
+				else{ ledout[n]="OK";}
+				runled[n]=false;
+			});
+	}
 });
  
 var distance="0.0";
-var udssem=require('semaphore')(1);
+var udsrun=false;
 app.get('/rpi/distance/',function(req,res) {
 	res.send(distance.replace(',','.'));
 	res.end();
-	udssem.take(function	() {
+	if (!udsrun) {
+			udsrun=true;
      exec(configuration.rover_cmd +" uds",
 			(error,stdout,stderr)=> {
 				if (error) { 
@@ -150,9 +155,9 @@ app.get('/rpi/distance/',function(req,res) {
 				}else{
 					distance=stdout;
 				}
-				udssem.leave();
+				udsrun=false;
 		});
-	});
+	} 
 
 });
 
