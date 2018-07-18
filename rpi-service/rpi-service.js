@@ -108,19 +108,22 @@ app.get('/rpi/motor/:action',function(req,res) {
 
 });
 var buttonout="0"
- 
+var buttonrun=false;
 app.get('/rpi/button/:numbutton',function(req,res) {
 
- 
+	if (!buttonrun)  {
+		buttonrun=true;
 		exec(configuration.rover_cmd +" button  " +req.params.numbutton ,
 			(error,stdout,stderr)=> {
-				if (error) { buttonout="0"}
-				else{  buttonout=stdout}
-					res.send(buttonout);
-					res.end();
+				if (error) { buttonout="0";}
+				else{  buttonout=stdout;}
+				buttonrun=false;
 			 
 		}); 
- 
+		
+	} 
+	res.send(buttonout);
+	res.end();
 
 });
 var ledout=["OK","OK"]
