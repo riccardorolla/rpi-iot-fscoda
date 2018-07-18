@@ -123,7 +123,7 @@ let initFacts () =
  tell <| Fsc.Facts.action("exit","false","/rpi/button/0")
  tell <| Fsc.Facts.action("person","false","/rpi/led/1/off")
  tell <| Fsc.Facts.action("person","true","/rpi/led/1/on")
- tell <| Fsc.Facts.action("obstacle","true","/rpi/motor/stop")
+ tell <| Fsc.Facts.action("obstacle","true","/rpi/motor/left")
 
  tell <| Fsc.Facts.recognition("exit",0.0)
 
