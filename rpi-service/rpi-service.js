@@ -126,7 +126,7 @@ app.get('/rpi/button/:numbutton',function(req,res) {
 var ledout=["OK","OK"]
 var runled=[false,false]
 app.get('/rpi/led/:numled/:action',function(req,res) {
-	n = req.params.numled;
+	var n = req.params.numled;
 	res.send(ledout[n]);
 	res.end();
 	if (!runled[n]) {
@@ -135,7 +135,7 @@ app.get('/rpi/led/:numled/:action',function(req,res) {
     exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) { ledout[n]="error:'"+ error + "'";}
-				else{ ledout[n]="OK";}
+				else{ ledout[n]=stdout}
 				runled[n]=false;
 			});
 	}
