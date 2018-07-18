@@ -122,16 +122,16 @@ app.get('/rpi/button/:numbutton',function(req,res) {
 
 });
 var ledout="OK"
-var ledsem=require('semaphore')(1);
+var ledsem =[require('semaphore')(1),require('semaphore')(1)];
 app.get('/rpi/led/:numled/:action',function(req,res) {
 	res.send(ledout);
 	res.end();
-	ledsem.take(function	() {
+	ledsem[req.params.numled].take(function	() {
 	 exec(configuration.rover_cmd +" led  " +req.params.numled + " " + req.params.action,
 			(error,stdout,stderr)=> {
 				if (error) { ledout="error:'"+ error + "'";}
 				else{ ledout="OK";}
-				ledsem.leave();
+				ledsem[req.params.numled].leave();
 			});
 	});
 
