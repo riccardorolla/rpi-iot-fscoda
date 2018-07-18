@@ -120,7 +120,7 @@ app.get('/rpi/button/:numbutton',function(req,res) {
 				buttomrun=false;
 		}); 
 		
-	});
+	} 
 
 });
 var ledout=["OK","OK"]
